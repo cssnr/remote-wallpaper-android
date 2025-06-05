@@ -11,12 +11,14 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -24,6 +26,7 @@ import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -44,6 +47,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,33 +120,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Update Drawer Header
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
-
         val headerView = binding.navView.getHeaderView(0)
         val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
         val formattedVersion = getString(R.string.version_string, versionName)
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
 
-        //// TODO: This should be done after enabling alerts for better control...
-        //Log.d("SettingsFragment", "REGISTER - notification channel")
-        //val channelId = "default_channel_id"
-        //val channelName = "Default Channel"
-        //// TODO: Determine how to properly setup channels as desired...
-        //// Normal Notification. I think...
-        //val importance = NotificationManager.IMPORTANCE_DEFAULT
-        //val channel = NotificationChannel(channelId, channelName, importance)
-        //val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        //notificationManager.createNotificationChannel(channel)
+        // Set Default Preferences
+        Log.d(LOG_TAG, "Set Default Preferences")
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_widget, false)
 
         // TODO: Improve initialization of the WorkRequest
-        val sharedPreferences = this.getSharedPreferences("org.cssnr.remotewallpaper", MODE_PRIVATE)
-        // TODO: Improve initialization of default preferences, 0 is defined in 2 places...
-        val workInterval = sharedPreferences.getString("work_interval", null) ?: "0"
+        val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.i(LOG_TAG, "workInterval: $workInterval")
-        Log.i(LOG_TAG, "raw: ${sharedPreferences.getString("work_interval", null)}")
         if (workInterval != "0") {
             val workRequest =
                 PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)
@@ -196,9 +192,18 @@ class MainActivity : AppCompatActivity() {
         Log.i("handleIntent", "action: $action")
         Log.d("handleIntent", "data: $data")
         Log.d("handleIntent", "type: $type")
-        //if (intent.action == "org.cssnr.remotewallpaper.ACTION_NOTIFICATION") {
-        //    findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
-        //}
+
+        if (!preferences.contains("first_run_shown")) {
+            Log.i(LOG_TAG, "FIRST RUN DETECTED")
+            preferences.edit {
+                putBoolean("first_run_shown", true)
+            }
+            navController.navigate(
+                R.id.nav_item_setup, null, NavOptions.Builder()
+                    .setPopUpTo(R.id.nav_home, true)
+                    .build()
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -214,10 +219,17 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         Log.d("Main[onStop]", "MainActivity - onStop")
         // Update Widget
-        // TODO: WidgetUpdate: Consolidate to a function...
         val appWidgetManager = AppWidgetManager.getInstance(this)
         val componentName = ComponentName(this, WidgetProvider::class.java)
         val ids = appWidgetManager.getAppWidgetIds(componentName)
         WidgetProvider().onUpdate(this, appWidgetManager, ids)
+    }
+
+    fun setDrawerLockMode(enabled: Boolean) {
+        Log.d("setDrawerLockMode", "enabled: $enabled")
+        val lockMode =
+            if (enabled) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+        Log.d("setDrawerLockMode", "lockMode: $lockMode")
+        binding.drawerLayout.setDrawerLockMode(lockMode)
     }
 }

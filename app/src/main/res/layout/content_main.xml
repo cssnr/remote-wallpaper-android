@@ -2,13 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="80dp"
+    android:paddingBottom="80dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_content_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"

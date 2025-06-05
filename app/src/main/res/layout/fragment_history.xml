@@ -16,27 +16,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/remotes_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:contentDescription="Station List"
-        tools:itemCount="12"
-        tools:viewBindingType="androidx.recyclerview.widget.RecyclerView"
-        tools:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_history" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/remotes_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:contentDescription="Station List"
+            tools:itemCount="12"
+            tools:viewBindingType="androidx.recyclerview.widget.RecyclerView"
+            tools:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/item_history" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/add_station"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        android:layout_marginEnd="16dp"-->
-<!--        android:contentDescription="Add Station"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:srcCompat="@drawable/md_add_circle_24px"-->
-<!--        app:fabSize="mini"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

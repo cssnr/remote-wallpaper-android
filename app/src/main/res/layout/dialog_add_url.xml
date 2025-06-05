@@ -14,11 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
-        android:text="Image URL"
         android:textAppearance="?attr/textAppearanceBody1"
-        android:labelFor="@+id/feedback_input"
+        android:text="Image URL"
+        android:labelFor="@+id/image_url"
         android:drawablePadding="16dp"
-        android:drawableEnd="@drawable/md_http_24px" />
+        app:drawableEndCompat="@drawable/md_http_24px" />
 
     <EditText
         android:id="@+id/image_url"
@@ -34,6 +34,5 @@
         android:gravity="top|start"
         android:background="?attr/colorSurfaceContainerLow"
         tools:text="@tools:sample/lorem/random" />
-
 
 </LinearLayout>

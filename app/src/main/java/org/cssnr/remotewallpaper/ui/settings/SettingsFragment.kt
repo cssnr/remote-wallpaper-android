@@ -35,8 +35,7 @@ import java.util.concurrent.TimeUnit
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        Log.d("SettingsFragment", "rootKey: $rootKey - name: org.cssnr.remotewallpaper")
-        preferenceManager.sharedPreferencesName = "org.cssnr.remotewallpaper"
+        Log.d("SettingsFragment", "rootKey: $rootKey")
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         val ctx = requireContext()

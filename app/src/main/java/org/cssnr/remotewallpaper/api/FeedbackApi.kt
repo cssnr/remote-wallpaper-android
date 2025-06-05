@@ -16,7 +16,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-const val HOOK_ID = "1376046470926438440"
+const val HOOK_ID = "1376004891192856586"
 const val RELAY_URL = "https://relay.cssnr.com/"
 
 class FeedbackApi(val context: Context) {

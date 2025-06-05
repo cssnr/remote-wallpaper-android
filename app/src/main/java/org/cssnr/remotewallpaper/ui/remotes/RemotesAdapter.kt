@@ -25,9 +25,9 @@ class RemotesAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemWrapper: LinearLayout = view.findViewById(R.id.item_wrapper)
         val propertiesName: TextView = view.findViewById(R.id.properties_name)
-        val propertiesID: TextView = view.findViewById(R.id.properties_id)
-        val propertiesElevation: TextView = view.findViewById(R.id.properties_elevation)
-        val propertiesCoordinates: TextView = view.findViewById(R.id.properties_coordinates)
+        //val propertiesID: TextView = view.findViewById(R.id.properties_id)
+        //val propertiesElevation: TextView = view.findViewById(R.id.properties_elevation)
+        //val propertiesCoordinates: TextView = view.findViewById(R.id.properties_coordinates)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -55,15 +55,8 @@ class RemotesAdapter(
             true
         }
 
-        // Name and ID
+        // URL
         holder.propertiesName.text = items[position].url
-        //holder.propertiesID.text = items[position].stationId
-
-        // Elevation
-        //holder.propertiesElevation.text = items[position].elevation
-
-        // Coordinates
-        //holder.propertiesCoordinates.text = items[position].coordinates
 
         // Background Border
         if (data.active) {

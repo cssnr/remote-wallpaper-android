@@ -50,9 +50,13 @@ interface RemoteDao {
     fun activateByUrl(url: String)
 
     @Transaction
-    fun activate(remote: Remote) {
-        deactivateAll()
-        activateByUrl(remote.url)
+    fun activate(remote: Remote?): Boolean {
+        if (remote != null) {
+            deactivateAll()
+            activateByUrl(remote.url)
+            return true
+        }
+        return false
     }
 
     @Delete
