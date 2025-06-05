@@ -7,8 +7,7 @@
     android:background="?android:attr/colorBackground"
     android:theme="@style/WidgetStyle"
     tools:layout_width="240dp"
-    tools:layout_height="60dp"
-    tools:ignore="HardcodedText">
+    tools:layout_height="60dp">
 
     <TextView
         android:id="@+id/remote_url"
@@ -49,7 +48,7 @@
             android:layout_height="16dp"
             android:layout_gravity="bottom"
             android:layout_marginStart="16dp"
-            android:contentDescription="STFU"
+            android:contentDescription="Update Interval"
             android:src="@drawable/md_avg_time_24px" />
 
         <TextView

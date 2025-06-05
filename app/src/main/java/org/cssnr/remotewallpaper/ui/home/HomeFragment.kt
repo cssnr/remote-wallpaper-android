@@ -198,30 +198,6 @@ fun Context.showAddDialog() {
     dialog.show()
 }
 
-//suspend fun Context.updateWallpaper(): Boolean {
-//    try {
-//        val dao = RemoteDatabase.getInstance(this).remoteDao()
-//        val remote = withContext(Dispatchers.IO) { dao.getActive() }
-//        Log.d(LOG_TAG, "updateWallpaper: $remote")
-//        if (remote != null) {
-//            val response = withContext(Dispatchers.IO) { downloadImage(remote.url) }
-//            Log.d(LOG_TAG, "response: $response")
-//            val timestamp: String =
-//                ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-//            Log.d(LOG_TAG, "timestamp: $timestamp")
-//            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-//            preferences.edit {
-//                putString("last_update", timestamp)
-//            }
-//            return true
-//        }
-//        return false
-//    } catch (e: Exception) {
-//        Log.e(LOG_TAG, "updateWallpaper: Exception: $e")
-//        return false
-//    }
-//}
-
 suspend fun Context.updateWallpaper(): Boolean {
     // TODO: This version is testing historyDao vs above version. It will all be refactored...
     val historyDao = HistoryDatabase.getInstance(this).historyDao()
