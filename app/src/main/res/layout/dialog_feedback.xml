@@ -39,8 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:drawablePadding="8dp"
-        android:tag="github.com/cssnr/remotewallpaper"
-        android:text="github.com/cssnr/remotewallpaper"
+        android:tag="cssnr/remote-wallpaper-android"
+        android:text="cssnr/remote-wallpaper-android"
         app:drawableStartCompat="@drawable/fa_github" />
 
 </LinearLayout>

@@ -15,12 +15,24 @@
             android:entryValues="@array/work_interval_values"
             tools:summary="1 Hour" />
 
-<!--        <SwitchPreferenceCompat-->
-<!--            android:key="analytics_enabled"-->
-<!--            android:title="Enable Analytics"-->
-<!--            android:summary="Help Fix Bugs"-->
-<!--            android:icon="@drawable/md_monitoring_24px"-->
-<!--            android:defaultValue="true" />-->
+        <Preference
+            android:key="open_widget_settings"
+            android:title="Widget Settings"
+            android:summary="Text and Background Colors"
+            android:icon="@drawable/md_widgets_24px" />
+
+        <!--<SwitchPreferenceCompat-->
+        <!--    android:key="analytics_enabled"-->
+        <!--    android:title="Enable Analytics"-->
+        <!--    android:summary="Help Fix Bugs"-->
+        <!--    android:icon="@drawable/md_monitoring_24px"-->
+        <!--    android:defaultValue="true" />-->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="app_information"
+        android:title="App Information">
 
         <Preference
             android:key="send_feedback"
@@ -34,18 +46,11 @@
             android:summary="View Mobile App Details"
             android:icon="@drawable/md_mobile_info_24px" />
 
-    </PreferenceCategory>
-
-
-    <PreferenceCategory
-        android:key="widget_settings"
-        android:title="Widget Settings">
-
         <Preference
-            android:key="open_widget_settings"
-            android:title="Edit Widget Settings"
-            android:summary="Text and Background Colors"
-            android:icon="@drawable/md_widgets_24px" />
+            android:key="android_settings"
+            android:title="Open Android Settings"
+            android:summary="Syetem App Information"
+            android:icon="@drawable/md_mobile_gear_24px" />
 
     </PreferenceCategory>
 
