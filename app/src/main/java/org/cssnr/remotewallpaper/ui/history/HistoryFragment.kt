@@ -78,20 +78,15 @@ class HistoryFragment : Fragment() {
             Log.d(LOG_TAG, "onLongClick: $data")
             fun callback(item: HistoryItem) {
                 Log.d(LOG_TAG, "callback: item: $item")
-                //lifecycleScope.launch {
-                //    val dao = HistoryDatabase.getInstance(ctx).historyDao()
-                //    Log.i(LOG_TAG, "DELETING: ${data.url}")
-                //    val remotes = withContext(Dispatchers.IO) {
-                //        dao.delete(station)
-                //        if (station.active) {
-                //            Log.d(LOG_TAG, "activateFirstStation")
-                //            dao.activateFirstStation()
-                //        }
-                //        dao.getAll()
-                //    }
-                //    adapter.updateData(remotes)
-                //    //remotesViewModel.stationData.value = remotes
-                //}
+                lifecycleScope.launch {
+                    val dao = HistoryDatabase.getInstance(ctx).historyDao()
+                    Log.i(LOG_TAG, "DELETING: ${data.url}")
+                    val remotes = withContext(Dispatchers.IO) {
+                        dao.delete(data)
+                        dao.getAll()
+                    }
+                    adapter.updateData(remotes)
+                }
             }
             ctx.deleteConfirmDialog(data, ::callback)
         }
@@ -168,11 +163,11 @@ class HistoryFragment : Fragment() {
     ) {
         Log.d("deleteConfirmDialog", "item: $item")
         MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-            .setTitle("Not Yet Implemented")
+            .setTitle("Delete Item ${item.id}?")
             .setIcon(R.drawable.md_delete_24px)
             .setMessage(item.url)
             .setNegativeButton("Cancel", null)
-            .setPositiveButton("INOP") { _, _ -> callback(item) }
+            .setPositiveButton("Delete") { _, _ -> callback(item) }
             .show()
     }
 

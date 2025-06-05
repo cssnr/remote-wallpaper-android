@@ -38,13 +38,10 @@ interface RemoteDao {
     fun addOrUpdate(remote: Remote)
 
     @Query("UPDATE Remote SET active = 1 WHERE ROWID = (SELECT ROWID FROM Remote LIMIT 1)")
-    fun activateFirstStation()
+    fun activateFirst()
 
     @Query("UPDATE remote SET active = 0 WHERE active = 1")
     fun deactivateAll()
-
-    //@Query("UPDATE remote SET active = 1 WHERE id = :id")
-    //fun activateById(id: Long)
 
     @Query("UPDATE remote SET active = 1 WHERE url = :url")
     fun activateByUrl(url: String)

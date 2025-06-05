@@ -86,8 +86,8 @@ class RemotesFragment : Fragment() {
                     val remotes = withContext(Dispatchers.IO) {
                         dao.delete(station)
                         if (station.active) {
-                            Log.d(LOG_TAG, "activateFirstStation")
-                            dao.activateFirstStation()
+                            Log.d(LOG_TAG, "activateFirst")
+                            dao.activateFirst()
                         }
                         dao.getAll()
                     }
@@ -215,7 +215,7 @@ class RemotesFragment : Fragment() {
     ) {
         Log.d("deleteConfirmDialog", "remote: $remote")
         MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-            .setTitle("Delete ${remote.url}?")
+            .setTitle("Delete Remote?")
             .setIcon(R.drawable.md_delete_24px)
             .setMessage(remote.url)
             .setNegativeButton("Cancel", null)

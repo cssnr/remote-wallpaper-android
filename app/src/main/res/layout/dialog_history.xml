@@ -18,17 +18,16 @@
         android:id="@+id/item_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/dialog_vertical_margin"
+        android:layout_marginBottom="12dp"
         tools:text="org.cssnr.remotewallpaper" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:layout_marginBottom="12dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="@dimen/dialog_vertical_margin"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:text="Status Code:" />
         <TextView
@@ -36,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:paddingVertical="@dimen/dialog_vertical_margin"
             android:textSize="20sp"
             tools:text="200" />
     </LinearLayout>
@@ -45,7 +43,6 @@
         android:id="@+id/item_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/dialog_vertical_margin"
         android:text="No Errors"
         tools:text="You Fucked Up Chuck!" />
 
