@@ -29,6 +29,9 @@ interface HistoryDao {
     @Query("SELECT * FROM historyitem WHERE url = :url LIMIT 1")
     fun getByUrl(url: String): HistoryItem?
 
+    @Query("SELECT * FROM HistoryItem WHERE status = 200 ORDER BY timestamp DESC LIMIT 1")
+    fun getLastSuccess(): HistoryItem?
+
     @Insert
     fun add(historyitem: HistoryItem)
 

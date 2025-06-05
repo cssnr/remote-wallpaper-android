@@ -23,7 +23,7 @@
         tools:itemCount="12"
         tools:viewBindingType="androidx.recyclerview.widget.RecyclerView"
         tools:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_station" />
+        tools:listitem="@layout/item_remote" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_station"

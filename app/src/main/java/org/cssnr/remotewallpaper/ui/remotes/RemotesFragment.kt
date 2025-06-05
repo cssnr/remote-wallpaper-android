@@ -156,80 +156,81 @@ class RemotesFragment : Fragment() {
         Log.d(LOG_TAG, "RemotesFragment - onDestroyView")
         _binding = null
     }
-}
 
 
-fun Context.showAddDialog(adapter: RemotesAdapter) {
-    val inflater = LayoutInflater.from(this)
-    val view = inflater.inflate(R.layout.dialog_add_url, null)
-    val input = view.findViewById<EditText>(R.id.image_url)
+    private fun Context.showAddDialog(adapter: RemotesAdapter) {
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.dialog_add_url, null)
+        val input = view.findViewById<EditText>(R.id.image_url)
 
-    val dialog = MaterialAlertDialogBuilder(this)
-        .setView(view)
-        .setNegativeButton("Cancel", null)
-        .setPositiveButton("Add", null)
-        .create()
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(view)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Add", null)
+            .create()
 
-    dialog.setOnShowListener {
-        input.requestFocus()
-        val sendButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        sendButton.setOnClickListener {
-            sendButton.isEnabled = false
-            val url = input.text.toString().trim()
-            Log.d("showAddDialog", "url: $url")
-            if (url.isEmpty()) {
-                sendButton.isEnabled = true
-                input.error = "URL is Required"
-            } else if (!isURL(url)) {
-                sendButton.isEnabled = true
-                input.error = "Invalid URL"
-            } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
-                    // TODO: Make a @Transaction to handle this...
-                    dao.addOrUpdate(Remote(url = url))
-                    val active = dao.getActive()
-                    if (active == null) {
-                        val remote = dao.getByUrl(url)
-                        Log.i("showAddDialog", "dao.activate: $remote")
-                        dao.activate(remote!!)
-                    }
-                    val remotes = dao.getAll()
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@showAddDialog, "URL Added.", Toast.LENGTH_SHORT).show()
-                        adapter.updateData(remotes)
-                        dialog.dismiss()
+        dialog.setOnShowListener {
+            input.requestFocus()
+            val sendButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            sendButton.setOnClickListener {
+                sendButton.isEnabled = false
+                val url = input.text.toString().trim()
+                Log.d("showAddDialog", "url: $url")
+                if (url.isEmpty()) {
+                    sendButton.isEnabled = true
+                    input.error = "URL is Required"
+                } else if (!isURL(url)) {
+                    sendButton.isEnabled = true
+                    input.error = "Invalid URL"
+                } else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
+                        // TODO: Make a @Transaction to handle this...
+                        dao.addOrUpdate(Remote(url = url))
+                        val active = dao.getActive()
+                        if (active == null) {
+                            val remote = dao.getByUrl(url)
+                            Log.i("showAddDialog", "dao.activate: $remote")
+                            dao.activate(remote!!)
+                        }
+                        val remotes = dao.getAll()
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@showAddDialog, "URL Added.", Toast.LENGTH_SHORT)
+                                .show()
+                            adapter.updateData(remotes)
+                            dialog.dismiss()
+                        }
                     }
                 }
             }
         }
+
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add") { _, _ -> }
+        dialog.show()
     }
 
-    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add") { _, _ -> }
-    dialog.show()
-}
+    private fun Context.deleteConfirmDialog(
+        remote: Remote,
+        callback: (station: Remote) -> Unit,
+    ) {
+        Log.d("deleteConfirmDialog", "remote: $remote")
+        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+            .setTitle("Delete ${remote.url}?")
+            .setIcon(R.drawable.md_delete_24px)
+            .setMessage(remote.url)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Delete") { _, _ -> callback(remote) }
+            .show()
+    }
 
-private fun Context.deleteConfirmDialog(
-    remote: Remote,
-    callback: (station: Remote) -> Unit,
-) {
-    Log.d("deleteConfirmDialog", "remote: $remote")
-    MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-        .setTitle("Delete ${remote.url}?")
-        .setIcon(R.drawable.md_delete_24px)
-        .setMessage(remote.url)
-        .setNegativeButton("Cancel", null)
-        .setPositiveButton("Delete") { _, _ -> callback(remote) }
-        .show()
-}
-
-fun isURL(url: String): Boolean {
-    return try {
-        URL(url)
-        Log.d("isURL", "TRUE")
-        true
-    } catch (_: Exception) {
-        Log.d("isURL", "FALSE")
-        false
+    fun isURL(url: String): Boolean {
+        return try {
+            URL(url)
+            Log.d("isURL", "TRUE")
+            true
+        } catch (_: Exception) {
+            Log.d("isURL", "FALSE")
+            false
+        }
     }
 }
