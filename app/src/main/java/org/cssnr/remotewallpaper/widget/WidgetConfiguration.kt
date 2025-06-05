@@ -10,6 +10,7 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import org.cssnr.remotewallpaper.R
 
 class WidgetConfiguration : Activity() {
@@ -32,7 +33,7 @@ class WidgetConfiguration : Activity() {
         }
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) finish()
 
-        val preferences = getSharedPreferences("org.cssnr.remotewallpaper", MODE_PRIVATE)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val bgColor = preferences.getString("widget_bg_color", null) ?: "black"
         Log.i("WidgetConfiguration", "bgColor: $bgColor")
         val textColor = preferences.getString("widget_text_color", null) ?: "white"

@@ -10,8 +10,7 @@ import org.cssnr.remotewallpaper.R
 class WidgetSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        Log.d("WidgetSettingsFragment", "rootKey: $rootKey - name: org.cssnr.remotewallpaper")
-        preferenceManager.sharedPreferencesName = "org.cssnr.remotewallpaper"
+        Log.d("SettingsFragment", "rootKey: $rootKey")
         setPreferencesFromResource(R.xml.preferences_widget, rootKey)
 
         // Text Color

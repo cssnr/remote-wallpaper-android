@@ -1,0 +1,8 @@
+# IDE
+.idea/
+.vscode/
+
+# Build
+**/dist/
+**/node_modules/
+.github/assets/

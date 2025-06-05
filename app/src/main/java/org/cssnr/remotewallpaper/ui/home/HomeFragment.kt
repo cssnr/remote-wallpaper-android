@@ -2,7 +2,6 @@ package org.cssnr.remotewallpaper.ui.home
 
 import android.app.WallpaperManager
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -19,6 +18,7 @@ import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import org.cssnr.remotewallpaper.MainActivity.Companion.LOG_TAG
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentHomeBinding
 import org.cssnr.remotewallpaper.db.HistoryDatabase
@@ -45,6 +44,10 @@ class HomeFragment : Fragment() {
 
     private var latest: HistoryItem? = null
 
+    companion object {
+        const val LOG_TAG = "HomeFragment"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,11 +60,22 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("Home[onViewCreated]", "savedInstanceState: ${savedInstanceState?.size()}")
+        Log.d(LOG_TAG, "onViewCreated: savedInstanceState: ${savedInstanceState?.size()}")
+
+        val updateWallpaper = arguments?.getBoolean("update_wallpaper") == true
+        Log.i(LOG_TAG, "updateWallpaper: $updateWallpaper")
 
         val ctx = requireContext()
 
-        lifecycleScope.launch { requireContext().updateData() }
+        lifecycleScope.launch {
+            ctx.updateData()
+            if (updateWallpaper) {
+                Log.i(LOG_TAG, "Loading Wallpaper")
+                arguments?.remove("update_wallpaper")
+                ctx.reloadWallpaper()
+            }
+        }
+
         //// TODO: Copied to onResume - Make an update function...
         //lifecycleScope.launch {
         //    val dao = HistoryDatabase.getInstance(ctx).historyDao()
@@ -77,10 +91,10 @@ class HomeFragment : Fragment() {
         //}
 
         binding.openBtn.setOnClickListener {
-            Log.d("Home[openBtn]", "setOnClickListener")
+            Log.d(LOG_TAG, "setOnClickListener")
             if (latest?.url != null) {
                 val uri = latest?.url?.toUri()
-                Log.d("Home[openBtn]", "uri: $uri")
+                Log.d(LOG_TAG, "uri: $uri")
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             } else {
@@ -89,28 +103,19 @@ class HomeFragment : Fragment() {
         }
 
         binding.loadSingleBgn.setOnClickListener {
-            Log.d("Home[loadSingleBgn]", "setOnClickListener")
+            Log.d(LOG_TAG, "setOnClickListener")
             ctx.showAddDialog()
         }
 
         binding.reloadBtn.setOnClickListener {
-            Log.d("Home[reloadBtn]", "setOnClickListener")
-            lifecycleScope.launch {
-                binding.loadingOverlay.visibility = View.VISIBLE
-                if (ctx.updateWallpaper()) {
-                    requireContext().updateData()
-                    Toast.makeText(ctx, "Done.", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(ctx, "No Remotes.", Toast.LENGTH_SHORT).show()
-                }
-                binding.loadingOverlay.visibility = View.GONE
-            }
+            Log.d(LOG_TAG, "setOnClickListener")
+            lifecycleScope.launch { ctx.reloadWallpaper() }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(LOG_TAG, "DebugFragment - onResume")
+        Log.d(LOG_TAG, "onResume")
         lifecycleScope.launch { requireContext().updateData() }
         // TODO: Copied from onCreate - Make an update function...
         //lifecycleScope.launch {
@@ -127,8 +132,19 @@ class HomeFragment : Fragment() {
         //}
     }
 
+    suspend fun Context.reloadWallpaper() {
+        binding.loadingOverlay.visibility = View.VISIBLE
+        if (updateWallpaper()) {
+            updateData()
+            Toast.makeText(this, "Done.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "No Remotes.", Toast.LENGTH_SHORT).show()
+        }
+        binding.loadingOverlay.visibility = View.GONE
+    }
+
     suspend fun Context.updateData() {
-        val dao = HistoryDatabase.getInstance(requireContext()).historyDao()
+        val dao = HistoryDatabase.getInstance(this).historyDao()
         latest = withContext(Dispatchers.IO) { dao.getLast() }
         Log.d(LOG_TAG, "latest ${latest?.url}")
         binding.textView.text = latest?.url ?: "URL Not Found!"
@@ -158,7 +174,7 @@ fun Context.showAddDialog() {
         sendButton.setOnClickListener {
             sendButton.isEnabled = false
             val url = input.text.toString().trim()
-            Log.d("showFeedbackDialog", "url: $url")
+            Log.d("showAddDialog", "url: $url")
             if (url.isNotEmpty()) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
@@ -193,7 +209,7 @@ fun Context.showAddDialog() {
 //            val timestamp: String =
 //                ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
 //            Log.d(LOG_TAG, "timestamp: $timestamp")
-//            val preferences = this.getSharedPreferences("org.cssnr.remotewallpaper", MODE_PRIVATE)
+//            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 //            preferences.edit {
 //                putString("last_update", timestamp)
 //            }
@@ -224,7 +240,7 @@ suspend fun Context.updateWallpaper(): Boolean {
             val timestamp: String =
                 ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
             Log.d("updateWallpaper", "timestamp: $timestamp")
-            val preferences = this.getSharedPreferences("org.cssnr.remotewallpaper", MODE_PRIVATE)
+            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
             preferences.edit {
                 putString("last_update", timestamp)
             }
