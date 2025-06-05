@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:ellipsize="middle"
-            android:textSize="20sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:text="No Remote Selected" />
     </LinearLayout>
 

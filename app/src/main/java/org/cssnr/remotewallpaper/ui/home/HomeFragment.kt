@@ -147,7 +147,7 @@ class HomeFragment : Fragment() {
         val dao = HistoryDatabase.getInstance(this).historyDao()
         latest = withContext(Dispatchers.IO) { dao.getLastSuccess() }
         Log.d(LOG_TAG, "latest ${latest?.url}")
-        binding.textView.text = latest?.url ?: "Image URL Not Found!"
+        binding.textView.text = latest?.url ?: "Current Image Link Not Found!"
 
         val imageFile = File(filesDir, "wallpaper.img")
         if (imageFile.exists()) {
