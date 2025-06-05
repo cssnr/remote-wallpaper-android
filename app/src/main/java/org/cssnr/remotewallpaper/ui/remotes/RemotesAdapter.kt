@@ -33,7 +33,7 @@ class RemotesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_station, parent, false)
+            .inflate(R.layout.item_remote, parent, false)
         return ViewHolder(view)
     }
 

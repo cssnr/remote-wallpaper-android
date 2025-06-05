@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -58,7 +59,7 @@ class HistoryFragment : Fragment() {
 
         fun onClick(view: View, data: HistoryItem) {
             Log.i(LOG_TAG, "onClick: $data")
-            showItemContextMenu(view, data.url)
+            ctx.showItemContextMenu(view, data)
             //lifecycleScope.launch {
             //    if (!data.active) {
             //        val dao = HistoryDatabase.getInstance(ctx).historyDao()
@@ -77,20 +78,15 @@ class HistoryFragment : Fragment() {
             Log.d(LOG_TAG, "onLongClick: $data")
             fun callback(item: HistoryItem) {
                 Log.d(LOG_TAG, "callback: item: $item")
-                //lifecycleScope.launch {
-                //    val dao = HistoryDatabase.getInstance(ctx).historyDao()
-                //    Log.i(LOG_TAG, "DELETING: ${data.url}")
-                //    val remotes = withContext(Dispatchers.IO) {
-                //        dao.delete(station)
-                //        if (station.active) {
-                //            Log.d(LOG_TAG, "activateFirstStation")
-                //            dao.activateFirstStation()
-                //        }
-                //        dao.getAll()
-                //    }
-                //    adapter.updateData(remotes)
-                //    //remotesViewModel.stationData.value = remotes
-                //}
+                lifecycleScope.launch {
+                    val dao = HistoryDatabase.getInstance(ctx).historyDao()
+                    Log.i(LOG_TAG, "DELETING: ${data.url}")
+                    val remotes = withContext(Dispatchers.IO) {
+                        dao.delete(data)
+                        dao.getAll()
+                    }
+                    adapter.updateData(remotes)
+                }
             }
             ctx.deleteConfirmDialog(data, ::callback)
         }
@@ -140,51 +136,82 @@ class HistoryFragment : Fragment() {
         _binding = null
     }
 
-    fun showItemContextMenu(view: View, url: String?) {
+    private fun Context.showItemContextMenu(view: View, data: HistoryItem) {
         val popup = PopupMenu(view.context, view).apply {
-            menu.add("Open").setOnMenuItemClickListener {
-                Log.d(LOG_TAG, "OPEN: $url")
-                requireContext().openLink(url)
+            menu.add("View Details").setOnMenuItemClickListener {
+                Log.d(LOG_TAG, "VIEW: ${data.url}")
+                showDetailsDialog(data)
                 true
             }
-            menu.add("Copy").setOnMenuItemClickListener {
-                Log.d(LOG_TAG, "COPY: $url")
-                requireContext().copyToClipboard(url)
+            menu.add("Copy URL").setOnMenuItemClickListener {
+                Log.d(LOG_TAG, "COPY: ${data.url}")
+                copyToClipboard(data.url)
+                true
+            }
+            menu.add("Open in Browser").setOnMenuItemClickListener {
+                Log.d(LOG_TAG, "OPEN: ${data.url}")
+                openLink(data.url)
                 true
             }
         }
         popup.show()
     }
-}
 
-private fun Context.deleteConfirmDialog(
-    item: HistoryItem,
-    callback: (item: HistoryItem) -> Unit,
-) {
-    Log.d("deleteConfirmDialog", "item: $item")
-    MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-        .setTitle("Not Yet Implemented")
-        .setIcon(R.drawable.md_delete_24px)
-        .setMessage(item.url)
-        .setNegativeButton("Cancel", null)
-        .setPositiveButton("INOP") { _, _ -> callback(item) }
-        .show()
-}
-
-fun Context.copyToClipboard(text: String?, msg: String? = null) {
-    if (!text.isNullOrEmpty()) {
-        val clipboard = this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("Text", text)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, msg ?: "Copied to Clipboard", Toast.LENGTH_SHORT).show()
+    private fun Context.deleteConfirmDialog(
+        item: HistoryItem,
+        callback: (item: HistoryItem) -> Unit,
+    ) {
+        Log.d("deleteConfirmDialog", "item: $item")
+        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+            .setTitle("Delete Item ${item.id}?")
+            .setIcon(R.drawable.md_delete_24px)
+            .setMessage(item.url)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Delete") { _, _ -> callback(item) }
+            .show()
     }
-}
 
-fun Context.openLink(url: String?) {
-    Log.d(LOG_TAG, "openLink: $url")
-    if (!url.isNullOrEmpty()) {
-        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-        Log.i(LOG_TAG, "openLink: intent: $intent")
-        startActivity(intent)
+    fun Context.showDetailsDialog(data: HistoryItem) {
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.dialog_history, null)
+        val itemUrl = view.findViewById<TextView>(R.id.item_url)
+        val itemStatus = view.findViewById<TextView>(R.id.item_status)
+        val itemError = view.findViewById<TextView>(R.id.item_error)
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(view)
+            .setNegativeButton("Close", null)
+            .create()
+
+        dialog.setOnShowListener {
+            //itemUrl.text = Html.fromHtml(data.url, Html.FROM_HTML_MODE_LEGACY)
+            //itemUrl.movementMethod = LinkMovementMethod.getInstance()
+            itemUrl.text = data.url ?: "No URL"
+
+            itemStatus.text = data.status.toString()
+
+            if (!data.error.isNullOrBlank()) {
+                itemError.text = data.error
+            }
+        }
+        dialog.show()
+    }
+
+    fun Context.copyToClipboard(text: String?, msg: String? = null) {
+        if (!text.isNullOrEmpty()) {
+            val clipboard = this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Text", text)
+            clipboard.setPrimaryClip(clip)
+            Toast.makeText(this, msg ?: "Copied to Clipboard", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun Context.openLink(url: String?) {
+        Log.d(LOG_TAG, "openLink: $url")
+        if (!url.isNullOrEmpty()) {
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+            Log.i(LOG_TAG, "openLink: intent: $intent")
+            startActivity(intent)
+        }
     }
 }

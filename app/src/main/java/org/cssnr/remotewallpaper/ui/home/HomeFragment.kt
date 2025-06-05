@@ -145,9 +145,9 @@ class HomeFragment : Fragment() {
 
     suspend fun Context.updateData() {
         val dao = HistoryDatabase.getInstance(this).historyDao()
-        latest = withContext(Dispatchers.IO) { dao.getLast() }
+        latest = withContext(Dispatchers.IO) { dao.getLastSuccess() }
         Log.d(LOG_TAG, "latest ${latest?.url}")
-        binding.textView.text = latest?.url ?: "URL Not Found!"
+        binding.textView.text = latest?.url ?: "Current Image Link Not Found!"
 
         val imageFile = File(filesDir, "wallpaper.img")
         if (imageFile.exists()) {
@@ -157,6 +157,7 @@ class HomeFragment : Fragment() {
     }
 }
 
+// TODO: This is shared with RemotesFragment but will most likely not be used here in the end
 fun Context.showAddDialog() {
     val inflater = LayoutInflater.from(this)
     val view = inflater.inflate(R.layout.dialog_add_url, null)
@@ -198,6 +199,8 @@ fun Context.showAddDialog() {
     dialog.show()
 }
 
+// TODO: updateWallpaper is used globally to update the wallpaper and should be a package
+//  The rest of the functions are only used by updateWallpaper and are internal to updateWallpaper
 suspend fun Context.updateWallpaper(): Boolean {
     // TODO: This version is testing historyDao vs above version. It will all be refactored...
     val historyDao = HistoryDatabase.getInstance(this).historyDao()

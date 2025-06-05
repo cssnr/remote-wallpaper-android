@@ -60,7 +60,11 @@ class HistoryAdapter(
         }
 
         // Data
-        holder.itemUrl.text = items[position].url
+        if (!items[position].error.isNullOrEmpty()) {
+            holder.itemUrl.text = items[position].error
+        } else {
+            holder.itemUrl.text = items[position].url
+        }
         holder.itemCode.text = items[position].status.toString()
         holder.itemId.text = items[position].id.toString()
         // Date

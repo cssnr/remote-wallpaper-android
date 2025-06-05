@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/nav_github"
+        android:id="@+id/option_github"
         android:icon="@drawable/fa_github"
         android:title="GitHub"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/nav_history"
-        android:icon="@drawable/md_view_timeline_24px"
-        android:title="History" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/nav_settings"
         android:icon="@drawable/md_settings_24px"
         android:title="Settings" />
+
+    <item
+        android:id="@+id/option_developer"
+        android:icon="@drawable/md_mobile_code_24px"
+        android:title="Developer Site" />
 </menu>

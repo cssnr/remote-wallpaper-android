@@ -1,7 +1,10 @@
 package org.cssnr.remotewallpaper.ui.settings
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -48,6 +51,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ctx.updateWorkManager(workInterval, newValue)
         }
 
+        // Widget Settings
+        findPreference<Preference>("open_widget_settings")?.setOnPreferenceClickListener {
+            Log.d("open_widget_settings", "setOnPreferenceClickListener")
+            //findNavController().navigate(R.id.nav_action_widget_settings)
+            val action = SettingsFragmentDirections.navActionWidgetSettings()
+            findNavController().navigate(action)
+            false
+        }
+
         //// Toggle Analytics
         //val analyticsEnabled = findPreference<SwitchPreferenceCompat>("analytics_enabled")
         //analyticsEnabled?.setOnPreferenceChangeListener { _, newValue ->
@@ -70,12 +82,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             false
         }
 
-        // Widget Settings
-        findPreference<Preference>("open_widget_settings")?.setOnPreferenceClickListener {
-            Log.d("open_widget_settings", "setOnPreferenceClickListener")
-            //findNavController().navigate(R.id.nav_action_widget_settings)
-            val action = SettingsFragmentDirections.navActionWidgetSettings()
-            findNavController().navigate(action)
+        // Open App Settings
+        findPreference<Preference>("android_settings")?.setOnPreferenceClickListener {
+            Log.d("android_settings", "setOnPreferenceClickListener")
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", ctx.packageName, null)
+            }
+            startActivity(intent)
             false
         }
     }
@@ -101,7 +114,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             } else {
                 val newRequest =
                     PeriodicWorkRequestBuilder<AppWorker>(interval, TimeUnit.MINUTES)
-                        .setInitialDelay(5, TimeUnit.MINUTES)
+                        .setInitialDelay(interval, TimeUnit.MINUTES)
                         .setConstraints(APP_WORKER_CONSTRAINTS)
                         .build()
                 WorkManager.getInstance(this).enqueueUniquePeriodicWork(

@@ -56,7 +56,11 @@ class WidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        Log.i("Widget[onUpdate]", "BEGIN - appWidgetIds: $appWidgetIds")
+        if (appWidgetIds.isEmpty()) {
+            Log.i("Widget[onUpdate]", "No Widgets")
+            return
+        }
+        Log.i("Widget[onUpdate]", "BEGIN - appWidgetIds: ${appWidgetIds.joinToString()}")
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val bgColor = preferences.getString("widget_bg_color", null) ?: "black"

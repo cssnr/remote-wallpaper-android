@@ -71,9 +71,10 @@ For more information, see [Release through a website](https://developer.android.
 ### Setup
 
 1. [Install](#Install) and open the app on your device.
-2. Go to the Stations page and click the Add button.
-3. Click Locate, allow permissions, select a station.
-4. You can also add the widget to your home screen.
+2. Select your update interval and initial remote.
+3. Click Set wallpaper and Start to get the ball rolling.
+4. Or Just Start the App and add a remote from the Remotes.
+5. Optionally, add the Widget to refresh from the home screen.
 
 ## Features
 

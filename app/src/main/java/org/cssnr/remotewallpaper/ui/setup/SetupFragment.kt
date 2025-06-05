@@ -17,6 +17,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +28,9 @@ import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentSetupBinding
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
+import org.cssnr.remotewallpaper.work.AppWorker
+import java.util.concurrent.TimeUnit
 
 class SetupFragment : Fragment() {
 
@@ -75,23 +81,41 @@ class SetupFragment : Fragment() {
                     id: Long
                 ) {
                     val selectedValue = values[position]
-                    Log.d("Spinner", "Selected value: $selectedValue")
+                    Log.d(LOG_TAG, "workIntervalSpinner: value: $selectedValue")
                     preferences.edit {
                         putString("work_interval", selectedValue)
                     }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
-                    Log.w("Spinner", "No Item Selected")
+                    Log.w(LOG_TAG, "workIntervalSpinner: No Item Selected")
                 }
             }
 
         val startAppListener: (View) -> Unit = { view ->
             Log.d(LOG_TAG, "startAppListener: view: $view")
 
-            // TODO: Update Work Manager here or home via arguments...
+            binding.btnStart.isEnabled = false
+            binding.btnDownload.isEnabled = false
 
-            // Button and Arguments
+            // TODO: Duplication from SettingsFragment and MainActivity...
+            val workInterval = preferences.getString("work_interval", null) ?: "0"
+            Log.d(LOG_TAG, "startAppListener: workInterval: $workInterval")
+            if (workInterval != "0") {
+                val interval = workInterval.toLong()
+                val newRequest =
+                    PeriodicWorkRequestBuilder<AppWorker>(interval, TimeUnit.MINUTES)
+                        .setInitialDelay(interval, TimeUnit.MINUTES)
+                        .setConstraints(APP_WORKER_CONSTRAINTS)
+                        .build()
+                WorkManager.getInstance(ctx).enqueueUniquePeriodicWork(
+                    "app_worker",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    newRequest
+                )
+            }
+
+            // Arguments
             val bundle = bundleOf()
             when (view.id) {
                 R.id.btn_download -> {
@@ -99,17 +123,18 @@ class SetupFragment : Fragment() {
                     bundle.putBoolean("update_wallpaper", true)
                 }
             }
+            Log.d(LOG_TAG, "startAppListener: bundle: $bundle")
 
             // Selected Remote
             val selectedId = binding.initialProvider.checkedRadioButtonId
-            Log.d(LOG_TAG, "selectedId: $selectedId")
+            Log.d(LOG_TAG, "startAppListener: selectedId: $selectedId")
             val selectedText = binding.root.findViewById<RadioButton>(selectedId).text.toString()
-            Log.d(LOG_TAG, "selectedText: $selectedText")
+            Log.d(LOG_TAG, "startAppListener: selectedText: $selectedText")
             if (selectedText != "https://picsum.photos/4800/2400") {
                 CoroutineScope(Dispatchers.IO).launch {
                     val dao = RemoteDatabase.getInstance(ctx).remoteDao()
                     val remote = dao.getByUrl(selectedText)
-                    Log.d(LOG_TAG, "remote: $remote")
+                    Log.d(LOG_TAG, "startAppListener: remote: $remote")
                     dao.activate(remote)
                 }
             }
@@ -125,6 +150,11 @@ class SetupFragment : Fragment() {
         }
         binding.btnDownload.setOnClickListener(startAppListener)
         binding.btnStart.setOnClickListener(startAppListener)
+        CoroutineScope(Dispatchers.IO).launch {
+            Log.d(LOG_TAG, "Creating Initial Data")
+            val dao = RemoteDatabase.getInstance(requireContext()).remoteDao()
+            dao.getAll()
+        }
     }
 
     override fun onResume() {

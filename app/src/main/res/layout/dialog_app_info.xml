@@ -100,8 +100,8 @@
                 android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:tag="cssnr/remotewallpaper"
-                android:text="cssnr/remotewallpaper" />
+                android:tag="cssnr/remote-wallpaper-android"
+                android:text="cssnr/remote-wallpaper-android" />
             <TextView
                 android:id="@+id/website_link"
                 android:layout_width="wrap_content"
