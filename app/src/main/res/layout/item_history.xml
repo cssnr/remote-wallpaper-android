@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:baselineAligned="false"
+    android:paddingVertical="1dp"
+    android:paddingHorizontal="2dp"
+    android:background="?attr/selectableItemBackground">
+    <LinearLayout
+        android:id="@+id/item_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="2dp"
+        android:background="@drawable/item_border">
+
+        <TextView
+            android:id="@+id/item_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:minLines="2"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="http://theofficialabsolutelongestdomainnameregisteredontheworldwideweb.international/areallylongpathafter/thenalongerpath/file.txt" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/item_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                tools:text="1" />
+            <TextView
+                android:id="@+id/item_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:text="200" />
+            <TextView
+                android:id="@+id/item_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                tools:text="06-04 12:46:17" />
+        </FrameLayout>
+
+    </LinearLayout>
+</LinearLayout>

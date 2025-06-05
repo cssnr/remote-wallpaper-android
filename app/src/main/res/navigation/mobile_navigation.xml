@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="org.cssnr.remotewallpaper.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home">
+<!--        <action-->
+<!--            android:id="@+id/nav_action_history"-->
+<!--            app:destination="@id/nav_history"-->
+<!--            app:exitAnim="@anim/slide_out_left"-->
+<!--            app:enterAnim="@anim/slide_in_left"-->
+<!--            app:popEnterAnim="@anim/slide_in_right"-->
+<!--            app:popExitAnim="@anim/slide_out_right" />-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="org.cssnr.remotewallpaper.ui.history.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history">
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_remotes"
+        android:name="org.cssnr.remotewallpaper.ui.remotes.RemotesFragment"
+        android:label="Remotes"
+        tools:layout="@layout/fragment_remotes">
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="org.cssnr.remotewallpaper.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@xml/preferences">
+        <!-- Widget Settings -->
+        <action
+            android:id="@+id/nav_action_widget_settings"
+            app:destination="@id/nav_item_widget_settings"
+            app:exitAnim="@anim/slide_out_left"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <!-- Widget Settings -->
+    <fragment
+        android:id="@+id/nav_item_widget_settings"
+        android:name="org.cssnr.remotewallpaper.ui.settings.WidgetSettingsFragment"
+        android:label="Widget Settings" />
+</navigation>

@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Remote Wallpaper</string>
+    <string name="version_string">v%s</string>
+
+    <string name="title_home">Home</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="website_url">https://cssnr.com/</string>
+    <string name="website_link"><![CDATA[<a href="https://github.com/cssnr/remotewallpaper">%s</a>]]></string>
+    <string name="github_link"><![CDATA[<a href="https://github.com/cssnr/remotewallpaper">%s</a>]]></string>
+
+    <string name="background_opacity">Background Opacity %d</string>
+
+    <string-array name="work_interval_entries">
+        <item>Never</item>
+        <item>15 Minutes</item>
+        <item>30 Minutes</item>
+        <item>1 Hour</item>
+        <item>2 Hours</item>
+        <item>4 Hours</item>
+        <item>6 Hours</item>
+        <item>Twice a Day</item>
+        <item>Once Daily</item>
+        <item>2 Days</item>
+    </string-array>
+    <string-array name="work_interval_values">
+        <item>0</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>240</item>
+        <item>360</item>
+        <item>720</item>
+        <item>1440</item>
+        <item>2880</item>
+    </string-array>
+
+    <string-array name="widget_color_entries">
+        <item>White</item>
+        <item>Black</item>
+        <item>Liberty</item>
+    </string-array>
+    <string-array name="widget_color_values">
+        <item>white</item>
+        <item>black</item>
+        <item>liberty</item>
+    </string-array>
+</resources>

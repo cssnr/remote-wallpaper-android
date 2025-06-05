@@ -1,0 +1,38 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.RemoteWallpaper" parent="Theme.Material3.DayNight">
+<!--        <item name="colorPrimary">@color/primary_color</item>-->
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="materialButtonStyle">@style/CustomMaterialButton</item>
+    </style>
+
+    <style name="CustomMaterialButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/ic_launcher_background</item>
+    </style>
+
+    <style name="Theme.RemoteWallpaper.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.RemoteWallpaper.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.RemoteWallpaper.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/AlertDialogCorner</item>
+    </style>
+    <style name="AlertDialogCorner" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="WidgetStyle" parent="Theme.MaterialComponents.DayNight" />
+    <style name="Theme.WidgetConfig.Transparent" parent="Theme.RemoteWallpaper">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>

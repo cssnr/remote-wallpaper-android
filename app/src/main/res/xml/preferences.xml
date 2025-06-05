@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory
+        android:key="app_settings"
+        android:title="App Settings">
+
+        <ListPreference
+            android:key="work_interval"
+            android:title="Update Interval"
+            android:defaultValue="0"
+            android:icon="@drawable/md_timer_play_24px"
+            android:entries="@array/work_interval_entries"
+            android:entryValues="@array/work_interval_values"
+            tools:summary="1 Hour" />
+
+<!--        <SwitchPreferenceCompat-->
+<!--            android:key="analytics_enabled"-->
+<!--            android:title="Enable Analytics"-->
+<!--            android:summary="Help Fix Bugs"-->
+<!--            android:icon="@drawable/md_monitoring_24px"-->
+<!--            android:defaultValue="true" />-->
+
+        <Preference
+            android:key="send_feedback"
+            android:title="Send Feedback"
+            android:summary="Submit Suggestions or Bugs"
+            android:icon="@drawable/md_thumb_up_24px" />
+
+        <Preference
+            android:key="app_info"
+            android:title="Application Information"
+            android:summary="View Mobile App Details"
+            android:icon="@drawable/md_mobile_info_24px" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:key="widget_settings"
+        android:title="Widget Settings">
+
+        <Preference
+            android:key="open_widget_settings"
+            android:title="Edit Widget Settings"
+            android:summary="Text and Background Colors"
+            android:icon="@drawable/md_widgets_24px" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

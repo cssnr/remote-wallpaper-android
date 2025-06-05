@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/md_dashboard_24px"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/md_view_timeline_24px"
+            android:title="History" />
+
+        <item
+            android:id="@+id/nav_remotes"
+            android:icon="@drawable/md_satellite_24px"
+            android:title="Remotes" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/md_settings_24px"
+            android:title="Settings" />
+    </group>
+</menu>
