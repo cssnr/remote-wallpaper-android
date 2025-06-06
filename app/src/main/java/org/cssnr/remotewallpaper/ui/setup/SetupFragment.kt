@@ -62,7 +62,7 @@ class SetupFragment : Fragment() {
         val packageInfo = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(MainActivity.Companion.LOG_TAG, "versionName: $versionName")
-        binding.appVersion.text = versionName
+        binding.appVersion.text = getString(R.string.version_string, versionName)
 
         // Update Interval Spinner
         val entries = resources.getStringArray(R.array.work_interval_entries)

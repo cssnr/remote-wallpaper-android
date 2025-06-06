@@ -13,7 +13,7 @@
     <string name="background_opacity">Background Opacity %d</string>
 
     <string-array name="work_interval_entries">
-        <item>Never</item>
+        <item>Never Update</item>
         <item>15 Minutes</item>
         <item>30 Minutes</item>
         <item>1 Hour</item>
