@@ -111,19 +111,21 @@ class HistoryFragment : Fragment() {
         //remotesViewModel.stationData.observe(requireActivity(), stationObserver)
 
         lifecycleScope.launch {
-            val dao = HistoryDatabase.getInstance(ctx).historyDao()
-            val remotes = withContext(Dispatchers.IO) { dao.getAll() }
-            Log.d(LOG_TAG, "remotes.size ${remotes.size}")
-            adapter.updateData(remotes)
-            //remotesViewModel.stationData.value = remotes
+            //val dao = HistoryDatabase.getInstance(ctx).historyDao()
+            //val remotes = withContext(Dispatchers.IO) { dao.getAll() }
+            //Log.d(LOG_TAG, "remotes.size ${remotes.size}")
+            //adapter.updateData(remotes)
+            ctx.updateData()
         }
 
         // Setup refresh listener which triggers new data loading
+        //binding.swiperefresh.isEnabled = false
         binding.swiperefresh.setOnRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
                 Log.d(LOG_TAG, "setOnRefreshListener: onRefresh")
                 lifecycleScope.launch {
-                    Toast.makeText(ctx, "Not Yet Implemented!", Toast.LENGTH_SHORT).show()
+                    withContext(Dispatchers.IO) { ctx.updateData() }
+                    Toast.makeText(ctx, "History Reloaded", Toast.LENGTH_SHORT).show()
                     binding.swiperefresh.isRefreshing = false
                 }
             }
@@ -134,6 +136,13 @@ class HistoryFragment : Fragment() {
         super.onDestroyView()
         Log.d(LOG_TAG, "RemotesFragment - onDestroyView")
         _binding = null
+    }
+
+    private suspend fun Context.updateData() {
+        val dao = HistoryDatabase.getInstance(this).historyDao()
+        val remotes = withContext(Dispatchers.IO) { dao.getAll() }
+        Log.d(LOG_TAG, "remotes.size ${remotes.size}")
+        withContext(Dispatchers.Main) { adapter.updateData(remotes) }
     }
 
     private fun Context.showItemContextMenu(view: View, data: HistoryItem) {

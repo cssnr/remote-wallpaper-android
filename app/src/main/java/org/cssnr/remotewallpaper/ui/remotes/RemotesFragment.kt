@@ -125,20 +125,20 @@ class RemotesFragment : Fragment() {
             //remotesViewModel.stationData.value = remotes
         }
 
-//        setFragmentResultListener("remotes_updated") { _, bundle ->
-//            val stationId = bundle.getString("stationId")
-//            Log.d("setFragmentResultListener", "stationId: $stationId")
-//            if (stationId != null) {
-//                Log.i("setFragmentResultListener", "Added stationId: $stationId")
-//                lifecycleScope.launch {
-//                    val dao = RemoteDatabase.getInstance(ctx).remoteDao()
-//                    val remotes = withContext(Dispatchers.IO) { dao.getAll() }
-//                    Log.d(LOG_TAG, "remotes.size: ${remotes.size}")
-//                    //remotesViewModel.stationData.value = remotes
-//                    withContext(Dispatchers.Main) { adapter.updateData(remotes) }
-//                }
-//            }
-//        }
+        //setFragmentResultListener("remotes_updated") { _, bundle ->
+        //    val stationId = bundle.getString("stationId")
+        //    Log.d("setFragmentResultListener", "stationId: $stationId")
+        //    if (stationId != null) {
+        //        Log.i("setFragmentResultListener", "Added stationId: $stationId")
+        //        lifecycleScope.launch {
+        //            val dao = RemoteDatabase.getInstance(ctx).remoteDao()
+        //            val remotes = withContext(Dispatchers.IO) { dao.getAll() }
+        //            Log.d(LOG_TAG, "remotes.size: ${remotes.size}")
+        //            //remotesViewModel.stationData.value = remotes
+        //            withContext(Dispatchers.Main) { adapter.updateData(remotes) }
+        //        }
+        //    }
+        //}
 
         binding.addStation.setOnClickListener { view ->
             Log.d(LOG_TAG, "binding.appBarMain.fab.setOnClickListener")
