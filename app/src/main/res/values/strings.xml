@@ -13,7 +13,7 @@
     <string name="background_opacity">Background Opacity %d</string>
 
     <string-array name="work_interval_entries">
-        <item>Never</item>
+        <item>Never Update</item>
         <item>15 Minutes</item>
         <item>30 Minutes</item>
         <item>1 Hour</item>
@@ -35,6 +35,17 @@
         <item>720</item>
         <item>1440</item>
         <item>2880</item>
+    </string-array>
+
+    <string-array name="set_screens_entries">
+        <item>Home and Lock Screen</item>
+        <item>Home Screen Only</item>
+        <item>Lock Screen Only</item>
+    </string-array>
+    <string-array name="set_screens_values">
+        <item>both</item>
+        <item>home</item>
+        <item>lock</item>
     </string-array>
 
     <string-array name="widget_color_entries">

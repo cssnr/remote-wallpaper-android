@@ -16,7 +16,7 @@
             android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="12dp"
+            android:paddingVertical="12dp"
             android:orientation="vertical"
             android:gravity="center"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                 android:text="Welcome" />
 
@@ -35,6 +34,7 @@
                 android:id="@+id/setup_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
                 android:layout_marginBottom="24dp"
                 android:gravity="center">
                 <ImageView
@@ -47,6 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:gravity="center"
                     android:orientation="vertical"
                     tools:ignore="UseCompoundDrawables,UselessParent">
                     <TextView
@@ -58,6 +59,7 @@
                         android:id="@+id/app_version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
                         tools:text="v0.0.1-dev" />
                 </LinearLayout>
             </LinearLayout>
@@ -72,8 +74,8 @@
                     android:id="@+id/work_interval_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:ellipsize="middle"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="?attr/colorPrimary"
                     android:text="Wallpaper Update Interval" />
                 <Spinner
                     android:id="@+id/work_interval_spinner"
@@ -84,7 +86,28 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="300dp"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/set_screens_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="?attr/colorPrimary"
+                    android:text="Screens to Set Wallpaper" />
+                <Spinner
+                    android:id="@+id/set_screens_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:padding="8dp"
+                    android:entries="@array/set_screens_entries" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:gravity="center_horizontal"
@@ -93,22 +116,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/work_interval_spinner"
-                    android:text="Wallpaper Provider" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="?attr/colorPrimary"
+                    android:text="Remote Wallpaper Provider" />
                 <RadioGroup
                     android:id="@+id/initial_provider"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <RadioButton
                         android:id="@+id/option_picsum"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="https://picsum.photos/4800/2400" />
                     <RadioButton
                         android:id="@+id/option_aviation"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"

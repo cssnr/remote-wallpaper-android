@@ -62,16 +62,14 @@ class SetupFragment : Fragment() {
         val packageInfo = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(MainActivity.Companion.LOG_TAG, "versionName: $versionName")
-        binding.appVersion.text = versionName
+        binding.appVersion.text = getString(R.string.version_string, versionName)
 
+        // Update Interval Spinner
         val entries = resources.getStringArray(R.array.work_interval_entries)
         val values = resources.getStringArray(R.array.work_interval_values)
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, entries)
+        val adapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, entries)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.workIntervalSpinner.adapter = adapter
-
-        binding.initialProvider.check(R.id.option_picsum)
-
         binding.workIntervalSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -91,6 +89,35 @@ class SetupFragment : Fragment() {
                     Log.w(LOG_TAG, "workIntervalSpinner: No Item Selected")
                 }
             }
+
+        // Update Screen Spinner
+        val screenEntries = resources.getStringArray(R.array.set_screens_entries)
+        val screenValues = resources.getStringArray(R.array.set_screens_values)
+        val screenAdapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, screenEntries)
+        screenAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.setScreensSpinner.adapter = screenAdapter
+        binding.setScreensSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedValue = screenValues[position]
+                    Log.d(LOG_TAG, "setScreensSpinner: value: $selectedValue")
+                    preferences.edit {
+                        putString("set_screens", selectedValue)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    Log.w(LOG_TAG, "setScreensSpinner: No Item Selected")
+                }
+            }
+
+        // Initial Provider Radio
+        binding.initialProvider.check(R.id.option_picsum)
 
         val startAppListener: (View) -> Unit = { view ->
             Log.d(LOG_TAG, "startAppListener: view: $view")
@@ -152,7 +179,7 @@ class SetupFragment : Fragment() {
         binding.btnStart.setOnClickListener(startAppListener)
         CoroutineScope(Dispatchers.IO).launch {
             Log.d(LOG_TAG, "Creating Initial Data")
-            val dao = RemoteDatabase.getInstance(requireContext()).remoteDao()
+            val dao = RemoteDatabase.getInstance(ctx).remoteDao()
             dao.getAll()
         }
     }
