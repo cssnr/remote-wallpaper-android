@@ -157,6 +157,12 @@ class HistoryFragment : Fragment() {
                 copyToClipboard(data.url)
                 true
             }
+            //// TODO: This requires updating the updateWallpaper function to take a url...
+            //menu.add("Set Wallpaper").setOnMenuItemClickListener {
+            //    Log.d(LOG_TAG, "WALLPAPER: ${data.url}")
+            //    CoroutineScope(Dispatchers.IO).launch { updateWallpaper(data.url) }
+            //    true
+            //}
             menu.add("Open in Browser").setOnMenuItemClickListener {
                 Log.d(LOG_TAG, "OPEN: ${data.url}")
                 openLink(data.url)
