@@ -15,6 +15,15 @@
             android:entryValues="@array/work_interval_values"
             tools:summary="1 Hour" />
 
+        <ListPreference
+            android:key="set_screens"
+            android:title="Screens to Update"
+            android:defaultValue="both"
+            android:icon="@drawable/md_mobile_screensaver_24px"
+            android:entries="@array/set_screens_entries"
+            android:entryValues="@array/set_screens_values"
+            tools:summary="Home and Lock Screen" />
+
         <Preference
             android:key="open_widget_settings"
             android:title="Widget Settings"

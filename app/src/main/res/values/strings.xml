@@ -37,6 +37,17 @@
         <item>2880</item>
     </string-array>
 
+    <string-array name="set_screens_entries">
+        <item>Home and Lock Screen</item>
+        <item>Home Screen Only</item>
+        <item>Lock Screen Only</item>
+    </string-array>
+    <string-array name="set_screens_values">
+        <item>both</item>
+        <item>home</item>
+        <item>lock</item>
+    </string-array>
+
     <string-array name="widget_color_entries">
         <item>White</item>
         <item>Black</item>

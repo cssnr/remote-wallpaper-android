@@ -274,7 +274,14 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
     val original = BitmapFactory.decodeFile(imageFile.absolutePath) ?: return
     val scaled = scaleAndCropCenter(original, targetWidth, targetHeight)
 
-    wallpaperManager.setBitmap(scaled)
+    val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+    val setScreens = preferences.getString("set_screens", null) ?: "both"
+    Log.d("setAutoCroppedWallpaper", "setScreens: $setScreens")
+    when (setScreens) {
+        "both" -> wallpaperManager.setBitmap(scaled)
+        "home" -> wallpaperManager.setBitmap(scaled, null, true, WallpaperManager.FLAG_SYSTEM)
+        "lock" -> wallpaperManager.setBitmap(scaled, null, true, WallpaperManager.FLAG_LOCK)
+    }
 
     original.recycle()
     scaled.recycle()

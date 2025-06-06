@@ -51,6 +51,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ctx.updateWorkManager(workInterval, newValue)
         }
 
+        // Update Screens
+        val updateType = findPreference<ListPreference>("set_screens")
+        updateType?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+
         // Widget Settings
         findPreference<Preference>("open_widget_settings")?.setOnPreferenceClickListener {
             Log.d("open_widget_settings", "setOnPreferenceClickListener")

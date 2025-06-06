@@ -72,8 +72,6 @@
                     android:id="@+id/work_interval_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:ellipsize="middle"
                     android:text="Wallpaper Update Interval" />
                 <Spinner
                     android:id="@+id/work_interval_spinner"
@@ -81,6 +79,25 @@
                     android:layout_height="48dp"
                     android:padding="8dp"
                     android:entries="@array/work_interval_entries" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/set_screens_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Screens to Update" />
+                <Spinner
+                    android:id="@+id/set_screens_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:padding="8dp"
+                    android:entries="@array/set_screens_entries" />
             </LinearLayout>
 
             <LinearLayout
