@@ -25,7 +25,7 @@
 - [Support](#Support)
 - [Contributing](#Contributing)
 
-Remote Wallpaper Android Application. Set wallpaper from remote URL's at a defined interval.  
+Remote Wallpaper Android Application. Set wallpaper from remote URL's at a defined interval.
 Supports any link that redirects to an image.
 
 Example Remotes:
@@ -84,6 +84,9 @@ For more information, see [Release through a website](https://developer.android.
 - History of all wallpaper used with links.
 
 ### Planned
+
+- Image Effects; Blur, Grayscale, etc.
+- JSON Result Parser with Custom keys.
 
 - [Submit a Feature Request](https://github.com/cssnr/remote-wallpaper-android/discussions/categories/feature-requests)
 

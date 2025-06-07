@@ -118,6 +118,10 @@ class SetupFragment : Fragment() {
 
         // Initial Provider Radio
         binding.initialProvider.check(R.id.option_picsum)
+        //binding.optionCustom.setOnCheckedChangeListener { _, isChecked ->
+        //    Log.d("RadioButton", "Checked: $isChecked")
+        //    binding.customUrl.visibility = if (isChecked) View.VISIBLE else View.GONE
+        //}
 
         val startAppListener: (View) -> Unit = { view ->
             Log.d(LOG_TAG, "startAppListener: view: $view")

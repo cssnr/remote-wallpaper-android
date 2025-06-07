@@ -71,6 +71,9 @@ class WidgetProvider : AppWidgetProvider() {
         Log.d("Widget[onUpdate]", "bgOpacity: $bgOpacity")
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.d("Widget[onUpdate]", "workInterval: $workInterval")
+        //val values = context.resources.getStringArray(R.array.work_interval_values)
+        //val entries = context.resources.getStringArray(R.array.work_interval_entries)
+        //val updateString = values.indexOf(workInterval).takeIf { it >= 0 }?.let { entries[it] } ?: "Unknown"
         val lastUpdate = preferences.getString("last_update", null)
         Log.d("Widget[onUpdate]", "lastUpdate: $lastUpdate")
         val dateTime = lastUpdate?.let {

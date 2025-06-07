@@ -82,6 +82,8 @@ abstract class RemoteDatabase : RoomDatabase() {
 
         private val defaultData: List<Remote> = listOf(
             Remote("https://picsum.photos/4800/2400", active = true),
+            Remote("https://picsum.photos/4800/2400?blur=10", active = false),
+            Remote("https://picsum.photos/4800/2400?grayscale", active = false),
             Remote("https://images.cssnr.com/aviation", active = false),
         )
 

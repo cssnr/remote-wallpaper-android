@@ -149,6 +149,9 @@ class MainActivity : AppCompatActivity() {
                 ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
+        } else {
+            Log.i(LOG_TAG, "Ensuring Work is Disabled")
+            WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
 
         // Only Handel Intent Once Here after App Start

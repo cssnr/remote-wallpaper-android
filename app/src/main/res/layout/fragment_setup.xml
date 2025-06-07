@@ -138,7 +138,28 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="https://images.cssnr.com/aviation" />
+                    <!--<RadioButton-->
+                    <!--    android:id="@+id/option_custom"-->
+                    <!--    android:layout_width="wrap_content"-->
+                    <!--    android:layout_height="wrap_content"-->
+                    <!--    android:ellipsize="end"-->
+                    <!--    android:maxLines="1"-->
+                    <!--    android:text="Enter Remote (can be added later)" />-->
                 </RadioGroup>
+                <!--<EditText-->
+                <!--    android:id="@+id/custom_url"-->
+                <!--    android:layout_width="match_parent"-->
+                <!--    android:layout_height="wrap_content"-->
+                <!--    android:gravity="center_horizontal"-->
+                <!--    android:autofillHints="Full Remote URL"-->
+                <!--    android:hint="Full Remote URL"-->
+                <!--    android:inputType="textUri"-->
+                <!--    android:visibility="gone" />-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                    android:text="You can add more remotes after you start..." />
             </LinearLayout>
 
             <LinearLayout
