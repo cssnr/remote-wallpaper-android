@@ -181,7 +181,8 @@ Currently, the best way to contribute to this project is to star this project on
 
 You can also support other related projects:
 
-- [Django Files Android App](https://github.com/django-files/android-client)
-- [Zipline Android App](https://github.com/cssnr/zipline-android)
-- [Tibs3DPrints Android App](https://github.com/cssnr/tibs3dprints-android)
-- [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android)
+- [Django Files Android](https://github.com/django-files/android-client?tab=readme-ov-file#readme)
+- [Zipline Android](https://github.com/cssnr/zipline-android?tab=readme-ov-file#readme)
+- [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android?tab=readme-ov-file#readme)
+- [Remote Wallpaper Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
+- [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)

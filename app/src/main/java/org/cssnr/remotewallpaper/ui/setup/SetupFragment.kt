@@ -64,6 +64,13 @@ class SetupFragment : Fragment() {
         Log.d(MainActivity.Companion.LOG_TAG, "versionName: $versionName")
         binding.appVersion.text = getString(R.string.version_string, versionName)
 
+        //binding.workIntervalSpinner.setOnTouchListener { _, _ ->
+        //    Log.d(LOG_TAG, "workIntervalSpinner.setOnTouchListener")
+        //    //binding.workIntervalBorder.background = null
+        //    //binding.setScreensBorder.setBackgroundResource(R.drawable.item_border_highlighted)
+        //    false
+        //}
+
         // Update Interval Spinner
         val entries = resources.getStringArray(R.array.work_interval_entries)
         val values = resources.getStringArray(R.array.work_interval_values)
@@ -90,6 +97,13 @@ class SetupFragment : Fragment() {
                 }
             }
 
+        //binding.setScreensSpinner.setOnTouchListener { _, _ ->
+        //    Log.d(LOG_TAG, "setScreensSpinner.setOnTouchListener")
+        //    //binding.setScreensBorder.background = null
+        //    //binding.initialProvider.setBackgroundResource(R.drawable.item_border_highlighted)
+        //    false
+        //}
+
         // Update Screen Spinner
         val screenEntries = resources.getStringArray(R.array.set_screens_entries)
         val screenValues = resources.getStringArray(R.array.set_screens_values)
@@ -115,6 +129,12 @@ class SetupFragment : Fragment() {
                     Log.w(LOG_TAG, "setScreensSpinner: No Item Selected")
                 }
             }
+
+        //binding.optionPicsum.setOnTouchListener { _, _ ->
+        //    Log.d(LOG_TAG, "optionPicsum.setOnTouchListener")
+        //    //binding.initialProvider.background = null
+        //    false
+        //}
 
         // Initial Provider Radio
         binding.initialProvider.check(R.id.option_picsum)
@@ -188,9 +208,9 @@ class SetupFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(LOG_TAG, "onResume - Hide UI and Lock Drawer")
+    override fun onStart() {
+        super.onStart()
+        Log.d(LOG_TAG, "onStart - Hide UI and Lock Drawer")
         val act = requireActivity()
         act.findViewById<ConstraintLayout>(R.id.content_main_layout).setPadding(0, 0, 0, 0)
         act.findViewById<Toolbar>(R.id.toolbar).visibility = View.GONE
@@ -198,9 +218,9 @@ class SetupFragment : Fragment() {
         (activity as? MainActivity)?.setDrawerLockMode(false)
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(LOG_TAG, "onPause - Show UI and Unlock Drawer")
+    override fun onStop() {
+        super.onStop()
+        Log.d(LOG_TAG, "onStop - Show UI and Unlock Drawer")
         val act = requireActivity()
         val padding = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, 80f, resources.displayMetrics
