@@ -31,6 +31,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
@@ -71,6 +72,8 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
         setupWithNavController(bottomNav, navController)
+
+        bottomNav.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
 
         // TODO: Determine how to set status bar color...
         //WindowCompat.setDecorFitsSystemWindows(window, false)

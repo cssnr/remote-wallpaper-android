@@ -18,11 +18,14 @@
         <item>30 Minutes</item>
         <item>1 Hour</item>
         <item>2 Hours</item>
+        <item>3 Hours</item>
         <item>4 Hours</item>
         <item>6 Hours</item>
-        <item>Twice a Day</item>
-        <item>Once Daily</item>
-        <item>2 Days</item>
+        <item>8 Hours</item>
+        <item>12 Hours</item>
+        <item>Daily</item>
+        <item>Bi-Daily</item>
+        <item>Weekly</item>
     </string-array>
     <string-array name="work_interval_values">
         <item>0</item>
@@ -30,11 +33,14 @@
         <item>30</item>
         <item>60</item>
         <item>120</item>
+        <item>180</item>
         <item>240</item>
         <item>360</item>
+        <item>480</item>
         <item>720</item>
         <item>1440</item>
         <item>2880</item>
+        <item>10080</item>
     </string-array>
 
     <string-array name="set_screens_entries">
