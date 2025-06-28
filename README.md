@@ -35,20 +35,22 @@ Example Remotes:
 
 ## Install
 
-- Supports Android 8 (API 26) 2017 +
+<a title="GitHub" href="https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk">
+    <img alt="GitHub" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/github.png"></a>
+<a title="Obtainium" href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android/">
+    <img alt="Obtainium" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/obtainium.png"></a>
 
-> [!TIP]  
-> To install, download and open the [latest release](https://github.com/cssnr/remote-wallpaper-android/releases/latest).
->
-> [![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=A4C639)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+<details><summary>📲 Click to View QR Codes 📸</summary>
 
-<details><summary>View QR Code 📸</summary>
+[![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 
-[![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android/)
 
 </details>
 
 _Note: Until published on the play store, you may need to allow installation of apps from unknown sources._
+
+- Supports Android 8 (API 26) 2017 +
 
 Downloading and Installing the [apk](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 should take you to the settings area to allow installation if not already enabled.
@@ -184,5 +186,5 @@ You can also support other related projects:
 - [Django Files Android](https://github.com/django-files/android-client?tab=readme-ov-file#readme)
 - [Zipline Android](https://github.com/cssnr/zipline-android?tab=readme-ov-file#readme)
 - [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android?tab=readme-ov-file#readme)
-- [Remote Wallpaper Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
+- [Remote Wallpaper Android](https://github.com/cssnr/remote-wallpaper-android?tab=readme-ov-file#readme)
 - [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
