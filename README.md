@@ -9,6 +9,7 @@
 [![GitHub Repo Stars](https://img.shields.io/github/stars/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/stargazers)
 [![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github&label=org%20stars)](https://cssnr.com/)
 [![Discord](https://img.shields.io/discord/899171661457293343?logo=discord&logoColor=white&label=discord&color=7289da)](https://discord.gg/wXy6m2X8wY)
+[![Support](https://img.shields.io/badge/Ko--fi-579fbf?logo=kofi&label=Support)](https://ko-fi.com/cssnr)
 
 # Remote Wallpaper Android
 
@@ -35,10 +36,8 @@ Example Remotes:
 
 ## Install
 
-<a title="GitHub" href="https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk">
-    <img alt="GitHub" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/github.png"></a>
-<a title="Obtainium" href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android/">
-    <img alt="Obtainium" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/obtainium.png"></a>
+[![Get on GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![Get on Obtainium](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android)
 
 <details><summary>📲 Click to View QR Codes 📸</summary>
 
@@ -179,9 +178,12 @@ If you are experiencing an issue/bug or getting unexpected results, you can:
 
 # Contributing
 
-Currently, the best way to contribute to this project is to star this project on GitHub.
+Please consider making a donation to support the development of this project
+and [additional](https://cssnr.com/) open source projects.
 
-You can also support other related projects:
+[![Support](https://img.shields.io/badge/Ko--fi-579fbf?style=for-the-badge&logo=kofi&label=Support)](https://ko-fi.com/cssnr)
+
+You can also star this project on GitHub and support other related projects:
 
 - [Django Files Android](https://github.com/django-files/android-client?tab=readme-ov-file#readme)
 - [Zipline Android](https://github.com/cssnr/zipline-android?tab=readme-ov-file#readme)
