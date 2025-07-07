@@ -9,7 +9,7 @@
 [![GitHub Repo Stars](https://img.shields.io/github/stars/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/stargazers)
 [![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github&label=org%20stars)](https://cssnr.com/)
 [![Discord](https://img.shields.io/discord/899171661457293343?logo=discord&logoColor=white&label=discord&color=7289da)](https://discord.gg/wXy6m2X8wY)
-[![Support](https://img.shields.io/badge/Ko--fi-579fbf?logo=kofi&label=Support)](https://ko-fi.com/cssnr)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-73a4f1?logo=kofi&label=Support)](https://ko-fi.com/cssnr)
 
 # Remote Wallpaper Android
 
@@ -181,7 +181,7 @@ If you are experiencing an issue/bug or getting unexpected results, you can:
 Please consider making a donation to support the development of this project
 and [additional](https://cssnr.com/) open source projects.
 
-[![Support](https://img.shields.io/badge/Ko--fi-579fbf?style=for-the-badge&logo=kofi&label=Support)](https://ko-fi.com/cssnr)
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/cssnr)
 
 You can also star this project on GitHub and support other related projects:
 
