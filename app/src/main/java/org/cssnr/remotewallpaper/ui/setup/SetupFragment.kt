@@ -191,11 +191,10 @@ class SetupFragment : Fragment() {
             }
 
             // Navigate Home
-            findNavController().navigate(
-                R.id.nav_action_setup_home,
-                bundle,
-                NavOptions.Builder()
-                    .setPopUpTo(R.id.nav_item_setup, true)
+            val navController = findNavController()
+            navController.navigate(
+                R.id.nav_action_setup_home, bundle, NavOptions.Builder()
+                    .setPopUpTo(navController.graph.id, true)
                     .build()
             )
         }
