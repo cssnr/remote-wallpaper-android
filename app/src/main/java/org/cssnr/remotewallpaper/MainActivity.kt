@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
             }
             navController.navigate(
                 R.id.nav_item_setup, null, NavOptions.Builder()
-                    .setPopUpTo(R.id.nav_home, true)
+                    .setPopUpTo(navController.graph.id, true)
                     .build()
             )
         }
