@@ -31,7 +31,6 @@ import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.material.navigation.NavigationBarView
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
 import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
@@ -141,7 +140,6 @@ class MainActivity : AppCompatActivity() {
         //    }
         //}
 
-
         // Set Default Preferences
         Log.d(LOG_TAG, "Set Default Preferences")
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
@@ -153,15 +151,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         binding.drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT)
 
-        val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
-        val versionName = packageInfo.versionName
-        Log.d(LOG_TAG, "versionName: $versionName")
         val headerView = binding.navView.getHeaderView(0)
-        val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
-        val formattedVersion = getString(R.string.version_string, versionName)
-        Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
-        versionTextView.text = formattedVersion
-
         ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
             val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             view.setPadding(
@@ -174,6 +164,13 @@ class MainActivity : AppCompatActivity() {
         }
         ViewCompat.requestApplyInsets(headerView)
 
+        val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
+        val versionName = packageInfo.versionName
+        Log.d(LOG_TAG, "versionName: $versionName")
+        val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
+        val formattedVersion = getString(R.string.version_string, versionName)
+        Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+        versionTextView.text = formattedVersion
 
         // TODO: Improve initialization of the WorkRequest
         val workInterval = preferences.getString("work_interval", null) ?: "0"
