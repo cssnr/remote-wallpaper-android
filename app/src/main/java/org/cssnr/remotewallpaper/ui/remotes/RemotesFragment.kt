@@ -152,8 +152,8 @@ class RemotesFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         Log.d(LOG_TAG, "RemotesFragment - onDestroyView")
+        super.onDestroyView()
         _binding = null
     }
 

@@ -15,33 +15,32 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="4dp"
-        android:layout_marginEnd="42dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="6dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="12sp"
         android:breakStrategy="simple"
         android:includeFontPadding="false"
         android:maxLines="2"
-        android:ellipsize="middle"
-        android:text="https://your-service.com/" />
+        android:text="https://your-service.com/"
+        tools:text="https://your-service.com/but_even_longer/with_a_path_that_is_also_very_long_END" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <ImageButton
+        android:id="@+id/widget_refresh_button"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
-        android:layout_gravity="end">
-        <ImageButton
-            android:id="@+id/widget_refresh_button"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:contentDescription="Refresh"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/md_refresh_24px" />
-    </LinearLayout>
+        android:layout_gravity="end"
+        android:paddingStart="12dp"
+        android:paddingBottom="20dp"
+        android:contentDescription="Refresh"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:src="@drawable/md_refresh_24px"
+        tools:ignore="RtlSymmetry" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginBottom="2dp"
         android:layout_gravity="bottom">
         <LinearLayout

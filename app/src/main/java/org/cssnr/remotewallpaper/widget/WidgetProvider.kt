@@ -12,9 +12,9 @@ import android.widget.RemoteViews
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 import androidx.preference.PreferenceManager
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
@@ -26,7 +26,6 @@ import java.util.Date
 
 class WidgetProvider : AppWidgetProvider() {
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         Log.d("Widget[onReceive]", "intent: $intent")
@@ -40,7 +39,7 @@ class WidgetProvider : AppWidgetProvider() {
                 return
             }
             Log.d("Widget[onReceive]", "GlobalScope.launch: START")
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
                 val update = context.updateWallpaper()
                 Log.d("Widget[onReceive]", "context.updateWallpaper: $update")
                 val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -50,7 +49,6 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -69,7 +67,7 @@ class WidgetProvider : AppWidgetProvider() {
         Log.d("Widget[onUpdate]", "textColor: $textColor")
         val bgOpacity = preferences.getInt("widget_bg_opacity", 35)
         Log.d("Widget[onUpdate]", "bgOpacity: $bgOpacity")
-        val workInterval = preferences.getString("work_interval", null) ?: "0"
+        val workInterval = preferences.getString("work_interval", null)?.toIntOrNull() ?: 0
         Log.d("Widget[onUpdate]", "workInterval: $workInterval")
         //val values = context.resources.getStringArray(R.array.work_interval_values)
         //val entries = context.resources.getStringArray(R.array.work_interval_entries)
@@ -138,16 +136,21 @@ class WidgetProvider : AppWidgetProvider() {
 
             // TODO: Determine if this should be outside of the loop, somehow...
             val dao = RemoteDatabase.getInstance(context).remoteDao()
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
                 val remote = dao.getActive()
                 // Url
                 Log.d("Widget[onUpdate]", "remote: ${remote?.url}")
                 views.setTextViewText(R.id.remote_url, remote?.url ?: "No Remotes")
 
                 // Interval
-                val interval = if (workInterval != "0") workInterval else "Off"
-                Log.d("Widget[onUpdate]", "interval: $interval")
-                views.setTextViewText(R.id.update_interval, interval)
+                val intervalText = when {
+                    workInterval >= 1440 -> "${workInterval / 1440}d"
+                    workInterval >= 60 -> "${workInterval / 60}h"
+                    workInterval > 0 -> "${workInterval}m"
+                    else -> "Off"
+                }
+                Log.d("Widget[onUpdate]", "intervalText: $intervalText")
+                views.setTextViewText(R.id.update_interval, intervalText)
 
                 // Time
                 //val time = DateFormat.getTimeFormat(context).format(Date())
