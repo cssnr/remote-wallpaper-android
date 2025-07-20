@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
@@ -159,6 +161,19 @@ class MainActivity : AppCompatActivity() {
         val formattedVersion = getString(R.string.version_string, versionName)
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
+
+        ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(
+                view.paddingLeft,
+                statusBarHeight,
+                view.paddingRight,
+                view.paddingBottom
+            )
+            insets
+        }
+        ViewCompat.requestApplyInsets(headerView)
+
 
         // TODO: Improve initialization of the WorkRequest
         val workInterval = preferences.getString("work_interval", null) ?: "0"
