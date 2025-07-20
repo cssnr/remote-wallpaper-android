@@ -38,7 +38,6 @@
         android:id="@+id/bottom_nav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
         android:minHeight="72dp"
         app:labelVisibilityMode="labeled"
         app:itemPaddingTop="8dp"
