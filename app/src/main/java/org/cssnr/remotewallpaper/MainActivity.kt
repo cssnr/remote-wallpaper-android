@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.option_github -> {
                 Log.i(LOG_TAG, "onOptionsItemSelected: option_github")
-                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.website_url).toUri())
+                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
                 Log.i(LOG_TAG, "onOptionsItemSelected: intent: $intent")
                 startActivity(intent)
                 true
