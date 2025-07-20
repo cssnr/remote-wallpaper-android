@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
@@ -29,7 +31,6 @@ import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.material.navigation.NavigationBarView
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
 import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
@@ -74,7 +75,6 @@ class MainActivity : AppCompatActivity() {
         // Bottom Navigation
         val bottomNav = binding.appBarMain.contentMain.bottomNav
         bottomNav.setupWithNavController(navController)
-        bottomNav.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
 
         // Navigation Drawer
         binding.navView.setupWithNavController(navController)
@@ -140,7 +140,6 @@ class MainActivity : AppCompatActivity() {
         //    }
         //}
 
-
         // Set Default Preferences
         Log.d(LOG_TAG, "Set Default Preferences")
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
@@ -152,10 +151,22 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         binding.drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT)
 
+        val headerView = binding.navView.getHeaderView(0)
+        ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(
+                view.paddingLeft,
+                statusBarHeight,
+                view.paddingRight,
+                view.paddingBottom
+            )
+            insets
+        }
+        ViewCompat.requestApplyInsets(headerView)
+
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
-        val headerView = binding.navView.getHeaderView(0)
         val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
         val formattedVersion = getString(R.string.version_string, versionName)
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")

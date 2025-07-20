@@ -47,8 +47,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingVertical="4dp"
-        android:paddingHorizontal="16dp"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="12dp"
         android:background="?attr/colorButtonNormal"
         android:orientation="horizontal">
         <Button
@@ -68,34 +68,34 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:text="Reload"
-            app:backgroundTint="@android:color/holo_red_dark" />
+            app:backgroundTint="@android:color/holo_green_dark" />
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/loading_overlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#9A000000"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:theme="@style/Theme.Material3.Dark"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="gone">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textSize="20sp"
-            android:text="Processing..." />
-    </LinearLayout>
+    <!--<LinearLayout-->
+    <!--    android:id="@+id/loading_overlay"-->
+    <!--    android:layout_width="0dp"-->
+    <!--    android:layout_height="0dp"-->
+    <!--    android:background="#9A000000"-->
+    <!--    android:clickable="true"-->
+    <!--    android:focusable="true"-->
+    <!--    android:visibility="gone"-->
+    <!--    android:gravity="center"-->
+    <!--    android:orientation="vertical"-->
+    <!--    android:theme="@style/Theme.Material3.Dark"-->
+    <!--    app:layout_constraintTop_toTopOf="parent"-->
+    <!--    app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--    app:layout_constraintStart_toStartOf="parent"-->
+    <!--    app:layout_constraintEnd_toEndOf="parent"-->
+    <!--    tools:visibility="gone">-->
+    <!--    <ProgressBar-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content" />-->
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="24dp"-->
+    <!--        android:textSize="20sp"-->
+    <!--        android:text="Processing..." />-->
+    <!--</LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
