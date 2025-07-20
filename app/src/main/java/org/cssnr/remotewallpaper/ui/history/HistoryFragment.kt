@@ -126,7 +126,7 @@ class HistoryFragment : Fragment() {
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) { ctx.updateData() }
                     Toast.makeText(ctx, "History Reloaded", Toast.LENGTH_SHORT).show()
-                    binding.swiperefresh.isRefreshing = false
+                    _binding?.swiperefresh?.isRefreshing = false
                 }
             }
         })

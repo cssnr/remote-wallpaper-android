@@ -2,15 +2,12 @@ package org.cssnr.remotewallpaper.ui.setup
 
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
-import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -53,9 +50,30 @@ class SetupFragment : Fragment() {
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(LOG_TAG, "onDestroyView - SetupFragment")
+        _binding = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.GONE
+        (activity as? MainActivity)?.setDrawerLockMode(false)
+    }
+
+    override fun onStop() {
+        Log.d(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility =
+            View.VISIBLE
+        (activity as? MainActivity)?.setDrawerLockMode(true)
+        super.onStop()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(LOG_TAG, "onViewCreated: ${savedInstanceState?.size()}")
+        Log.d(LOG_TAG, "onViewCreated - SetupFragment: ${savedInstanceState?.size()}")
 
         val ctx = requireContext()
 
@@ -87,9 +105,7 @@ class SetupFragment : Fragment() {
                 ) {
                     val selectedValue = values[position]
                     Log.d(LOG_TAG, "workIntervalSpinner: value: $selectedValue")
-                    preferences.edit {
-                        putString("work_interval", selectedValue)
-                    }
+                    preferences.edit { putString("work_interval", selectedValue) }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -120,9 +136,7 @@ class SetupFragment : Fragment() {
                 ) {
                     val selectedValue = screenValues[position]
                     Log.d(LOG_TAG, "setScreensSpinner: value: $selectedValue")
-                    preferences.edit {
-                        putString("set_screens", selectedValue)
-                    }
+                    preferences.edit { putString("set_screens", selectedValue) }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -205,34 +219,5 @@ class SetupFragment : Fragment() {
             val dao = RemoteDatabase.getInstance(ctx).remoteDao()
             dao.getAll()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(LOG_TAG, "onStart - Hide UI and Lock Drawer")
-        val act = requireActivity()
-        act.findViewById<ConstraintLayout>(R.id.content_main_layout).setPadding(0, 0, 0, 0)
-        act.findViewById<Toolbar>(R.id.toolbar).visibility = View.GONE
-        act.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-        (activity as? MainActivity)?.setDrawerLockMode(false)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(LOG_TAG, "onStop - Show UI and Unlock Drawer")
-        val act = requireActivity()
-        val padding = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 80f, resources.displayMetrics
-        ).toInt()
-        act.findViewById<ConstraintLayout>(R.id.content_main_layout).setPadding(0, 0, 0, padding)
-        act.findViewById<Toolbar>(R.id.toolbar).visibility = View.VISIBLE
-        act.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
-        (activity as? MainActivity)?.setDrawerLockMode(true)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(LOG_TAG, "onDestroyView")
-        _binding = null
     }
 }

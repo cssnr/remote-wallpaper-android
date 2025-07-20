@@ -133,26 +133,26 @@ class HomeFragment : Fragment() {
     }
 
     suspend fun Context.reloadWallpaper() {
-        binding.loadingOverlay.visibility = View.VISIBLE
+        _binding?.loadingOverlay?.visibility = View.VISIBLE
         if (updateWallpaper()) {
             updateData()
             Toast.makeText(this, "Done.", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "No Remotes.", Toast.LENGTH_SHORT).show()
         }
-        binding.loadingOverlay.visibility = View.GONE
+        _binding?.loadingOverlay?.visibility = View.GONE
     }
 
     suspend fun Context.updateData() {
         val dao = HistoryDatabase.getInstance(this).historyDao()
         latest = withContext(Dispatchers.IO) { dao.getLastSuccess() }
         Log.d(LOG_TAG, "latest ${latest?.url}")
-        binding.textView.text = latest?.url ?: "Current Image Link Not Found!"
+        _binding?.textView?.text = latest?.url ?: "Current Image Link Not Found!"
 
         val imageFile = File(filesDir, "wallpaper.img")
         if (imageFile.exists()) {
             val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-            binding.imageView.setImageBitmap(bitmap)
+            _binding?.imageView?.setImageBitmap(bitmap)
         }
     }
 }
@@ -220,9 +220,7 @@ suspend fun Context.updateWallpaper(): Boolean {
                 ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
             Log.d("updateWallpaper", "timestamp: $timestamp")
             val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            preferences.edit {
-                putString("last_update", timestamp)
-            }
+            preferences.edit { putString("last_update", timestamp) }
             Log.d("updateWallpaper", "history: $history")
             withContext(Dispatchers.IO) { historyDao.add(history) }
             return true

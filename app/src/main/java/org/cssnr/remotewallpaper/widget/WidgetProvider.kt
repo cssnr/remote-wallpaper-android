@@ -12,9 +12,9 @@ import android.widget.RemoteViews
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 import androidx.preference.PreferenceManager
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
@@ -26,7 +26,6 @@ import java.util.Date
 
 class WidgetProvider : AppWidgetProvider() {
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         Log.d("Widget[onReceive]", "intent: $intent")
@@ -40,7 +39,7 @@ class WidgetProvider : AppWidgetProvider() {
                 return
             }
             Log.d("Widget[onReceive]", "GlobalScope.launch: START")
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
                 val update = context.updateWallpaper()
                 Log.d("Widget[onReceive]", "context.updateWallpaper: $update")
                 val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -50,7 +49,6 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -138,7 +136,7 @@ class WidgetProvider : AppWidgetProvider() {
 
             // TODO: Determine if this should be outside of the loop, somehow...
             val dao = RemoteDatabase.getInstance(context).remoteDao()
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
                 val remote = dao.getActive()
                 // Url
                 Log.d("Widget[onUpdate]", "remote: ${remote?.url}")

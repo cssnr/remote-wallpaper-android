@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#C174DE"
+                android:endColor="@color/ic_launcher_background"
+                android:angle="15"/>
+        </shape>
+    </item>
+</selector>

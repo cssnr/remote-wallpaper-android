@@ -22,7 +22,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -30,9 +29,7 @@ import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.navigation.NavigationView
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
 import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
@@ -46,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var navController: NavController
+    private lateinit var navHostFragment: NavHostFragment
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -53,77 +51,107 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(LOG_TAG, "MainActivity: onCreate: ${savedInstanceState?.size()}")
-
+        Log.d(LOG_TAG, "onCreate: savedInstanceState: ${savedInstanceState?.size()}")
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
-        val navHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?)!!
+        // NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = navHostFragment.navController
-        val topLevelItems =
-            setOf(R.id.nav_home, R.id.nav_history, R.id.nav_remotes, R.id.nav_settings)
-        appBarConfiguration = AppBarConfiguration(topLevelItems, drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-        val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
-        setupWithNavController(bottomNav, navController)
 
+        //// Start Destination
+        //if (savedInstanceState == null) {
+        //    val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+        //    //val startPreference = preferences.getString("start_destination", null)
+        //    //Log.d("Main[onCreate]", "startPreference: $startPreference")
+        //    val startDestination = R.id.nav_home
+        //    navGraph.setStartDestination(startDestination)
+        //    navController.graph = navGraph
+        //}
+
+        // Bottom Navigation
+        val bottomNav = binding.appBarMain.contentMain.bottomNav
+        bottomNav.setupWithNavController(navController)
         bottomNav.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
 
+        // Navigation Drawer
+        binding.navView.setupWithNavController(navController)
+
+        // App Bar Configuration
+        setSupportActionBar(binding.appBarMain.contentMain.toolbar)
+        val topLevelItems =
+            setOf(R.id.nav_home, R.id.nav_history, R.id.nav_remotes, R.id.nav_settings)
+        appBarConfiguration = AppBarConfiguration(topLevelItems, binding.drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        // Destinations w/ a Parent Item
+        val destinationToBottomNavItem = mapOf(
+            R.id.nav_item_widget_settings to R.id.nav_settings,
+        )
+        // Destination w/ No Parent
+        val hiddenDestinations = setOf(
+            R.id.nav_item_setup,
+        )
+        // Implement Navigation Hacks Because.......Android?
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            Log.d("addOnDestinationChangedListener", "destination: ${destination.label}")
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+            val destinationId = destination.id
+
+            if (destinationId in hiddenDestinations) {
+                Log.d("addOnDestinationChangedListener", "Set bottomNav to Hidden Item")
+                bottomNav.menu.findItem(R.id.nav_hidden).isChecked = true
+                return@addOnDestinationChangedListener
+            }
+
+            val matchedItem = destinationToBottomNavItem[destinationId]
+            if (matchedItem != null) {
+                Log.d("addOnDestinationChangedListener", "matched nav item: $matchedItem")
+                bottomNav.menu.findItem(matchedItem).isChecked = true
+                val menu = binding.navView.menu
+                for (i in 0 until menu.size) {
+                    val item = menu[i]
+                    item.isChecked = item.itemId == matchedItem
+                }
+            }
+        }
+
+        //// Handle Custom Navigation Items
+        //val navLinks = mapOf(
+        //    R.id.nav_item_tiktok to getString(R.string.tiktok_url),
+        //    R.id.nav_itewm_youtube to getString(R.string.youtube_url),
+        //    R.id.nav_item_website to getString(R.string.website_url),
+        //)
+        //binding.navView.setNavigationItemSelectedListener { menuItem ->
+        //    binding.drawerLayout.closeDrawers()
+        //    val path = navLinks[menuItem.itemId]
+        //    if (path != null) {
+        //        Log.d("Drawer", "path: $path")
+        //        val intent = Intent(Intent.ACTION_VIEW, path.toUri())
+        //        startActivity(intent)
+        //        true
+        //    } else {
+        //        val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
+        //        Log.d("Drawer", "handled: $handled")
+        //        handled
+        //    }
+        //}
+
+
+        // Set Default Preferences
+        Log.d(LOG_TAG, "Set Default Preferences")
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_widget, false)
+
+        // Update Drawer Header
         // TODO: Determine how to set status bar color...
         //WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.TRANSPARENT
         binding.drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT)
 
-        //navController.addOnDestinationChangedListener { _, destination, _ ->
-        //    Log.d(LOG_TAG, "NAV CONTROLLER - destination: ${destination.label}")
-        //    binding.drawerLayout.closeDrawer(GravityCompat.START)
-        //    when (destination.id) {
-        //        R.id.nav_news_item -> {
-        //            Log.d(LOG_TAG, "nav_news_item")
-        //            bottomNav.menu.findItem(R.id.nav_news).isChecked = true
-        //            //navView.setCheckedItem(R.id.nav_news)
-        //            val menu = navView.menu
-        //            for (i in 0 until menu.size) {
-        //                val item = menu[i]
-        //                item.isChecked = item.itemId == R.id.nav_news
-        //            }
-        //        }
-        //    }
-        //}
-
-        // TODO: Ghetto manual fix for selecting items on sub item navigation...
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            Log.d(LOG_TAG, "NAV CONTROLLER - destination: ${destination.label}")
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-            when (destination.id) {
-                R.id.nav_item_widget_settings -> {
-                    Log.d(LOG_TAG, "nav_item_widget_settings")
-                    bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
-                    val menu = navView.menu
-                    for (i in 0 until menu.size) {
-                        val item = menu[i]
-                        item.isChecked = item.itemId == R.id.nav_settings
-                    }
-                }
-
-                //R.id.nav_history -> {
-                //    Log.d(LOG_TAG, "nav_history")
-                //    bottomNav.menu.findItem(R.id.nav_home).isChecked = true
-                //    //bottomNav.menu.findItem(R.id.nav_home).isChecked = false
-                //    //for (i in 0 until bottomNav.menu.size) {
-                //    //    bottomNav.menu[i].isChecked = false
-                //    //}
-                //}
-            }
-        }
-
-        // Update Drawer Header
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
@@ -132,11 +160,6 @@ class MainActivity : AppCompatActivity() {
         val formattedVersion = getString(R.string.version_string, versionName)
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
-
-        // Set Default Preferences
-        Log.d(LOG_TAG, "Set Default Preferences")
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
-        PreferenceManager.setDefaultValues(this, R.xml.preferences_widget, false)
 
         // TODO: Improve initialization of the WorkRequest
         val workInterval = preferences.getString("work_interval", null) ?: "0"
@@ -168,11 +191,6 @@ class MainActivity : AppCompatActivity() {
         outState.putBoolean("intentHandled", true)
     }
 
-    //override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    //    return NavigationUI.onNavDestinationSelected(item, navController)
-    //            || super.onOptionsItemSelected(item)
-    //}
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d(LOG_TAG, "onOptionsItemSelected: $item")
         return when (item.itemId) {
@@ -191,10 +209,16 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
-            // TODO: This causes a warning about home when toggling menu, but handles navigation
-            //else -> super.onOptionsItemSelected(item)
-            else -> NavigationUI.onNavDestinationSelected(item, navController)
-                    || super.onOptionsItemSelected(item)
+
+            else -> {
+                // TODO: Title is null on Menu and not destinations, so this avoids warnings...
+                if (item.title != null) {
+                    NavigationUI.onNavDestinationSelected(item, navController) ||
+                            super.onOptionsItemSelected(item)
+                } else {
+                    super.onOptionsItemSelected(item)
+                }
+            }
         }
     }
 
@@ -202,45 +226,48 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         val action = intent.action
         val data = intent.data
-        val type = intent.type
-        Log.i("handleIntent", "action: $action")
-        Log.d("handleIntent", "data: $data")
-        Log.d("handleIntent", "type: $type")
+        Log.d(LOG_TAG, "${action}: $data")
 
         if (!preferences.contains("first_run_shown")) {
             Log.i(LOG_TAG, "FIRST RUN DETECTED")
-            preferences.edit {
-                putBoolean("first_run_shown", true)
-            }
+            preferences.edit { putBoolean("first_run_shown", true) }
             navController.navigate(
                 R.id.nav_item_setup, null, NavOptions.Builder()
                     .setPopUpTo(navController.graph.id, true)
                     .build()
             )
         }
+
+        //if (action == Intent.ACTION_MAIN) {
+        //    Log.d("onNewIntent", "ACTION_MAIN")
+        //
+        //    binding.drawerLayout.closeDrawers()
+        //}
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        Log.d(LOG_TAG, "onCreateOptionsMenu")
         menuInflater.inflate(R.menu.options, menu)
         return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        Log.d(LOG_TAG, "onSupportNavigateUp")
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     override fun onStop() {
-        super.onStop()
-        Log.d("Main[onStop]", "MainActivity - onStop")
+        Log.d(LOG_TAG, "onStop - MainActivity")
         // Update Widget
         val appWidgetManager = AppWidgetManager.getInstance(this)
         val componentName = ComponentName(this, WidgetProvider::class.java)
         val ids = appWidgetManager.getAppWidgetIds(componentName)
         WidgetProvider().onUpdate(this, appWidgetManager, ids)
+        super.onStop()
     }
 
     fun setDrawerLockMode(enabled: Boolean) {
-        Log.d("setDrawerLockMode", "enabled: $enabled")
+        Log.d(LOG_TAG, "enabled: $enabled")
         val lockMode =
             if (enabled) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
         Log.d("setDrawerLockMode", "lockMode: $lockMode")

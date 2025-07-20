@@ -15,7 +15,7 @@
 
         <item
             android:id="@+id/nav_remotes"
-            android:icon="@drawable/md_satellite_24px"
+            android:icon="@drawable/md_settings_remote_24px"
             android:title="Remotes" />
 
         <item

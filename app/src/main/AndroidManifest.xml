@@ -20,7 +20,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:resizeableActivity="true"
-            android:theme="@style/Theme.RemoteWallpaper.NoActionBar">
+            android:theme="@style/Theme.RemoteWallpaper.NoActionBar"
+            android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
