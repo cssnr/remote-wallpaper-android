@@ -47,8 +47,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingVertical="4dp"
-        android:paddingHorizontal="16dp"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="12dp"
         android:background="?attr/colorButtonNormal"
         android:orientation="horizontal">
         <Button
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:text="Reload"
-            app:backgroundTint="@android:color/holo_red_dark" />
+            app:backgroundTint="@android:color/holo_green_dark" />
     </FrameLayout>
 
     <LinearLayout

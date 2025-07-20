@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         // Bottom Navigation
         val bottomNav = binding.appBarMain.contentMain.bottomNav
         bottomNav.setupWithNavController(navController)
-        bottomNav.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
 
         // Navigation Drawer
         binding.navView.setupWithNavController(navController)

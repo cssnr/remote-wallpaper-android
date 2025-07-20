@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -58,15 +59,16 @@ class SetupFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        Log.d(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
+        Log.i(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
+        activity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.GONE
         activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.GONE
         (activity as? MainActivity)?.setDrawerLockMode(false)
     }
 
     override fun onStop() {
-        Log.d(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility =
-            View.VISIBLE
+        Log.i(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
+        activity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
         (activity as? MainActivity)?.setDrawerLockMode(true)
         super.onStop()
     }
