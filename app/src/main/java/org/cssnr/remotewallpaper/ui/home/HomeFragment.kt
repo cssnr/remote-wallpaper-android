@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
@@ -133,14 +134,16 @@ class HomeFragment : Fragment() {
     }
 
     suspend fun Context.reloadWallpaper() {
-        _binding?.loadingOverlay?.visibility = View.VISIBLE
+        activity?.findViewById<LinearLayout>(R.id.main_loading_layout)?.visibility = View.VISIBLE
+        //_binding?.loadingOverlay?.visibility = View.VISIBLE
         if (updateWallpaper()) {
             updateData()
             Toast.makeText(this, "Done.", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "No Remotes.", Toast.LENGTH_SHORT).show()
         }
-        _binding?.loadingOverlay?.visibility = View.GONE
+        activity?.findViewById<LinearLayout>(R.id.main_loading_layout)?.visibility = View.GONE
+        //_binding?.loadingOverlay?.visibility = View.GONE
     }
 
     suspend fun Context.updateData() {
