@@ -67,7 +67,7 @@ class WidgetProvider : AppWidgetProvider() {
         Log.d("Widget[onUpdate]", "textColor: $textColor")
         val bgOpacity = preferences.getInt("widget_bg_opacity", 35)
         Log.d("Widget[onUpdate]", "bgOpacity: $bgOpacity")
-        val workInterval = preferences.getString("work_interval", null) ?: "0"
+        val workInterval = preferences.getString("work_interval", null)?.toIntOrNull() ?: 0
         Log.d("Widget[onUpdate]", "workInterval: $workInterval")
         //val values = context.resources.getStringArray(R.array.work_interval_values)
         //val entries = context.resources.getStringArray(R.array.work_interval_entries)
@@ -143,9 +143,14 @@ class WidgetProvider : AppWidgetProvider() {
                 views.setTextViewText(R.id.remote_url, remote?.url ?: "No Remotes")
 
                 // Interval
-                val interval = if (workInterval != "0") workInterval else "Off"
-                Log.d("Widget[onUpdate]", "interval: $interval")
-                views.setTextViewText(R.id.update_interval, interval)
+                val intervalText = when {
+                    workInterval >= 1440 -> "${workInterval / 1440}d"
+                    workInterval >= 60 -> "${workInterval / 60}h"
+                    workInterval > 0 -> "${workInterval}m"
+                    else -> "Off"
+                }
+                Log.d("Widget[onUpdate]", "intervalText: $intervalText")
+                views.setTextViewText(R.id.update_interval, intervalText)
 
                 // Time
                 //val time = DateFormat.getTimeFormat(context).format(Date())
