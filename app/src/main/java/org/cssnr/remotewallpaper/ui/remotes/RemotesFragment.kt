@@ -18,7 +18,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.cssnr.remotewallpaper.MainActivity.Companion.LOG_TAG
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentRemotesBinding
 import org.cssnr.remotewallpaper.db.Remote
@@ -27,6 +26,8 @@ import java.net.URL
 
 //import androidx.lifecycle.Observer
 //import androidx.lifecycle.ViewModelProvider
+
+const val LOG_TAG = "Remotes"
 
 class RemotesFragment : Fragment() {
 
@@ -43,6 +44,12 @@ class RemotesFragment : Fragment() {
         _binding = FragmentRemotesBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(LOG_TAG, "onDestroyView")
+        _binding = null
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -149,12 +156,6 @@ class RemotesFragment : Fragment() {
             //newFragment.show(parentFragmentManager, "AddDialogFragment")
             ctx.showAddDialog(adapter)
         }
-    }
-
-    override fun onDestroyView() {
-        Log.d(LOG_TAG, "RemotesFragment - onDestroyView")
-        super.onDestroyView()
-        _binding = null
     }
 
 

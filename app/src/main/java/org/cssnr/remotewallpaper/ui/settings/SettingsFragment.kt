@@ -25,7 +25,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.cssnr.remotewallpaper.MainActivity.Companion.LOG_TAG
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.api.FeedbackApi
 import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
@@ -36,6 +35,10 @@ import java.util.concurrent.TimeUnit
 //import com.google.firebase.ktx.Firebase
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    companion object {
+        const val LOG_TAG = "Settings"
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         Log.d("SettingsFragment", "rootKey: $rootKey")

@@ -53,7 +53,7 @@ class SetupFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(LOG_TAG, "onDestroyView - SetupFragment")
+        Log.d(LOG_TAG, "onDestroyView")
         _binding = null
     }
 
@@ -81,7 +81,7 @@ class SetupFragment : Fragment() {
 
         val packageInfo = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
         val versionName = packageInfo.versionName
-        Log.d(MainActivity.Companion.LOG_TAG, "versionName: $versionName")
+        Log.d(LOG_TAG, "versionName: $versionName")
         binding.appVersion.text = getString(R.string.version_string, versionName)
 
         //binding.workIntervalSpinner.setOnTouchListener { _, _ ->
