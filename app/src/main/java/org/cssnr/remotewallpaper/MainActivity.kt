@@ -151,15 +151,17 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         binding.drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT)
 
+        //window.statusBarColor = ContextCompat.getColor(this, R.color.ic_launcher_background)
+        //WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
+        //    false
+
         val headerView = binding.navView.getHeaderView(0)
         ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
-            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            view.setPadding(
-                view.paddingLeft,
-                statusBarHeight,
-                view.paddingRight,
-                view.paddingBottom
-            )
+            val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            Log.i("ViewCompat", "paddingTop: $paddingTop")
+            if (paddingTop > 0) {
+                view.setPadding(view.paddingLeft, paddingTop, view.paddingRight, view.paddingBottom)
+            }
             insets
         }
         ViewCompat.requestApplyInsets(headerView)

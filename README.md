@@ -21,10 +21,10 @@
   - [Planned](#Planned)
   - [Known Issues](#Known-Issues)
 - [Screenshots](#Screenshots)
+- [Support](#Support)
 - [Development](#Development)
   - [Android Studio](#Android-Studio)
   - [Command Line](#Command-Line)
-- [Support](#Support)
 - [Contributing](#Contributing)
 
 Remote Wallpaper Android Application. Set wallpaper from remote URL's at a defined interval.
@@ -111,6 +111,19 @@ For more information, see [Release through a website](https://developer.android.
 <a title="Screenshot" href="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/screenshots/6.jpg">
     <img alt="Screenshot" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/screenshots/6.jpg"></a>
 
+## Support
+
+For general help or to request a feature, see:
+
+- Q&A Discussion: https://github.com/cssnr/remote-wallpaper-android/discussions/categories/q-a
+- Request a Feature: https://github.com/cssnr/remote-wallpaper-android/discussions/categories/feature-requests
+
+If you are experiencing an issue/bug or getting unexpected results, you can:
+
+- Report an Issue: https://github.com/cssnr/remote-wallpaper-android/issues
+- Chat with us on Discord: https://discord.gg/wXy6m2X8wY
+- Provide General Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Remote%20Wallpaper%20Android)
+
 # Development
 
 This section briefly covers running and building in [Android Studio](#Android-Studio) and the [Command Line](#Command-Line).
@@ -178,19 +191,6 @@ $ adb -s RF9M33Z1Q0M install app-release-unsigned.apk
 _Note: you may have to uninstall before installing due to different certificate signatures._
 
 For more details, see the [ADB Documentation](https://developer.android.com/tools/adb#move).
-
-# Support
-
-For general help or to request a feature, see:
-
-- Q&A Discussion: https://github.com/cssnr/remote-wallpaper-android/discussions/categories/q-a
-- Request a Feature: https://github.com/cssnr/remote-wallpaper-android/discussions/categories/feature-requests
-
-If you are experiencing an issue/bug or getting unexpected results, you can:
-
-- Report an Issue: https://github.com/cssnr/remote-wallpaper-android/issues
-- Chat with us on Discord: https://discord.gg/wXy6m2X8wY
-- Provide General Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Remote%20Wallpaper%20Android)
 
 # Contributing
 
