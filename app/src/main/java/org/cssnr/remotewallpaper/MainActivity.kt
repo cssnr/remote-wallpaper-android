@@ -158,8 +158,8 @@ class MainActivity : AppCompatActivity() {
         val headerView = binding.navView.getHeaderView(0)
         ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
             val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            Log.i("ViewCompat", "paddingTop: $paddingTop")
             if (paddingTop > 0) {
+                Log.d("ViewCompat", "paddingTop: $paddingTop")
                 view.setPadding(view.paddingLeft, paddingTop, view.paddingRight, view.paddingBottom)
             }
             insets
@@ -176,20 +176,20 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: Improve initialization of the WorkRequest
         val workInterval = preferences.getString("work_interval", null) ?: "0"
-        Log.i(LOG_TAG, "workInterval: $workInterval")
+        Log.d(LOG_TAG, "workInterval: $workInterval")
         if (workInterval != "0") {
             val workRequest =
                 PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)
                     .setConstraints(APP_WORKER_CONSTRAINTS)
                     .build()
-            Log.i(LOG_TAG, "workRequest: $workRequest")
+            Log.d(LOG_TAG, "workRequest: $workRequest")
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
                 "app_worker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
         } else {
-            Log.i(LOG_TAG, "Ensuring Work is Disabled")
+            Log.d(LOG_TAG, "Ensuring Work is Disabled")
             WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
 
@@ -208,9 +208,9 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "onOptionsItemSelected: $item")
         return when (item.itemId) {
             R.id.option_github -> {
-                Log.i(LOG_TAG, "onOptionsItemSelected: option_github")
+                Log.d(LOG_TAG, "onOptionsItemSelected: option_github")
                 val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
-                Log.i(LOG_TAG, "onOptionsItemSelected: intent: $intent")
+                Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
                 startActivity(intent)
                 true
             }
@@ -218,7 +218,7 @@ class MainActivity : AppCompatActivity() {
             R.id.option_developer -> {
                 Log.d(LOG_TAG, "onOptionsItemSelected: option_developer")
                 val intent = Intent(Intent.ACTION_VIEW, getString(R.string.website_url).toUri())
-                Log.i(LOG_TAG, "onOptionsItemSelected: intent: $intent")
+                Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
                 startActivity(intent)
                 true
             }

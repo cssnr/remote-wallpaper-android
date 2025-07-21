@@ -27,10 +27,6 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentHistoryBinding
 import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
-import org.cssnr.remotewallpaper.ui.home.HomeFragment
-
-//import androidx.lifecycle.Observer
-//import androidx.lifecycle.ViewModelProvider
 
 const val LOG_TAG = "History"
 

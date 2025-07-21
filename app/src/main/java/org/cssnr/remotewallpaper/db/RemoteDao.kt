@@ -16,7 +16,6 @@ import androidx.room.Upsert
 import androidx.sqlite.db.SupportSQLiteDatabase
 import java.util.concurrent.Executors
 
-
 @Dao
 interface RemoteDao {
     @Query("SELECT * FROM remote")

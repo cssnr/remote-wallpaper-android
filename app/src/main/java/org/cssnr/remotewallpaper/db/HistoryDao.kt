@@ -45,6 +45,7 @@ interface HistoryDao {
     fun deleteAll()
 }
 
+
 @Entity
 data class HistoryItem(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
