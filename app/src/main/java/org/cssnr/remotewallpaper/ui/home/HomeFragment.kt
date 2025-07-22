@@ -59,6 +59,12 @@ class HomeFragment : Fragment() {
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(LOG_TAG, "onDestroyView")
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "onViewCreated: savedInstanceState: ${savedInstanceState?.size()}")

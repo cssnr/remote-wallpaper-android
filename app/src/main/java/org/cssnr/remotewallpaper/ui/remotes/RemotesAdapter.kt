@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import org.cssnr.remotewallpaper.MainActivity.Companion.LOG_TAG
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.db.Remote
 

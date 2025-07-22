@@ -13,9 +13,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
@@ -73,14 +75,14 @@ class MainActivity : AppCompatActivity() {
         //}
 
         // Bottom Navigation
-        val bottomNav = binding.appBarMain.contentMain.bottomNav
+        val bottomNav = binding.contentMain.appBarMain.bottomNav
         bottomNav.setupWithNavController(navController)
 
         // Navigation Drawer
         binding.navView.setupWithNavController(navController)
 
         // App Bar Configuration
-        setSupportActionBar(binding.appBarMain.contentMain.toolbar)
+        setSupportActionBar(binding.contentMain.appBarMain.toolbar)
         val topLevelItems =
             setOf(R.id.nav_home, R.id.nav_history, R.id.nav_remotes, R.id.nav_settings)
         appBarConfiguration = AppBarConfiguration(topLevelItems, binding.drawerLayout)
@@ -119,51 +121,48 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //// Handle Custom Navigation Items
-        //val navLinks = mapOf(
-        //    R.id.nav_item_tiktok to getString(R.string.tiktok_url),
-        //    R.id.nav_itewm_youtube to getString(R.string.youtube_url),
-        //    R.id.nav_item_website to getString(R.string.website_url),
-        //)
-        //binding.navView.setNavigationItemSelectedListener { menuItem ->
-        //    binding.drawerLayout.closeDrawers()
-        //    val path = navLinks[menuItem.itemId]
-        //    if (path != null) {
-        //        Log.d("Drawer", "path: $path")
-        //        val intent = Intent(Intent.ACTION_VIEW, path.toUri())
-        //        startActivity(intent)
-        //        true
-        //    } else {
-        //        val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
-        //        Log.d("Drawer", "handled: $handled")
-        //        handled
-        //    }
-        //}
+        // Handle Custom Navigation Items
+        val navLinks = mapOf(
+            R.id.nav_item_github to getString(R.string.github_url),
+            R.id.nav_itewm_website to getString(R.string.website_url),
+        )
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            binding.drawerLayout.closeDrawers()
+            val path = navLinks[menuItem.itemId]
+            if (path != null) {
+                Log.d("Drawer", "path: $path")
+                val intent = Intent(Intent.ACTION_VIEW, path.toUri())
+                startActivity(intent)
+                true
+            } else {
+                val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
+                Log.d("Drawer", "handled: $handled")
+                handled
+            }
+        }
 
         // Set Default Preferences
         Log.d(LOG_TAG, "Set Default Preferences")
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         PreferenceManager.setDefaultValues(this, R.xml.preferences_widget, false)
 
-        // Update Drawer Header
-        // TODO: Determine how to set status bar color...
-        //WindowCompat.setDecorFitsSystemWindows(window, false)
+        // Update Status Bar
         window.statusBarColor = Color.TRANSPARENT
-        binding.drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT)
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
+        // Set Nav Header Top Padding
         val headerView = binding.navView.getHeaderView(0)
         ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
-            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            view.setPadding(
-                view.paddingLeft,
-                statusBarHeight,
-                view.paddingRight,
-                view.paddingBottom
-            )
+            val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            if (paddingTop > 0) {
+                Log.d("ViewCompat", "paddingTop: $paddingTop")
+                view.setPadding(view.paddingLeft, paddingTop, view.paddingRight, view.paddingBottom)
+            }
             insets
         }
         ViewCompat.requestApplyInsets(headerView)
 
+        // Set Nav Header Text
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
@@ -172,22 +171,22 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
 
-        // TODO: Improve initialization of the WorkRequest
+        // Initialize Work Manager
         val workInterval = preferences.getString("work_interval", null) ?: "0"
-        Log.i(LOG_TAG, "workInterval: $workInterval")
+        Log.d(LOG_TAG, "workInterval: $workInterval")
         if (workInterval != "0") {
             val workRequest =
                 PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)
                     .setConstraints(APP_WORKER_CONSTRAINTS)
                     .build()
-            Log.i(LOG_TAG, "workRequest: $workRequest")
+            Log.d(LOG_TAG, "workRequest: $workRequest")
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
                 "app_worker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
         } else {
-            Log.i(LOG_TAG, "Ensuring Work is Disabled")
+            Log.d(LOG_TAG, "Ensuring Work is Disabled")
             WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
 
@@ -205,18 +204,21 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d(LOG_TAG, "onOptionsItemSelected: $item")
         return when (item.itemId) {
-            R.id.option_github -> {
-                Log.i(LOG_TAG, "onOptionsItemSelected: option_github")
-                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
-                Log.i(LOG_TAG, "onOptionsItemSelected: intent: $intent")
-                startActivity(intent)
+            R.id.option_add_remote -> {
+                Log.i(LOG_TAG, "ADD REMOTE OPTIONS CLICK")
+                val bundle = bundleOf("add_remote" to true)
+                navController.navigate(
+                    R.id.nav_remotes, bundle, NavOptions.Builder()
+                        .setPopUpTo(navController.graph.startDestinationId, false)
+                        .build()
+                )
                 true
             }
 
-            R.id.option_developer -> {
-                Log.d(LOG_TAG, "onOptionsItemSelected: option_developer")
-                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.website_url).toUri())
-                Log.i(LOG_TAG, "onOptionsItemSelected: intent: $intent")
+            R.id.option_github -> {
+                Log.d(LOG_TAG, "onOptionsItemSelected: option_github")
+                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
+                Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
                 startActivity(intent)
                 true
             }

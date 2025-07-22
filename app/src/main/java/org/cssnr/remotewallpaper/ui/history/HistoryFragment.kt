@@ -23,14 +23,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.cssnr.remotewallpaper.MainActivity.Companion.LOG_TAG
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentHistoryBinding
 import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
 
-//import androidx.lifecycle.Observer
-//import androidx.lifecycle.ViewModelProvider
+const val LOG_TAG = "History"
 
 class HistoryFragment : Fragment() {
 
@@ -47,6 +45,12 @@ class HistoryFragment : Fragment() {
         _binding = FragmentHistoryBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(LOG_TAG, "onDestroyView")
+        _binding = null
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -130,12 +134,6 @@ class HistoryFragment : Fragment() {
                 }
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(LOG_TAG, "RemotesFragment - onDestroyView")
-        _binding = null
     }
 
     private suspend fun Context.updateData() {

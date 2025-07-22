@@ -8,12 +8,12 @@ import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import org.cssnr.remotewallpaper.MainActivity.Companion.LOG_TAG
 import org.cssnr.remotewallpaper.ui.home.updateWallpaper
 import org.cssnr.remotewallpaper.widget.WidgetProvider
 
 class AppWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
+
     override suspend fun doWork(): Result {
         Log.i("AppWorker", "START: doWork")
 
@@ -22,7 +22,7 @@ class AppWorker(appContext: Context, workerParams: WorkerParameters) :
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.d("AppWorker", "workInterval: $workInterval")
         if (workInterval == "0") {
-            Log.i(LOG_TAG, "Work is Disabled.")
+            Log.i("AppWorker", "Work is Disabled.")
             return Result.success()
         }
 
