@@ -119,26 +119,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //// Handle Custom Navigation Items
-        //val navLinks = mapOf(
-        //    R.id.nav_item_tiktok to getString(R.string.tiktok_url),
-        //    R.id.nav_itewm_youtube to getString(R.string.youtube_url),
-        //    R.id.nav_item_website to getString(R.string.website_url),
-        //)
-        //binding.navView.setNavigationItemSelectedListener { menuItem ->
-        //    binding.drawerLayout.closeDrawers()
-        //    val path = navLinks[menuItem.itemId]
-        //    if (path != null) {
-        //        Log.d("Drawer", "path: $path")
-        //        val intent = Intent(Intent.ACTION_VIEW, path.toUri())
-        //        startActivity(intent)
-        //        true
-        //    } else {
-        //        val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
-        //        Log.d("Drawer", "handled: $handled")
-        //        handled
-        //    }
-        //}
+        // Handle Custom Navigation Items
+        val navLinks = mapOf(
+            R.id.nav_item_github to getString(R.string.github_url),
+            R.id.nav_itewm_website to getString(R.string.website_url),
+        )
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            binding.drawerLayout.closeDrawers()
+            val path = navLinks[menuItem.itemId]
+            if (path != null) {
+                Log.d("Drawer", "path: $path")
+                val intent = Intent(Intent.ACTION_VIEW, path.toUri())
+                startActivity(intent)
+                true
+            } else {
+                val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
+                Log.d("Drawer", "handled: $handled")
+                handled
+            }
+        }
 
         // Set Default Preferences
         Log.d(LOG_TAG, "Set Default Preferences")

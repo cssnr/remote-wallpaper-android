@@ -23,4 +23,17 @@
             android:icon="@drawable/md_settings_24px"
             android:title="Settings" />
     </group>
+    <item android:title="External Links">
+        <menu>
+            <item
+                android:id="@+id/nav_item_github"
+                android:icon="@drawable/fa_github"
+                android:title="GitHub" />
+
+            <item
+                android:id="@+id/nav_itewm_website"
+                android:icon="@drawable/md_captive_portal_24px"
+                android:title="Website" />
+        </menu>
+    </item>
 </menu>
