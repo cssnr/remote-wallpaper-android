@@ -1,6 +1,5 @@
 package org.cssnr.remotewallpaper.ui.setup
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import android.widget.RadioButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -39,7 +37,7 @@ class SetupFragment : Fragment() {
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(requireContext()) }
 
-    private lateinit var insetsController: WindowInsetsControllerCompat
+    private lateinit var mainActivity: MainActivity
 
     companion object {
         const val LOG_TAG = "SetupFragment"
@@ -64,25 +62,19 @@ class SetupFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         Log.i(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
-        activity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.GONE
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.GONE
-        val mainActivity = (activity as? MainActivity)!!
+        mainActivity = (activity as? MainActivity)!!
+        mainActivity.findViewById<Toolbar>(R.id.toolbar).visibility = View.GONE
+        mainActivity.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         mainActivity.setDrawerLockMode(false)
-
-        insetsController = WindowInsetsControllerCompat(mainActivity.window, mainActivity.window.decorView)
-        val isDark = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_NO
-        Log.i(LOG_TAG, "isDark - $isDark")
-        insetsController.isAppearanceLightStatusBars = isDark
+        mainActivity.setStatusDecor(true)
     }
 
     override fun onStop() {
         Log.i(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
-        activity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
-        (activity as? MainActivity)?.setDrawerLockMode(true)
-
-        insetsController.isAppearanceLightStatusBars = false
-
+        mainActivity.findViewById<Toolbar>(R.id.toolbar).visibility = View.VISIBLE
+        mainActivity.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
+        mainActivity.setDrawerLockMode(true)
+        mainActivity.setStatusDecor(false)
         super.onStop()
     }
 
