@@ -156,8 +156,12 @@ class RemotesFragment : Fragment() {
             //newFragment.show(parentFragmentManager, "AddDialogFragment")
             ctx.showAddDialog(adapter)
         }
-    }
 
+        if (arguments?.getBoolean("add_remote", false) == true) {
+            arguments?.remove("add_remote")
+            ctx.showAddDialog(adapter)
+        }
+    }
 
     private fun Context.showAddDialog(adapter: RemotesAdapter) {
         val inflater = LayoutInflater.from(this)

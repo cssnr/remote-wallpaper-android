@@ -13,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -206,17 +207,20 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d(LOG_TAG, "onOptionsItemSelected: $item")
         return when (item.itemId) {
-            R.id.option_github -> {
-                Log.d(LOG_TAG, "onOptionsItemSelected: option_github")
-                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
-                Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
-                startActivity(intent)
+            R.id.option_add_remote -> {
+                Log.i(LOG_TAG, "ADD REMOTE OPTIONS CLICK")
+                val bundle = bundleOf("add_remote" to true)
+                navController.navigate(
+                    R.id.nav_remotes, bundle, NavOptions.Builder()
+                        .setPopUpTo(navController.graph.startDestinationId, false)
+                        .build()
+                )
                 true
             }
 
-            R.id.option_developer -> {
-                Log.d(LOG_TAG, "onOptionsItemSelected: option_developer")
-                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.website_url).toUri())
+            R.id.option_github -> {
+                Log.d(LOG_TAG, "onOptionsItemSelected: option_github")
+                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
                 Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
                 startActivity(intent)
                 true
