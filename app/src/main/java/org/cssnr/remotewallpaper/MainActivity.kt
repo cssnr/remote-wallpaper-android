@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -150,6 +151,12 @@ class MainActivity : AppCompatActivity() {
         // Update Status Bar
         window.statusBarColor = Color.TRANSPARENT
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
+
+        // Update Navigation Bar
+        window.navigationBarColor = Color.TRANSPARENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.setNavigationBarContrastEnforced(false)
+        }
 
         // Set Nav Header Top Padding
         val headerView = binding.navView.getHeaderView(0)
