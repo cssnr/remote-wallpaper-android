@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:background="@drawable/gradient_header"
+    android:background="@color/ic_launcher_background"
     android:theme="@style/Theme.Material3.Dark">
     <LinearLayout
         android:layout_width="wrap_content"
