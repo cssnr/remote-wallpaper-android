@@ -17,6 +17,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
@@ -74,14 +75,14 @@ class MainActivity : AppCompatActivity() {
         //}
 
         // Bottom Navigation
-        val bottomNav = binding.appBarMain.contentMain.bottomNav
+        val bottomNav = binding.contentMain.appBarMain.bottomNav
         bottomNav.setupWithNavController(navController)
 
         // Navigation Drawer
         binding.navView.setupWithNavController(navController)
 
         // App Bar Configuration
-        setSupportActionBar(binding.appBarMain.contentMain.toolbar)
+        setSupportActionBar(binding.contentMain.appBarMain.toolbar)
         val topLevelItems =
             setOf(R.id.nav_home, R.id.nav_history, R.id.nav_remotes, R.id.nav_settings)
         appBarConfiguration = AppBarConfiguration(topLevelItems, binding.drawerLayout)
@@ -145,16 +146,11 @@ class MainActivity : AppCompatActivity() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         PreferenceManager.setDefaultValues(this, R.xml.preferences_widget, false)
 
-        // Update Drawer Header
-        // TODO: Determine how to set status bar color...
-        //WindowCompat.setDecorFitsSystemWindows(window, false)
+        // Update Status Bar
         window.statusBarColor = Color.TRANSPARENT
-        binding.drawerLayout.setStatusBarBackgroundColor(Color.TRANSPARENT)
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
-        //window.statusBarColor = ContextCompat.getColor(this, R.color.ic_launcher_background)
-        //WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
-        //    false
-
+        // Set Nav Header Top Padding
         val headerView = binding.navView.getHeaderView(0)
         ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
             val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
@@ -166,6 +162,7 @@ class MainActivity : AppCompatActivity() {
         }
         ViewCompat.requestApplyInsets(headerView)
 
+        // Set Nav Header Text
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
@@ -174,7 +171,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
 
-        // TODO: Improve initialization of the WorkRequest
+        // Initialize Work Manager
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.d(LOG_TAG, "workInterval: $workInterval")
         if (workInterval != "0") {
