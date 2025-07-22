@@ -3,7 +3,9 @@ package org.cssnr.remotewallpaper
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -150,6 +152,12 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
+        // Update Navigation Bar
+        window.navigationBarColor = Color.TRANSPARENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.setNavigationBarContrastEnforced(false)
+        }
+
         // Set Nav Header Top Padding
         val headerView = binding.navView.getHeaderView(0)
         ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
@@ -280,10 +288,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setDrawerLockMode(enabled: Boolean) {
-        Log.d(LOG_TAG, "enabled: $enabled")
+        Log.d("setDrawerLockMode", "enabled: $enabled")
         val lockMode =
             if (enabled) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
         Log.d("setDrawerLockMode", "lockMode: $lockMode")
         binding.drawerLayout.setDrawerLockMode(lockMode)
+    }
+
+    fun setStatusDecor(system: Boolean = false) {
+        Log.d("setStatusDecor", "system: $system")
+        val mode = if (system) {
+            val configMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            Log.d("setStatusDecor", "configMode: $configMode")
+            configMode == Configuration.UI_MODE_NIGHT_NO
+        } else {
+            false
+        }
+        Log.d("setStatusDecor", "mode: $mode")
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = mode
     }
 }
