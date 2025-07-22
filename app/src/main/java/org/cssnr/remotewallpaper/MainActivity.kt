@@ -288,7 +288,7 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.setDrawerLockMode(lockMode)
     }
 
-    fun setStatusDecor(system: Boolean) {
+    fun setStatusDecor(system: Boolean = false) {
         Log.d("setStatusDecor", "system: $system")
         val mode = if (system) {
             val configMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK

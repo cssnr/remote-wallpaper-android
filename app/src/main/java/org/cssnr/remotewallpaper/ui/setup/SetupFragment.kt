@@ -37,7 +37,7 @@ class SetupFragment : Fragment() {
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(requireContext()) }
 
-    private lateinit var mainActivity: MainActivity
+    private var mainActivity: MainActivity? = null
 
     companion object {
         const val LOG_TAG = "SetupFragment"
@@ -62,19 +62,19 @@ class SetupFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         Log.i(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
-        mainActivity = (activity as? MainActivity)!!
-        mainActivity.findViewById<Toolbar>(R.id.toolbar).visibility = View.GONE
-        mainActivity.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-        mainActivity.setDrawerLockMode(false)
-        mainActivity.setStatusDecor(true)
+        mainActivity = (activity as? MainActivity)
+        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.GONE
+        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.GONE
+        mainActivity?.setDrawerLockMode(false)
+        mainActivity?.setStatusDecor(true)
     }
 
     override fun onStop() {
         Log.i(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
-        mainActivity.findViewById<Toolbar>(R.id.toolbar).visibility = View.VISIBLE
-        mainActivity.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
-        mainActivity.setDrawerLockMode(true)
-        mainActivity.setStatusDecor(false)
+        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
+        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
+        mainActivity?.setDrawerLockMode(true)
+        mainActivity?.setStatusDecor(false)
         super.onStop()
     }
 
