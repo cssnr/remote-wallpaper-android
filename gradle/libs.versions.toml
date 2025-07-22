@@ -70,7 +70,7 @@ photoview = { group = "io.getstream", name = "photoview", version.ref = "photovi
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-androidx-navigation-safe-args = { id = "androidx.navigation.safeargs", version.ref = "navigationSafeargs" }
+androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationSafeargs" }
 
 #google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 #firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }

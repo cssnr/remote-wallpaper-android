@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         }
         ViewCompat.requestApplyInsets(headerView)
 
-        // Set Nav Header Text
+        // Update Header Text
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
@@ -214,10 +214,13 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.option_add_remote -> {
                 Log.i(LOG_TAG, "ADD REMOTE OPTIONS CLICK")
+                // NOTE: This seems to work to navigation to a top-level desitnation with args...
                 val bundle = bundleOf("add_remote" to true)
+                val menuItem = binding.navView.menu.findItem(R.id.nav_remotes)
+                NavigationUI.onNavDestinationSelected(menuItem, navController)
                 navController.navigate(
                     R.id.nav_remotes, bundle, NavOptions.Builder()
-                        .setPopUpTo(navController.graph.startDestinationId, false)
+                        .setPopUpTo(R.id.nav_remotes, true)
                         .build()
                 )
                 true

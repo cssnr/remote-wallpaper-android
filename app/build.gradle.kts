@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.androidx.navigation.safe.args)
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
     //alias(libs.plugins.google.services)
     //alias(libs.plugins.firebase.crashlytics)
 }
