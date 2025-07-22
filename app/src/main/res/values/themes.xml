@@ -1,13 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.RemoteWallpaper" parent="Theme.Material3.DayNight">
-<!--        <item name="colorPrimary">@color/primary_color</item>-->
-        <item name="colorOnPrimary">@android:color/white</item>
+        <!--<item name="colorPrimary">@color/primary_color</item>-->
         <item name="materialButtonStyle">@style/CustomMaterialButton</item>
+        <item name="actionBarSize">56dp</item>
     </style>
 
     <style name="CustomMaterialButton" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/ic_launcher_background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <!--<item name="android:drawableTint">@android:color/white</item>-->
+        <!--<item name="iconTint">@android:color/white</item>-->
     </style>
 
     <style name="Theme.RemoteWallpaper.NoActionBar">
