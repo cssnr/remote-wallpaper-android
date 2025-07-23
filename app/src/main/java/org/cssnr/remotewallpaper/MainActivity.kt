@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.core.view.size
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -156,6 +157,14 @@ class MainActivity : AppCompatActivity() {
         window.navigationBarColor = Color.TRANSPARENT
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.setNavigationBarContrastEnforced(false)
+        }
+
+        // Set Global Left/Right System Insets
+        ViewCompat.setOnApplyWindowInsetsListener(binding.contentMain.contentMainLayout) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            Log.i("Main[ViewCompat]", "bars: $bars")
+            v.updatePadding(left = bars.left, right = bars.right)
+            insets
         }
 
         // Set Nav Header Top Padding
