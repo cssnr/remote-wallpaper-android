@@ -261,21 +261,21 @@ class MainActivity : AppCompatActivity() {
         val data = intent.data
         Log.d(LOG_TAG, "${action}: $data")
 
-        if (!preferences.contains("first_run_shown")) {
-            Log.i(LOG_TAG, "FIRST RUN DETECTED")
-            preferences.edit { putBoolean("first_run_shown", true) }
-            navController.navigate(
-                R.id.nav_item_setup, null, NavOptions.Builder()
-                    .setPopUpTo(navController.graph.id, true)
-                    .build()
-            )
-        }
+        if (action == Intent.ACTION_MAIN) {
+            Log.d("onNewIntent", "ACTION_MAIN")
 
-        //if (action == Intent.ACTION_MAIN) {
-        //    Log.d("onNewIntent", "ACTION_MAIN")
-        //
-        //    binding.drawerLayout.closeDrawers()
-        //}
+            binding.drawerLayout.closeDrawers()
+
+            if (!preferences.contains("first_run_shown")) {
+                Log.i(LOG_TAG, "FIRST RUN DETECTED")
+                preferences.edit { putBoolean("first_run_shown", true) }
+                navController.navigate(
+                    R.id.nav_item_setup, null, NavOptions.Builder()
+                        .setPopUpTo(navController.graph.id, true)
+                        .build()
+                )
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
