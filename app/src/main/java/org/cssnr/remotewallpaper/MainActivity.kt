@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.core.view.size
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -158,19 +159,27 @@ class MainActivity : AppCompatActivity() {
             window.setNavigationBarContrastEnforced(false)
         }
 
+        // Set Global Left/Right System Insets
+        ViewCompat.setOnApplyWindowInsetsListener(binding.contentMain.contentMainLayout) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            Log.i("Main[ViewCompat]", "bars: $bars")
+            v.updatePadding(left = bars.left, right = bars.right)
+            insets
+        }
+
         // Set Nav Header Top Padding
         val headerView = binding.navView.getHeaderView(0)
-        ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
-            val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            if (paddingTop > 0) {
-                Log.d("ViewCompat", "paddingTop: $paddingTop")
-                view.setPadding(view.paddingLeft, paddingTop, view.paddingRight, view.paddingBottom)
+        ViewCompat.setOnApplyWindowInsetsListener(headerView) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            if (bars.top > 0) {
+                Log.d("ViewCompat", "top: ${bars.top}")
+                v.updatePadding(top = bars.top)
             }
             insets
         }
         ViewCompat.requestApplyInsets(headerView)
 
-        // Set Nav Header Text
+        // Update Header Text
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
@@ -214,10 +223,13 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.option_add_remote -> {
                 Log.i(LOG_TAG, "ADD REMOTE OPTIONS CLICK")
+                // NOTE: This seems to work to navigation to a top-level desitnation with args...
                 val bundle = bundleOf("add_remote" to true)
+                val menuItem = binding.navView.menu.findItem(R.id.nav_remotes)
+                NavigationUI.onNavDestinationSelected(menuItem, navController)
                 navController.navigate(
                     R.id.nav_remotes, bundle, NavOptions.Builder()
-                        .setPopUpTo(navController.graph.startDestinationId, false)
+                        .setPopUpTo(R.id.nav_remotes, true)
                         .build()
                 )
                 true
@@ -249,21 +261,21 @@ class MainActivity : AppCompatActivity() {
         val data = intent.data
         Log.d(LOG_TAG, "${action}: $data")
 
-        if (!preferences.contains("first_run_shown")) {
-            Log.i(LOG_TAG, "FIRST RUN DETECTED")
-            preferences.edit { putBoolean("first_run_shown", true) }
-            navController.navigate(
-                R.id.nav_item_setup, null, NavOptions.Builder()
-                    .setPopUpTo(navController.graph.id, true)
-                    .build()
-            )
-        }
+        if (action == Intent.ACTION_MAIN) {
+            Log.d("onNewIntent", "ACTION_MAIN")
 
-        //if (action == Intent.ACTION_MAIN) {
-        //    Log.d("onNewIntent", "ACTION_MAIN")
-        //
-        //    binding.drawerLayout.closeDrawers()
-        //}
+            binding.drawerLayout.closeDrawers()
+
+            if (!preferences.contains("first_run_shown")) {
+                Log.i(LOG_TAG, "FIRST RUN DETECTED")
+                preferences.edit { putBoolean("first_run_shown", true) }
+                navController.navigate(
+                    R.id.nav_item_setup, null, NavOptions.Builder()
+                        .setPopUpTo(navController.graph.id, true)
+                        .build()
+                )
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:background="@color/ic_launcher_background"
-    android:theme="@style/Theme.Material3.Dark">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +35,7 @@
                 android:id="@+id/header_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 tools:text="v0.0.1-dev" />
         </LinearLayout>
     </LinearLayout>

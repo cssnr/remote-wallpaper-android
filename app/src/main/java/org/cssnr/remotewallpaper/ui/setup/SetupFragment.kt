@@ -59,25 +59,6 @@ class SetupFragment : Fragment() {
         _binding = null
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.i(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
-        mainActivity = (activity as? MainActivity)
-        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.GONE
-        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.GONE
-        mainActivity?.setDrawerLockMode(false)
-        mainActivity?.setStatusDecor(true)
-    }
-
-    override fun onStop() {
-        Log.i(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
-        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
-        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
-        mainActivity?.setDrawerLockMode(true)
-        mainActivity?.setStatusDecor(false)
-        super.onStop()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "onViewCreated - SetupFragment: ${savedInstanceState?.size()}")
@@ -226,5 +207,24 @@ class SetupFragment : Fragment() {
             val dao = RemoteDatabase.getInstance(ctx).remoteDao()
             dao.getAll()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
+        mainActivity = (activity as? MainActivity)
+        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.GONE
+        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.GONE
+        mainActivity?.setDrawerLockMode(false)
+        mainActivity?.setStatusDecor(true)
+    }
+
+    override fun onStop() {
+        Log.i(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
+        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
+        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
+        mainActivity?.setDrawerLockMode(true)
+        mainActivity?.setStatusDecor(false)
+        super.onStop()
     }
 }

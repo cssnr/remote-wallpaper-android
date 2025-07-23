@@ -9,22 +9,19 @@
         android:id="@+id/nav_home"
         android:name="org.cssnr.remotewallpaper.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home">
-    </fragment>
+        tools:layout="@layout/fragment_home"/>
 
     <fragment
         android:id="@+id/nav_history"
         android:name="org.cssnr.remotewallpaper.ui.history.HistoryFragment"
         android:label="History"
-        tools:layout="@layout/fragment_history">
-    </fragment>
+        tools:layout="@layout/fragment_history"/>
 
     <fragment
         android:id="@+id/nav_remotes"
         android:name="org.cssnr.remotewallpaper.ui.remotes.RemotesFragment"
         android:label="Remotes"
-        tools:layout="@layout/fragment_remotes">
-    </fragment>
+        tools:layout="@layout/fragment_remotes"/>
 
     <fragment
         android:id="@+id/nav_settings"
