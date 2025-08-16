@@ -34,13 +34,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
-import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
-import org.cssnr.remotewallpaper.work.AppWorker
-import java.util.concurrent.TimeUnit
+import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
 class MainActivity : AppCompatActivity() {
 
@@ -187,22 +184,15 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
 
-        // Initialize Work Manager
+        // Work Manager
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.d(LOG_TAG, "workInterval: $workInterval")
+        // NOTE: This just ensures work manager is enabled or disabled based on preference
         if (workInterval != "0") {
-            val workRequest =
-                PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)
-                    .setConstraints(APP_WORKER_CONSTRAINTS)
-                    .build()
-            Log.d(LOG_TAG, "workRequest: $workRequest")
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "app_worker",
-                ExistingPeriodicWorkPolicy.KEEP,
-                workRequest
-            )
+            this.enqueueWorkRequest(workInterval, ExistingPeriodicWorkPolicy.KEEP)
         } else {
-            Log.d(LOG_TAG, "Ensuring Work is Disabled")
+            // TODO: Confirm this is necessary...
+            Log.i(LOG_TAG, "Ensuring Work is Disabled")
             WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
 

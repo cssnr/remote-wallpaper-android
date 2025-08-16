@@ -19,8 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
+import androidx.preference.SwitchPreferenceCompat
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.api.FeedbackApi
-import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
-import org.cssnr.remotewallpaper.work.AppWorker
-import java.util.concurrent.TimeUnit
+import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -44,18 +41,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val ctx = requireContext()
 
-        // Background Update Interval
-        val workInterval = findPreference<ListPreference>("work_interval")
-        workInterval?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
-        workInterval?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d("work_interval", "newValue: $newValue")
-            ctx.updateWorkManager(workInterval, newValue)
-        }
-
-        // Update Screens
-        val updateType = findPreference<ListPreference>("set_screens")
-        updateType?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
-
         // Widget Settings
         findPreference<Preference>("open_widget_settings")?.setOnPreferenceClickListener {
             Log.d("open_widget_settings", "setOnPreferenceClickListener")
@@ -66,29 +51,39 @@ class SettingsFragment : PreferenceFragmentCompat() {
             false
         }
 
-        //// Toggle Analytics
-        //val analyticsEnabled = findPreference<SwitchPreferenceCompat>("analytics_enabled")
-        //analyticsEnabled?.setOnPreferenceChangeListener { _, newValue ->
-        //    Log.d("analyticsEnabled", "analytics_enabled: $newValue")
-        //    ctx.toggleAnalytics(analyticsEnabled, newValue)
-        //    false
-        //}
+        // Screens to Update
+        val updateType = findPreference<ListPreference>("set_screens")
+        updateType?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 
-        // Send Feedback
-        findPreference<Preference>("send_feedback")?.setOnPreferenceClickListener {
-            Log.d("sendFeedback", "setOnPreferenceClickListener")
-            ctx.showFeedbackDialog()
+        // Update Interval
+        val workInterval = findPreference<ListPreference>("work_interval")
+        updateWorkIntervalSettings(workInterval?.value)
+        workInterval?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+        workInterval?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("work_interval", "newValue: ${newValue as String}")
+            updateWorkIntervalSettings(newValue)
+            ctx.updateWorkManager(newValue, workInterval.value)
+        }
+
+        // Updates on Metered Connection
+        val workMeteredPref = findPreference<SwitchPreferenceCompat>("work_metered")
+        workMeteredPref?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("work_metered", "newValue: $newValue")
+            val result = newValue as Boolean
+            Log.d("work_metered", "result: $result")
+            workMeteredPref.isChecked = result
+            ctx.enqueueWorkRequest()
             false
         }
 
-        // Show App Info
+        // Application Information
         findPreference<Preference>("app_info")?.setOnPreferenceClickListener {
             Log.d("app_info", "showAppInfoDialog")
             ctx.showAppInfoDialog()
             false
         }
 
-        // Open App Settings
+        // Open Android Settings
         findPreference<Preference>("android_settings")?.setOnPreferenceClickListener {
             Log.d("android_settings", "setOnPreferenceClickListener")
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -97,62 +92,44 @@ class SettingsFragment : PreferenceFragmentCompat() {
             startActivity(intent)
             false
         }
+
+        // Send Feedback
+        findPreference<Preference>("send_feedback")?.setOnPreferenceClickListener {
+            Log.d("sendFeedback", "setOnPreferenceClickListener")
+            ctx.showFeedbackDialog()
+            false
+        }
     }
 
-    fun Context.updateWorkManager(listPref: ListPreference, newValue: Any): Boolean {
-        Log.d("updateWorkManager", "listPref: ${listPref.value} - newValue: $newValue")
-        val value = newValue as? String
-        Log.d("updateWorkManager", "String value: $value")
-        if (value.isNullOrEmpty()) {
-            Log.w("updateWorkManager", "NULL OR EMPTY - false")
+    private fun updateWorkIntervalSettings(selectedValue: String?) {
+        Log.d("updateWorkIntervalSettings", "selectedValue: $selectedValue")
+        if (selectedValue != null) {
+            val enabled = selectedValue != "0"
+            Log.d("updateWorkIntervalSettings", "enabled: $enabled")
+            findPreference<SwitchPreferenceCompat>("work_metered")?.isEnabled = enabled
+        }
+    }
+
+    private fun Context.updateWorkManager(newValue: String?, curValue: String? = null): Boolean {
+        Log.i("updateWorkManager", "newValue: $newValue - curValue: $curValue")
+        if (newValue.isNullOrEmpty()) {
+            Log.w("updateWorkManager", "newValue.isNullOrEmpty() - false")
             return false
-        } else if (listPref.value == value) {
-            Log.i("updateWorkManager", "NO CHANGE - false")
+        } else if (curValue == newValue) {
+            Log.i("updateWorkManager", "curValue == newValue - false")
             return false
         } else {
-            Log.i("updateWorkManager", "RESCHEDULING WORK - true")
-            val interval = value.toLongOrNull()
-            Log.i("updateWorkManager", "interval: $interval")
-            if (interval == null || interval == 0L) {
-                Log.i("updateWorkManager", "DISABLING WORK")
+            Log.d("updateWorkManager", "ELSE - RESCHEDULING WORK - true")
+            if (newValue == "0" || newValue.toLongOrNull() == null) {
+                Log.i("updateWorkManager", "DISABLING WORK - newValue is 0 or null")
                 WorkManager.getInstance(this).cancelUniqueWork("app_worker")
                 return true
             } else {
-                val newRequest =
-                    PeriodicWorkRequestBuilder<AppWorker>(interval, TimeUnit.MINUTES)
-                        .setInitialDelay(interval, TimeUnit.MINUTES)
-                        .setConstraints(APP_WORKER_CONSTRAINTS)
-                        .build()
-                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                    "app_worker",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    newRequest
-                )
+                enqueueWorkRequest(newValue)
                 return true
             }
         }
     }
-
-    //fun Context.toggleAnalytics(switchPreference: SwitchPreferenceCompat, newValue: Any) {
-    //    Log.d("toggleAnalytics", "newValue: $newValue")
-    //    if (newValue as Boolean) {
-    //        Log.d("toggleAnalytics", "ENABLE Analytics")
-    //        Firebase.analytics.setAnalyticsCollectionEnabled(true)
-    //        switchPreference.isChecked = true
-    //    } else {
-    //        MaterialAlertDialogBuilder(this)
-    //            .setTitle("Please Reconsider")
-    //            .setMessage("Analytics are only used to fix bugs and make improvements.")
-    //            .setPositiveButton("Disable Anyway") { _, _ ->
-    //                Log.d("toggleAnalytics", "DISABLE Analytics")
-    //                Firebase.analytics.logEvent("disable_analytics", null)
-    //                Firebase.analytics.setAnalyticsCollectionEnabled(false)
-    //                switchPreference.isChecked = false
-    //            }
-    //            .setNegativeButton("Cancel", null)
-    //            .show()
-    //    }
-    //}
 
     fun Context.showFeedbackDialog() {
         val inflater = LayoutInflater.from(this)
@@ -189,11 +166,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             "Feedback Sent. Thank You!"
                         } else {
                             sendButton.isEnabled = true
-                            //val params = Bundle().apply {
-                            //    putString("message", response.message())
-                            //    putString("code", response.code().toString())
-                            //}
-                            //Firebase.analytics.logEvent("send_feedback_failed", params)
                             "Error: ${response.code()}"
                         }
                         Log.d("showFeedbackDialog", "msg: $msg")
