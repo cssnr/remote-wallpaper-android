@@ -229,25 +229,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
         Log.d(LOG_TAG, "websiteText: $websiteText")
 
         val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
-        val versionName = packageInfo.versionName
-        Log.d(LOG_TAG, "versionName: $versionName")
+        val formattedVersion = getString(
+            R.string.version_code_string,
+            packageInfo.versionName,
+            packageInfo.versionCode.toString()
+        )
+        Log.d("showAppInfoDialog", "formattedVersion: $formattedVersion")
 
-        val formattedVersion = getString(R.string.version_string, versionName)
-        Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+        appId.text = this.packageName
+        appVersion.text = formattedVersion
 
-        val dialog = MaterialAlertDialogBuilder(this)
+        appId.text = this.packageName
+        appVersion.text = formattedVersion
+        sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
+        sourceLink.movementMethod = LinkMovementMethod.getInstance()
+        websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
+        websiteLink.movementMethod = LinkMovementMethod.getInstance()
+
+        MaterialAlertDialogBuilder(this)
             .setView(view)
             .setNegativeButton("Close", null)
             .create()
-
-        dialog.setOnShowListener {
-            appId.text = this.packageName
-            appVersion.text = formattedVersion
-            sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
-            sourceLink.movementMethod = LinkMovementMethod.getInstance()
-            websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
-            websiteLink.movementMethod = LinkMovementMethod.getInstance()
-        }
-        dialog.show()
+            .show()
     }
 }

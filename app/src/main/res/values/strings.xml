@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Remote Wallpaper</string>
     <string name="version_string">v%s</string>
+    <string name="version_code_string">%s (%s)</string>
 
     <string name="title_home">Home</string>
     <string name="action_settings">Settings</string>
