@@ -259,7 +259,7 @@ fun Context.downloadImage(url: String): Response {
 
     response.use {
         if (!it.isSuccessful) throw Exception("Failed to download image: $it")
-        val body = it.body ?: throw Exception("Empty response body")
+        val body = it.body
         val imageFile = File(filesDir, "wallpaper.img")
 
         body.byteStream().use { input ->
@@ -294,7 +294,7 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
     scaled.recycle()
 }
 
-fun Context.scaleAndCropCenter(src: Bitmap, targetWidth: Int, targetHeight: Int): Bitmap {
+fun scaleAndCropCenter(src: Bitmap, targetWidth: Int, targetHeight: Int): Bitmap {
     // targetWidth: WallpaperManager.desiredMinimumWidth
     // targetHeight: WallpaperManager.desiredMinimumHeight
     Log.d("Cropper", "target W=$targetWidth H=$targetHeight")

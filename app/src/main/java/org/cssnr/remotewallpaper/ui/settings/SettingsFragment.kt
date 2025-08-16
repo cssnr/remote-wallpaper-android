@@ -31,9 +31,6 @@ import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
 import org.cssnr.remotewallpaper.work.AppWorker
 import java.util.concurrent.TimeUnit
 
-//import com.google.firebase.analytics.ktx.analytics
-//import com.google.firebase.ktx.Firebase
-
 class SettingsFragment : PreferenceFragmentCompat() {
 
     companion object {

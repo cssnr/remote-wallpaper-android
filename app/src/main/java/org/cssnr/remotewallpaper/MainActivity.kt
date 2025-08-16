@@ -44,16 +44,16 @@ import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val LOG_TAG = "RemoteWallpaper"
-    }
-
     private lateinit var navController: NavController
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+
+    companion object {
+        const val LOG_TAG = "RemoteWallpaper"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,17 +167,16 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Set Nav Header Top Padding
+        // Update Header Padding
         val headerView = binding.navView.getHeaderView(0)
-        ViewCompat.setOnApplyWindowInsetsListener(headerView) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            Log.d("ViewCompat", "binding.root: top: ${bars.top}")
             if (bars.top > 0) {
-                Log.d("ViewCompat", "top: ${bars.top}")
-                v.updatePadding(top = bars.top)
+                headerView.updatePadding(top = bars.top)
             }
             insets
         }
-        ViewCompat.requestApplyInsets(headerView)
 
         // Update Header Text
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
