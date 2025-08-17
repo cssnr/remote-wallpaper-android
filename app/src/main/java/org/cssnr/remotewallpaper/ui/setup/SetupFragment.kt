@@ -15,9 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,9 +23,7 @@ import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentSetupBinding
 import org.cssnr.remotewallpaper.db.RemoteDatabase
-import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
-import org.cssnr.remotewallpaper.work.AppWorker
-import java.util.concurrent.TimeUnit
+import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
 class SetupFragment : Fragment() {
 
@@ -151,21 +146,10 @@ class SetupFragment : Fragment() {
             binding.btnStart.isEnabled = false
             binding.btnDownload.isEnabled = false
 
-            // TODO: Duplication from SettingsFragment and MainActivity...
             val workInterval = preferences.getString("work_interval", null) ?: "0"
             Log.d(LOG_TAG, "startAppListener: workInterval: $workInterval")
             if (workInterval != "0") {
-                val interval = workInterval.toLong()
-                val newRequest =
-                    PeriodicWorkRequestBuilder<AppWorker>(interval, TimeUnit.MINUTES)
-                        .setInitialDelay(interval, TimeUnit.MINUTES)
-                        .setConstraints(APP_WORKER_CONSTRAINTS)
-                        .build()
-                WorkManager.getInstance(ctx).enqueueUniquePeriodicWork(
-                    "app_worker",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    newRequest
-                )
+                ctx.enqueueWorkRequest(workInterval)
             }
 
             // Arguments

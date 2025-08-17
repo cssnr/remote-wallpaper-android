@@ -1,9 +1,9 @@
-[![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
 [![Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=github&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
-[![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/remote-wallpaper-android?logo=htmx)](https://github.com/cssnr/remote-wallpaper-android)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/remote-wallpaper-android?logo=github&label=updated)](https://github.com/cssnr/remote-wallpaper-android/graphs/commit-activity)
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/cssnr/remote-wallpaper-android?logo=bookstack&logoColor=white&label=repo%20size)](https://github.com/cssnr/remote-wallpaper-android)
+[![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/remote-wallpaper-android?logo=htmx)](https://github.com/cssnr/remote-wallpaper-android)
 [![GitHub Discussions](https://img.shields.io/github/discussions/cssnr/remote-wallpaper-android)](https://github.com/cssnr/remote-wallpaper-android/discussions)
 [![GitHub Forks](https://img.shields.io/github/forks/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/forks)
 [![GitHub Repo Stars](https://img.shields.io/github/stars/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/stargazers)
@@ -48,15 +48,13 @@ Example Remotes:
 
 </details>
 
-_Note: Until published on the play store, you may need to allow installation of apps from unknown sources._
-
-- Supports Android 8 (API 26) 2017 +
-
-Downloading and Installing the [apk](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
-should take you to the settings area to allow installation if not already enabled.
-For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website).
+_Note: If installing directly, you may need to allow installation of apps from unknown sources.  
+For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website)._
 
 <details><summary>View Manual Steps to Install from Unknown Sources</summary>
+
+Note: Downloading and Installing the [apk](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+should take you to the settings area to allow installation if not already enabled. Otherwise:
 
 1. Go to your device settings.
 2. Search for "Install unknown apps" or similar.

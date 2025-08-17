@@ -34,19 +34,12 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
-import org.cssnr.remotewallpaper.work.APP_WORKER_CONSTRAINTS
-import org.cssnr.remotewallpaper.work.AppWorker
-import java.util.concurrent.TimeUnit
+import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
 class MainActivity : AppCompatActivity() {
-
-    companion object {
-        const val LOG_TAG = "RemoteWallpaper"
-    }
 
     private lateinit var navController: NavController
     private lateinit var navHostFragment: NavHostFragment
@@ -54,6 +47,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+
+    companion object {
+        const val LOG_TAG = "RemoteWallpaper"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,20 +164,19 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Set Nav Header Top Padding
+        // Update Header Padding
         val headerView = binding.navView.getHeaderView(0)
-        ViewCompat.setOnApplyWindowInsetsListener(headerView) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            Log.d("ViewCompat", "binding.root: top: ${bars.top}")
             if (bars.top > 0) {
-                Log.d("ViewCompat", "top: ${bars.top}")
-                v.updatePadding(top = bars.top)
+                headerView.updatePadding(top = bars.top)
             }
             insets
         }
-        ViewCompat.requestApplyInsets(headerView)
 
         // Update Header Text
-        val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
         val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
@@ -188,22 +184,15 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
 
-        // Initialize Work Manager
+        // Work Manager
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.d(LOG_TAG, "workInterval: $workInterval")
+        // NOTE: This just ensures work manager is enabled or disabled based on preference
         if (workInterval != "0") {
-            val workRequest =
-                PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)
-                    .setConstraints(APP_WORKER_CONSTRAINTS)
-                    .build()
-            Log.d(LOG_TAG, "workRequest: $workRequest")
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "app_worker",
-                ExistingPeriodicWorkPolicy.KEEP,
-                workRequest
-            )
+            enqueueWorkRequest(workInterval, ExistingPeriodicWorkPolicy.KEEP)
         } else {
-            Log.d(LOG_TAG, "Ensuring Work is Disabled")
+            // TODO: Confirm this is necessary...
+            Log.i(LOG_TAG, "Ensuring Work is Disabled")
             WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
 

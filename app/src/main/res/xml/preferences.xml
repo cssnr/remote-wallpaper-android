@@ -6,14 +6,11 @@
         android:key="app_settings"
         android:title="App Settings">
 
-        <ListPreference
-            android:key="work_interval"
-            android:title="Update Interval"
-            android:defaultValue="0"
-            android:icon="@drawable/md_timer_play_24px"
-            android:entries="@array/work_interval_entries"
-            android:entryValues="@array/work_interval_values"
-            tools:summary="1 Hour" />
+        <Preference
+            android:key="open_widget_settings"
+            android:title="Widget Settings"
+            android:summary="Text and Background Colors"
+            android:icon="@drawable/md_widgets_24px" />
 
         <ListPreference
             android:key="set_screens"
@@ -24,30 +21,26 @@
             android:entryValues="@array/set_screens_values"
             tools:summary="Home and Lock Screen" />
 
-        <Preference
-            android:key="open_widget_settings"
-            android:title="Widget Settings"
-            android:summary="Text and Background Colors"
-            android:icon="@drawable/md_widgets_24px" />
+        <ListPreference
+            android:key="work_interval"
+            android:title="Update Interval"
+            android:defaultValue="0"
+            android:icon="@drawable/md_timer_play_24px"
+            android:entries="@array/work_interval_entries"
+            android:entryValues="@array/work_interval_values"
+            tools:summary="1 Hour" />
 
-        <!--<SwitchPreferenceCompat-->
-        <!--    android:key="analytics_enabled"-->
-        <!--    android:title="Enable Analytics"-->
-        <!--    android:summary="Help Fix Bugs"-->
-        <!--    android:icon="@drawable/md_monitoring_24px"-->
-        <!--    android:defaultValue="true" />-->
+        <SwitchPreferenceCompat
+            android:key="work_metered"
+            android:title="Updates on Metered Connection"
+            android:icon="@drawable/md_signal_cellular_alt_24"
+            android:defaultValue="true"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="app_information"
         android:title="App Information">
-
-        <Preference
-            android:key="send_feedback"
-            android:title="Send Feedback"
-            android:summary="Submit Suggestions or Bugs"
-            android:icon="@drawable/md_thumb_up_24px" />
 
         <Preference
             android:key="app_info"
@@ -60,6 +53,12 @@
             android:title="Open Android Settings"
             android:summary="Syetem App Information"
             android:icon="@drawable/md_mobile_gear_24px" />
+
+        <Preference
+            android:key="send_feedback"
+            android:title="Send Feedback"
+            android:summary="Submit Suggestions or Bugs"
+            android:icon="@drawable/md_thumb_up_24px" />
 
     </PreferenceCategory>
 

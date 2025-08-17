@@ -18,14 +18,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentRemotesBinding
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
-import java.net.URL
-
-//import androidx.lifecycle.Observer
-//import androidx.lifecycle.ViewModelProvider
 
 const val LOG_TAG = "Remotes"
 
@@ -147,7 +144,7 @@ class RemotesFragment : Fragment() {
         //    }
         //}
 
-        binding.addStation.setOnClickListener { view ->
+        binding.addStation.setOnClickListener {
             Log.d(LOG_TAG, "binding.appBarMain.fab.setOnClickListener")
             ////Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             ////    .setAction("Action", null)
@@ -184,7 +181,7 @@ class RemotesFragment : Fragment() {
                 if (url.isEmpty()) {
                     sendButton.isEnabled = true
                     input.error = "URL is Required"
-                } else if (!isURL(url)) {
+                } else if (!isStringUrl(url)) {
                     sendButton.isEnabled = true
                     input.error = "Invalid URL"
                 } else {
@@ -228,14 +225,12 @@ class RemotesFragment : Fragment() {
             .show()
     }
 
-    fun isURL(url: String): Boolean {
-        return try {
-            URL(url)
-            Log.d("isURL", "TRUE")
-            true
-        } catch (_: Exception) {
-            Log.d("isURL", "FALSE")
-            false
-        }
+    private fun isStringUrl(input: String): Boolean {
+        val url = input.toHttpUrlOrNull() ?: return false
+        if (input != url.toString()) return false
+        if (url.scheme !in listOf("http", "https")) return false
+        if (url.host.isBlank()) return false
+        if (url.toString().length > 2048) return false
+        return true
     }
 }

@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="28dp"
-    android:paddingHorizontal="20dp">
+    tools:ignore="HardcodedText">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="24dp"
+    android:paddingHorizontal="24dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/image_label"
@@ -16,23 +26,41 @@
         android:layout_marginBottom="8dp"
         android:textAppearance="?attr/textAppearanceBody1"
         android:text="Image URL"
-        android:labelFor="@+id/image_url"
         android:drawablePadding="16dp"
         app:drawableEndCompat="@drawable/md_http_24px" />
 
-    <EditText
-        android:id="@+id/image_url"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:padding="8dp"
-        android:autofillHints="Request Features, Report Issues, or Send Feedback."
-        android:inputType="textUri"
-        android:minLines="3"
-        android:maxLines="3"
-        android:maxLength="800"
-        android:gravity="top|start"
-        android:background="?attr/colorSurfaceContainerLow"
-        tools:text="@tools:sample/lorem/random" />
+        android:layout_marginBottom="12dp"
+        android:clipChildren="false">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_max="488dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/image_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:padding="8dp"
+            android:hint="Remote URL"
+            android:autofillHints=""
+            android:inputType="textUri"
+            android:minLines="3"
+            android:maxLines="3"
+            android:maxLength="800"
+            android:gravity="top|start"
+            android:background="?attr/colorSurfaceContainerLow"
+            tools:text="" />
+    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
+</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
