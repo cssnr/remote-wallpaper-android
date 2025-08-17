@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Update Header Text
-        val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
         val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "workInterval: $workInterval")
         // NOTE: This just ensures work manager is enabled or disabled based on preference
         if (workInterval != "0") {
-            this.enqueueWorkRequest(workInterval, ExistingPeriodicWorkPolicy.KEEP)
+            enqueueWorkRequest(workInterval, ExistingPeriodicWorkPolicy.KEEP)
         } else {
             // TODO: Confirm this is necessary...
             Log.i(LOG_TAG, "Ensuring Work is Disabled")
