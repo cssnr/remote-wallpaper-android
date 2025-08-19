@@ -5,8 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.text.Html
-import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -131,16 +129,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    fun Context.showFeedbackDialog() {
+    private fun Context.showFeedbackDialog() {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.dialog_feedback, null)
-        val input = view.findViewById<EditText>(R.id.feedback_input)
-        val link = view.findViewById<TextView>(R.id.github_link)
 
-        link.paint?.isUnderlineText = true
-        link.setOnClickListener {
-            Log.d(LOG_TAG, "link.tag: ${link.tag}")
-            startActivity(Intent(Intent.ACTION_VIEW, link.tag.toString().toUri()))
+        val input = view.findViewById<EditText>(R.id.feedback_input)
+        val websiteLink = view.findViewById<TextView>(R.id.website_link)
+        val githubLink = view.findViewById<TextView>(R.id.github_link)
+
+        websiteLink.paint?.isUnderlineText = true
+        websiteLink.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, websiteLink.tag.toString().toUri()))
+        }
+        githubLink.paint?.isUnderlineText = true
+        githubLink.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, githubLink.tag.toString().toUri()))
         }
 
         val dialog = MaterialAlertDialogBuilder(this)
@@ -178,24 +181,26 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             input.requestFocus()
         }
-
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send") { _, _ -> }
         dialog.show()
     }
 
-    fun Context.showAppInfoDialog() {
+    private fun Context.showAppInfoDialog() {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.dialog_app_info, null)
+
         val appId = view.findViewById<TextView>(R.id.app_identifier)
-        val appVersion = view.findViewById<TextView>(R.id.app_version)
-        val sourceLink = view.findViewById<TextView>(R.id.source_link)
+        val versionName = view.findViewById<TextView>(R.id.version_name)
+        val githubLink = view.findViewById<TextView>(R.id.github_link)
         val websiteLink = view.findViewById<TextView>(R.id.website_link)
 
-        val sourceText = getString(R.string.github_link, sourceLink.tag)
-        Log.d(LOG_TAG, "sourceText: $sourceText")
-
-        val websiteText = getString(R.string.website_link, websiteLink.tag)
-        Log.d(LOG_TAG, "websiteText: $websiteText")
+        githubLink.paint?.isUnderlineText = true
+        githubLink.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, githubLink.tag.toString().toUri()))
+        }
+        websiteLink.paint?.isUnderlineText = true
+        websiteLink.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, websiteLink.tag.toString().toUri()))
+        }
 
         val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
         val formattedVersion = getString(
@@ -206,14 +211,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         Log.d("showAppInfoDialog", "formattedVersion: $formattedVersion")
 
         appId.text = this.packageName
-        appVersion.text = formattedVersion
-
-        appId.text = this.packageName
-        appVersion.text = formattedVersion
-        sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
-        sourceLink.movementMethod = LinkMovementMethod.getInstance()
-        websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
-        websiteLink.movementMethod = LinkMovementMethod.getInstance()
+        versionName.text = formattedVersion
 
         MaterialAlertDialogBuilder(this)
             .setView(view)
