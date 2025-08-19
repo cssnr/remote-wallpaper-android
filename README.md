@@ -1,10 +1,12 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
 [![Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=github&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
+[![Release](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/release.yaml?logo=github&logoColor=white&label=release)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/release.yaml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/remote-wallpaper-android?logo=github&label=updated)](https://github.com/cssnr/remote-wallpaper-android/graphs/commit-activity)
+[![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=gradle&label=AGP)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/cssnr/remote-wallpaper-android?logo=bookstack&logoColor=white&label=repo%20size)](https://github.com/cssnr/remote-wallpaper-android)
 [![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/remote-wallpaper-android?logo=htmx)](https://github.com/cssnr/remote-wallpaper-android)
-[![GitHub Discussions](https://img.shields.io/github/discussions/cssnr/remote-wallpaper-android)](https://github.com/cssnr/remote-wallpaper-android/discussions)
+[![GitHub Discussions](https://img.shields.io/github/discussions/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/discussions)
 [![GitHub Forks](https://img.shields.io/github/forks/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/forks)
 [![GitHub Repo Stars](https://img.shields.io/github/stars/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/stargazers)
 [![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github&label=org%20stars)](https://cssnr.com/)
@@ -13,7 +15,7 @@
 
 # Remote Wallpaper Android
 
-[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=A4C639)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=3ddc84)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 
 - [Install](#Install)
   - [Setup](#Setup)
@@ -40,7 +42,7 @@ Example Remotes:
 [![Get on GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![Get on Obtainium](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android)
 
-<details><summary>📲 Click to View QR Codes 📸</summary>
+<details><summary>📲 Click to View QR Codes 📸 Supports Android 8 (API 26) 2017 +</summary>
 
 [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 
