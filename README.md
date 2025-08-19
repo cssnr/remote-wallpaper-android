@@ -15,7 +15,7 @@
 
 # Remote Wallpaper Android
 
-[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=A4C639)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=3ddc84)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 
 - [Install](#Install)
   - [Setup](#Setup)
