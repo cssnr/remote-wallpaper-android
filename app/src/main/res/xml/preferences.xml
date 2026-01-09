@@ -15,9 +15,9 @@
         <SwitchPreferenceCompat
             android:key="crop_wallpaper"
             android:title="Crop Wallpaper for Device"
-            android:icon="@drawable/md_signal_cellular_alt_24"
+            android:icon="@drawable/md_crop_24px"
             android:defaultValue="true"
-            tools:summary="Ensures Parallax Works" />
+            tools:summary="Ensure Parallax Works" />
 
         <ListPreference
             android:key="set_screens"

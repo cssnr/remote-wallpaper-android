@@ -84,6 +84,7 @@ should take you to the settings area to allow installation if not already enable
 - Automatically rotate at configurable intervals.
 - Widget with refresh button and updated time.
 - History of all wallpaper used with links.
+- Option to crop wallpaper for device.
 
 ### Planned
 
