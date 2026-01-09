@@ -12,6 +12,13 @@
             android:summary="Text and Background Colors"
             android:icon="@drawable/md_widgets_24px" />
 
+        <SwitchPreferenceCompat
+            android:key="crop_wallpaper"
+            android:title="Crop Wallpaper for Device"
+            android:icon="@drawable/md_signal_cellular_alt_24"
+            android:defaultValue="true"
+            tools:summary="Ensures Parallax Works" />
+
         <ListPreference
             android:key="set_screens"
             android:title="Screens to Update"
