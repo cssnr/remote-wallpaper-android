@@ -1,9 +1,11 @@
 package org.cssnr.remotewallpaper.ui.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +35,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val LOG_TAG = "Settings"
     }
 
+    @SuppressLint("BatteryLife")
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         Log.d("SettingsFragment", "rootKey: $rootKey")
         setPreferencesFromResource(R.xml.preferences, rootKey)
@@ -71,6 +74,35 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Log.d("work_metered", "result: $result")
             workMeteredPref.isChecked = result
             ctx.enqueueWorkRequest()
+            false
+        }
+
+        // Background Restriction
+        Log.i("onCreatePreferences", "ctx.packageName: ${ctx.packageName}")
+        val pm = ctx.getSystemService(PowerManager::class.java)
+        val batteryRestrictedButton = findPreference<Preference>("battery_unrestricted")
+        fun checkBackground(): Boolean {
+            val isIgnoring = pm.isIgnoringBatteryOptimizations(ctx.packageName)
+            Log.i("onCreatePreferences", "isIgnoring: $isIgnoring")
+            if (isIgnoring) {
+                Log.i("onCreatePreferences", "DISABLING BACKGROUND BUTTON")
+                batteryRestrictedButton?.setSummary("Permission Already Granted")
+                batteryRestrictedButton?.isEnabled = false
+            }
+            return isIgnoring
+        }
+        checkBackground()
+        batteryRestrictedButton?.setOnPreferenceClickListener {
+            Log.d("onCreatePreferences", "batteryRestrictedButton?.setOnPreferenceClickListener")
+            if (!checkBackground()) {
+                val uri = "package:${ctx.packageName}".toUri()
+                Log.d("onCreatePreferences", "uri: $uri")
+                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = uri
+                }
+                Log.d("onCreatePreferences", "intent: $intent")
+                startActivity(intent)
+            }
             false
         }
 
