@@ -17,7 +17,7 @@
             android:title="Crop Wallpaper for Device"
             android:icon="@drawable/md_crop_24px"
             android:defaultValue="true"
-            tools:summary="Ensure Parallax Works" />
+            android:summary="Ensure Parallax Works"/>
 
         <ListPreference
             android:key="set_screens"
@@ -42,6 +42,13 @@
             android:title="Updates on Metered Connection"
             android:icon="@drawable/md_signal_cellular_alt_24"
             android:defaultValue="true"/>
+
+        <Preference
+            android:key="battery_unrestricted"
+            android:title="Remove Background Restriction"
+            android:summary="To Improve Widget Updates"
+            android:icon="@drawable/md_battery_profile_24px"
+            android:shouldDisableView="true" />
 
     </PreferenceCategory>
 

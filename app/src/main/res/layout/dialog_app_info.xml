@@ -112,7 +112,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textColor="?attr/colorPrimary"
-                android:text="cssnr/noaa-weather-android"
+                android:text="cssnr/remote-wallpaper-android"
                 android:tag="@string/github_url" />
             <TextView
                 android:id="@+id/website_link"
