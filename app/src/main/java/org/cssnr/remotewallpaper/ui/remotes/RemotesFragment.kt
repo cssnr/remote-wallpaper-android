@@ -227,7 +227,7 @@ class RemotesFragment : Fragment() {
 
     private fun isStringUrl(input: String): Boolean {
         val url = input.toHttpUrlOrNull() ?: return false
-        if (input != url.toString()) return false
+        // if (input != url.toString()) return false
         if (url.scheme !in listOf("http", "https")) return false
         if (url.host.isBlank()) return false
         if (url.toString().length > 2048) return false
