@@ -1,15 +1,17 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
-[![Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=github&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
-[![Release](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/release.yaml?logo=github&logoColor=white&label=release)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/release.yaml)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/remote-wallpaper-android?logo=github&label=updated)](https://github.com/cssnr/remote-wallpaper-android/graphs/commit-activity)
 [![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=gradle&label=AGP)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
-[![GitHub Repo Size](https://img.shields.io/github/repo-size/cssnr/remote-wallpaper-android?logo=bookstack&logoColor=white&label=repo%20size)](https://github.com/cssnr/remote-wallpaper-android)
-[![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/remote-wallpaper-android?logo=htmx)](https://github.com/cssnr/remote-wallpaper-android)
-[![GitHub Discussions](https://img.shields.io/github/discussions/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/discussions)
-[![GitHub Forks](https://img.shields.io/github/forks/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/forks)
-[![GitHub Repo Stars](https://img.shields.io/github/stars/cssnr/remote-wallpaper-android?style=flat&logo=github)](https://github.com/cssnr/remote-wallpaper-android/stargazers)
-[![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github&label=org%20stars)](https://cssnr.com/)
+[![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
+[![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/release.yaml)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/remote-wallpaper-android?logo=listenhub&label=updated)](https://github.com/cssnr/remote-wallpaper-android/pulse)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/cssnr/remote-wallpaper-android?logo=buffer&label=repo%20size)](https://github.com/cssnr/remote-wallpaper-android?tab=readme-ov-file#readme)
+[![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/remote-wallpaper-android?logo=devbox)](https://github.com/cssnr/remote-wallpaper-android?tab=readme-ov-file#readme)
+[![GitHub Contributors](https://img.shields.io/github/contributors-anon/cssnr/remote-wallpaper-android?logo=southwestairlines)](https://github.com/cssnr/remote-wallpaper-android/graphs/contributors)
+[![GitHub Issues](https://img.shields.io/github/issues/cssnr/remote-wallpaper-android?logo=codeforces&logoColor=white)](https://github.com/cssnr/remote-wallpaper-android/issues)
+[![GitHub Discussions](https://img.shields.io/github/discussions/cssnr/remote-wallpaper-android?logo=theconversation)](https://github.com/cssnr/remote-wallpaper-android/discussions)
+[![GitHub Forks](https://img.shields.io/github/forks/cssnr/remote-wallpaper-android?style=flat&logo=forgejo&logoColor=white)](https://github.com/cssnr/remote-wallpaper-android/forks)
+[![GitHub Repo Stars](https://img.shields.io/github/stars/cssnr/remote-wallpaper-android?style=flat&logo=gleam&logoColor=white)](https://github.com/cssnr/remote-wallpaper-android/stargazers)
+[![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=apachespark&logoColor=white&label=org%20stars)](https://cssnr.github.io/)
 [![Discord](https://img.shields.io/discord/899171661457293343?logo=discord&logoColor=white&label=discord&color=7289da)](https://discord.gg/wXy6m2X8wY)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-72a5f2?logo=kofi&label=support)](https://ko-fi.com/cssnr)
 
@@ -209,3 +211,11 @@ You can also star this project on GitHub and support other related projects:
 - [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)
+
+<a href="https://github.com/cssnr/remote-wallpaper-android/stargazers">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right" />
+ </picture>
+</a>
