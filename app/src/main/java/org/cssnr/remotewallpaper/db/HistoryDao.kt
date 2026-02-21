@@ -56,7 +56,7 @@ data class HistoryItem(
     var error: String? = null,
 )
 
-@Database(entities = [HistoryItem::class], version = 1)
+@Database(entities = [HistoryItem::class], version = 1, exportSchema = false)
 abstract class HistoryDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
 

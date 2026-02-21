@@ -71,7 +71,7 @@ data class Remote(
 )
 
 
-@Database(entities = [Remote::class], version = 1)
+@Database(entities = [Remote::class], version = 1, exportSchema = false)
 abstract class RemoteDatabase : RoomDatabase() {
     abstract fun remoteDao(): RemoteDao
 
