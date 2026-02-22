@@ -5,12 +5,12 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -55,7 +55,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(LOG_TAG, "onCreate: savedInstanceState: ${savedInstanceState?.size()}")
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            //statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+
+            //navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -147,14 +153,14 @@ class MainActivity : AppCompatActivity() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences_widget, false)
 
         // Update Status Bar
-        window.statusBarColor = Color.TRANSPARENT
+        //window.statusBarColor = Color.TRANSPARENT
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
-        // Update Navigation Bar
-        window.navigationBarColor = Color.TRANSPARENT
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            window.setNavigationBarContrastEnforced(false)
-        }
+        //// Update Navigation Bar - NOTE: this is now handled by enableEdgeToEdge()
+        //window.navigationBarColor = Color.TRANSPARENT
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        //    window.setNavigationBarContrastEnforced(false)
+        //}
 
         // Set Global Left/Right System Insets
         ViewCompat.setOnApplyWindowInsetsListener(binding.contentMain.contentMainLayout) { v, insets ->
@@ -212,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.option_add_remote -> {
                 Log.i(LOG_TAG, "ADD REMOTE OPTIONS CLICK")
-                // NOTE: This seems to work to navigation to a top-level desitnation with args...
+                // NOTE: This seems to work to navigation to a top-level destination with args...
                 val bundle = bundleOf("add_remote" to true)
                 val menuItem = binding.navView.menu.findItem(R.id.nav_remotes)
                 NavigationUI.onNavDestinationSelected(menuItem, navController)

@@ -21,7 +21,7 @@ class RemotesAdapter(
 
     private lateinit var context: Context
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemWrapper: LinearLayout = view.findViewById(R.id.item_wrapper)
         val propertiesName: TextView = view.findViewById(R.id.properties_name)
         //val propertiesID: TextView = view.findViewById(R.id.properties_id)
