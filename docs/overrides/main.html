@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block site_meta %} {{ super() }} {% set path =
+'/cssnr/remote-wallpaper-android' %}
+
+<meta name="theme-color" content="#0B0C0F" />
+
+<link rel="icon" type="image/png" href="{{ path }}/assets/images/logo.png" />
+<link rel="apple-touch-icon" href="{{ path }}/assets/images/logo.png" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Remote Wallpaper Android" />
+<meta property="og:site_name" content="Remote Wallpaper Android Application" />
+<meta
+  property="og:description"
+  content="Remote Wallpaper Android Application. Set wallpaper from remote URL's at a defined interval."
+/>
+<meta property="og:image" content="{{ path }}/assets/images/logo.png" />
+<meta property="og:image:alt" content="Remote Wallpaper Android" />
+
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:title" content="Remote Wallpaper Android" />
+<meta property="twitter:site" content="Remote Wallpaper Android Application" />
+<meta
+  property="twitter:description"
+  content="Remote Wallpaper Android Application. Set wallpaper from remote URL's at a defined interval."
+/>
+<meta property="twitter:image" content="{{ path }}/assets/images/logo.png" />
+<meta property="twitter:image:alt" content="Remote Wallpaper Android" />
+
+<meta name="darkreader-lock" />
+
+{% endblock %}

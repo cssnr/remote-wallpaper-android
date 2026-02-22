@@ -1,0 +1,44 @@
+name: "Preview"
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore: [master]
+    paths:
+      - ".github/workflows/preview.yaml"
+      - "zensical.toml"
+      - "docs/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: "Zensical Action"
+        uses: cssnr/zensical-action@master
+        with:
+          upload: "artifact"
+          prepare: 'sed -i "s/>Zensical<\/a>/>Zensical<\/a> v${ZENSICAL_VERSION}/" zensical.toml'
+
+  deploy:
+    name: "Deploy"
+    uses: cssnr/workflows/.github/workflows/deploy-static.yaml@master
+    needs: [build]
+    with:
+      name: "preview"
+      url: "https://dev-static.cssnr.com/remote-wallpaper-android"
+      robots: true
+      path: "remote-wallpaper-android"
+    secrets:
+      host: ${{ secrets.DEV_DEPLOY_HOST }}
+      port: ${{ secrets.DEV_DEPLOY_PORT }}
+      user: ${{ secrets.DEV_DEPLOY_USER }}
+      pass: ${{ secrets.DEV_DEPLOY_PASS }}
+      webhook: ${{ secrets.DISCORD_WEBHOOK }}
+    permissions:
+      contents: read

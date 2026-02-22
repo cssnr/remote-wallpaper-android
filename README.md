@@ -1,6 +1,7 @@
-[![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
-[![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=gradle&label=AGP)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
+[![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=gradle&label=gradle)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
+[![APK Size](https://badges.cssnr.com/gh/release/cssnr/zipline-android/latest/asset/app-release.apk/size?label=apk)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/release.yaml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/remote-wallpaper-android?logo=listenhub&label=updated)](https://github.com/cssnr/remote-wallpaper-android/pulse)
@@ -17,7 +18,8 @@
 
 # Remote Wallpaper Android
 
-[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=3ddc84)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+<a title="Remote Wallpaper Android" href="https://cssnr.github.io/remote-wallpaper-android/" target="_blank">
+<img alt="Remote Wallpaper Android" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/remote-wallpaper-android/refs/heads/master/docs/assets/images/logo.png"></a>
 
 - [Install](#Install)
   - [Setup](#Setup)
@@ -38,6 +40,8 @@ Example Remotes:
 
 - https://picsum.photos/4800/2400
 - https://images.cssnr.com/aviation
+
+[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=3ddc84)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 
 ## Install
 
@@ -65,7 +69,7 @@ should take you to the settings area to allow installation if not already enable
 3. Choose the app you will install the apk file from.
    - Select your web browser to install directly from it.
    - Select your file manager to open it, locate the apk and install from there.
-4. Download the [Latest Release](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk).
+4. Download the Latest [app-release.apk](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk).
 5. Open the download apk in the app you selected in step #3.
 6. Choose Install and Accept any Play Protect notifications.
 7. The app is now installed. Proceed to the [Setup](#Setup) section below.
@@ -80,6 +84,8 @@ should take you to the settings area to allow installation if not already enable
 4. Or Just Start the App and add a remote from the Remotes.
 5. Optionally, add the Widget to refresh from the home screen.
 
+[![View Documentation](https://img.shields.io/badge/view_documentation-blue?style=for-the-badge&logo=quicklook)](https://cssnr.github.io/remote-wallpaper-android/)
+
 ## Features
 
 - Add any remote that redirects to a random image.
@@ -93,11 +99,14 @@ should take you to the settings area to allow installation if not already enable
 - Image Effects; Blur, Grayscale, etc.
 - JSON Result Parser with Custom keys.
 
-- [Submit a Feature Request](https://github.com/cssnr/remote-wallpaper-android/discussions/categories/feature-requests)
+[Submit a Feature Request](https://github.com/cssnr/remote-wallpaper-android/issues/new?template=1-feature.yaml)
 
 ### Known Issues
 
-- [Open an Issue](https://github.com/cssnr/remote-wallpaper-android/issues)
+- The wallpaper cropping may not work as expected.
+- Updates are done on intervals, not at specific times.
+
+[Open an Issue](https://github.com/cssnr/remote-wallpaper-android/issues)
 
 ## Screenshots
 
@@ -119,19 +128,24 @@ should take you to the settings area to allow installation if not already enable
 For general help or to request a feature, see:
 
 - Q&A Discussion: https://github.com/cssnr/remote-wallpaper-android/discussions/categories/q-a
-- Request a Feature: https://github.com/cssnr/remote-wallpaper-android/discussions/categories/feature-requests
+- Request a Feature: https://github.com/cssnr/remote-wallpaper-android/issues/new?template=1-feature.yaml
 
 If you are experiencing an issue/bug or getting unexpected results, you can:
 
 - Report an Issue: https://github.com/cssnr/remote-wallpaper-android/issues
 - Chat with us on Discord: https://discord.gg/wXy6m2X8wY
-- Provide General Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Remote%20Wallpaper%20Android)
+
+[![View Documentation](https://img.shields.io/badge/view_documentation-blue?style=for-the-badge&logo=quicklook)](https://cssnr.github.io/remote-wallpaper-android/support/)
 
 # Development
 
+Documentation for building the [app](#app) and [docs](#docs).
+
+## App
+
 This section briefly covers running and building in [Android Studio](#Android-Studio) and the [Command Line](#Command-Line).
 
-## Android Studio
+### Android Studio
 
 1. Download and Install Android Studio.
 
@@ -150,7 +164,7 @@ To Build:
 - Select the Build Variant (debug or release)
 - Build > Generate App Bundles or APK > Generate APKs
 
-## Command Line
+### Command Line
 
 _Note: This section is a WIP! For more details see the [release.yaml](.github/workflows/release.yaml)._
 
@@ -195,7 +209,25 @@ _Note: you may have to uninstall before installing due to different certificate 
 
 For more details, see the [ADB Documentation](https://developer.android.com/tools/adb#move).
 
+## Docs
+
+The [docs](docs) are built using [Zensical](https://github.com/cssnr/zensical-action).
+
+- <https://zensical.org/docs/get-started>
+
+```shell
+task docs
+```
+
+A [Taskfile.yml](Taskfile.yml) is used run development commands.
+
+- <https://taskfile.dev/docs/installation>
+
+_To easily install GitHub Release Binaries use [install-release](https://github.com/smashedr/install-release)._
+
 # Contributing
+
+If you would like to submit a PR, please review the [CONTRIBUTING.md](#contributing-ov-file).
 
 Please consider making a donation to support the development of this project
 and [additional](https://cssnr.com/) open source projects.
