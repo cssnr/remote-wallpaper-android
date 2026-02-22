@@ -99,14 +99,14 @@ should take you to the settings area to allow installation if not already enable
 - Image Effects; Blur, Grayscale, etc.
 - JSON Result Parser with Custom keys.
 
-[Submit a Feature Request](https://github.com/cssnr/remote-wallpaper-android/issues/new?template=1-feature.yaml)
+[![Request Feature](https://img.shields.io/badge/request_feature-brightgreen?style=for-the-badge&logo=rocket&logoColor=white)](https://github.com/cssnr/remote-wallpaper-android/issues/new?template=1-feature.yaml)
 
 ### Known Issues
 
 - The wallpaper cropping may not work as expected.
 - Updates are done on intervals, not at specific times.
 
-[Open an Issue](https://github.com/cssnr/remote-wallpaper-android/issues)
+[![Report Issue](https://img.shields.io/badge/report_issue-red?style=for-the-badge&logo=southwestairlines&logoColor=white)](https://github.com/cssnr/remote-wallpaper-android/issues)
 
 ## Screenshots
 
