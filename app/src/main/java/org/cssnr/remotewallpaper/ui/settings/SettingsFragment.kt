@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -31,9 +32,9 @@ import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    companion object {
-        const val LOG_TAG = "Settings"
-    }
+    //companion object {
+    //    const val LOG_TAG = "Settings"
+    //}
 
     @SuppressLint("BatteryLife")
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -238,7 +239,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val formattedVersion = getString(
             R.string.version_code_string,
             packageInfo.versionName,
-            packageInfo.versionCode.toString()
+            PackageInfoCompat.getLongVersionCode(packageInfo).toString()
         )
         Log.d("showAppInfoDialog", "formattedVersion: $formattedVersion")
 

@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.cssnr.remotewallpaper.R
@@ -24,8 +23,8 @@ class HistoryAdapter(
 
     private lateinit var context: Context
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val itemWrapper: LinearLayout = view.findViewById(R.id.item_wrapper)
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        //val itemWrapper: LinearLayout = view.findViewById(R.id.item_wrapper)
         val itemUrl: TextView = view.findViewById(R.id.item_url)
         val itemTimestamp: TextView = view.findViewById(R.id.item_timestamp)
         val itemCode: TextView = view.findViewById(R.id.item_code)
