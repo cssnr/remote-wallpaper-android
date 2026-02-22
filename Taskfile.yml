@@ -2,6 +2,12 @@
 version: "3"
 
 tasks:
+  docs:
+    desc: Zensical Docs
+    cmds:
+      - rm -rf .cache
+      - zensical serve --open
+
   lint:
     desc: Lint
     cmds:
@@ -12,8 +18,8 @@ tasks:
   format:
     desc: Format
     aliases: [fmt]
-    cmd: |
-      prettier --write .
+    cmds:
+      - prettier --write .
 
   build:
     desc: Build (recommended android studio)
