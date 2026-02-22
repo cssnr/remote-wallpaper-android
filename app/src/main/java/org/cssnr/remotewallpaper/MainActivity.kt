@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -158,9 +159,9 @@ class MainActivity : AppCompatActivity() {
 
         //// Update Navigation Bar - NOTE: this is now handled by enableEdgeToEdge()
         //window.navigationBarColor = Color.TRANSPARENT
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        //    window.setNavigationBarContrastEnforced(false)
-        //}
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.setNavigationBarContrastEnforced(false)
+        }
 
         // Set Global Left/Right System Insets
         ViewCompat.setOnApplyWindowInsetsListener(binding.contentMain.contentMainLayout) { v, insets ->
