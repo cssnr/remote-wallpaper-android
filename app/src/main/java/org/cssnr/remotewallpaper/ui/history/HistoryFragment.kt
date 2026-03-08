@@ -18,7 +18,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -124,16 +123,14 @@ class HistoryFragment : Fragment() {
 
         // Setup refresh listener which triggers new data loading
         //binding.swiperefresh.isEnabled = false
-        binding.swiperefresh.setOnRefreshListener(object : OnRefreshListener {
-            override fun onRefresh() {
-                Log.d(LOG_TAG, "setOnRefreshListener: onRefresh")
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) { ctx.updateData() }
-                    Toast.makeText(ctx, "History Reloaded", Toast.LENGTH_SHORT).show()
-                    _binding?.swiperefresh?.isRefreshing = false
-                }
+        binding.swiperefresh.setOnRefreshListener {
+            Log.d(LOG_TAG, "setOnRefreshListener: onRefresh")
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) { ctx.updateData() }
+                Toast.makeText(ctx, "History Reloaded", Toast.LENGTH_SHORT).show()
+                _binding?.swiperefresh?.isRefreshing = false
             }
-        })
+        }
     }
 
     private suspend fun Context.updateData() {
