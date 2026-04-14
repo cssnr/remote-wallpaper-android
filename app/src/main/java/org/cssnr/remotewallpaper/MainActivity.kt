@@ -16,7 +16,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -220,7 +219,7 @@ class MainActivity : AppCompatActivity() {
             R.id.option_add_remote -> {
                 Log.i(LOG_TAG, "ADD REMOTE OPTIONS CLICK")
                 // NOTE: This seems to work to navigation to a top-level destination with args...
-                val bundle = bundleOf("add_remote" to true)
+                val bundle = Bundle().apply { putBoolean("add_remote", true) }
                 val menuItem = binding.navView.menu.findItem(R.id.nav_remotes)
                 NavigationUI.onNavDestinationSelected(menuItem, navController)
                 navController.navigate(

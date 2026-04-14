@@ -9,7 +9,7 @@ class HistoryViewModel : ViewModel() {
     //val stationData = MutableLiveData<List<HistoryItem>>()
 
     val historyData: MutableLiveData<List<HistoryItem>> by lazy {
-        MutableLiveData<List<HistoryItem>>()
+        MutableLiveData()
     }
 
 }

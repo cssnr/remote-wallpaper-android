@@ -22,7 +22,10 @@ nav = [
 # https://zensical.org/docs/customization/#additional-css
 extra_css = ["assets/css/extra.css"]
 # https://zensical.org/docs/customization/#additional-javascript
-extra_javascript = ["assets/js/extra.js"]
+extra_javascript = [
+  "assets/js/extra.js",
+  # "https://keepandroidopen.org/banner.js?size=mini"
+]
 
 # ----------------------------------------------------------------------------
 # Section for configuring theme options
