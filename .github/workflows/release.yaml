@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Debug Event"
         continue-on-error: true
@@ -152,7 +152,7 @@ jobs:
           mv "${{ env.apk_path }}/${{ env.apk_file }}" "${{ env.apk_path }}/${{ env.signed_apk }}"
 
       - name: "Upload APK to Artifacts"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release
           path: ${{ env.apk_path }}
@@ -230,7 +230,7 @@ jobs:
 
       - name: "VirusTotal"
         if: ${{ github.event_name == 'release' }}
-        uses: cssnr/virustotal-action@v1
+        uses: cssnr/virustotal-action@v2
         continue-on-error: true
         with:
           vt_api_key: ${{ secrets.VT_API_KEY }}
