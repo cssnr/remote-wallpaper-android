@@ -249,11 +249,3 @@ You can also star this project on GitHub and support other related projects:
 - [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)
-
-<a href="https://github.com/cssnr/remote-wallpaper-android/stargazers">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right" />
- </picture>
-</a>

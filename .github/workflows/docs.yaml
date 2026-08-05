@@ -47,7 +47,7 @@ jobs:
 
       - name: "Algolia Crawler"
         if: ${{ env.crawler-id != '' }}
-        uses: cssnr/algolia-crawler-action@v1
+        uses: cssnr/algolia-crawler-action@v2
         with:
           crawler_id: ${{ env.crawler-id }}
           crawler_user_id: ${{ secrets.CRAWLER_USER_ID }}

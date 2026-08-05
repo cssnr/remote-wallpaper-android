@@ -49,6 +49,3 @@ From here you can contact me directly, `Shane@111150265075298304`.
 More information available at: [https://cssnr.com/](https://cssnr.com/)
 
 [![Support on Ko-fi](https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01c01ea9191809398c_support_me_on_kofi_blue.png){ width="360" }](https://ko-fi.com/cssnr)
-
-![Star History](https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right#only-light){ style="border-radius: 12px;" }
-![Star History](https://api.star-history.com/svg?repos=cssnr/remote-wallpaper-android&type=date&legend=bottom-right&theme=dark#only-dark){ style="border-radius: 12px;" }
