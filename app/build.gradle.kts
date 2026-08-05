@@ -11,7 +11,7 @@ plugins {
 
 configure<ApplicationExtension> {
     namespace = "org.cssnr.remotewallpaper"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.cssnr.remotewallpaper"
