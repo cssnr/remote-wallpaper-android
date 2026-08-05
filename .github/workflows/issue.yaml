@@ -41,4 +41,4 @@ jobs:
             Provide initial triage and troubleshooting steps, then gather any additional information needed to proceed.
             Respond using your general knowledge of Android Applications and the following knowledge files:
           path: |
-            README.md
+            docs/**/*.md
