@@ -1,6 +1,6 @@
 # Agent Guide
 
-Android client for Django Files: [django-files/django-files](https://github.com/django-files/django-files)
+Android application to update wallpaper from a remote URL on an interval.
 
 - `app/` - Android app source (Kotlin, Gradle)
 - `Taskfile.yml` - task commands
