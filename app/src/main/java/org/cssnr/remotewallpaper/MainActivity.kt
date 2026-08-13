@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         //// Update Navigation Bar - NOTE: this is now handled by enableEdgeToEdge()
         //window.navigationBarColor = Color.TRANSPARENT
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            window.setNavigationBarContrastEnforced(false)
+            window.isNavigationBarContrastEnforced = false
         }
 
         // Set Global Left/Right System Insets
