@@ -34,8 +34,8 @@ configure<ApplicationExtension> {
             )
         }
         debug {
-            //applicationIdSuffix = ".dev"
-            //versionNameSuffix = "-dev"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
             manifestPlaceholders["firebaseAnalyticsDeactivated"] = true // disabled
             manifestPlaceholders["firebaseCrashlyticsEnabled"] = false // disabled
         }

@@ -1,6 +1,6 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
-[![APK Size](https://badges.cssnr.com/gh/release/cssnr/zipline-android/latest/asset/app-release.apk/size?label=apk&color=darkgreen)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![APK Size](https://badges.cssnr.com/gh/release/cssnr/remote-wallpaper-android/latest/asset/app-release.apk/size?label=apk&color=darkgreen)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=gradle&label=gradle)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/release.yaml)
@@ -26,7 +26,7 @@
 <img alt="Remote Wallpaper Android" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/remote-wallpaper-android/refs/heads/master/docs/assets/images/logo.png"></a>
 
 - [Install](#Install)
-  - [Setup](#Setup)
+- [Setup](#Setup)
 - [Features](#Features)
   - [Planned](#Planned)
   - [Known Issues](#Known-Issues)
@@ -45,8 +45,6 @@ Example Remotes:
 - https://picsum.photos/4800/2400
 - https://images.cssnr.com/aviation
 
-[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=3ddc84)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
-
 ## Install
 
 [![Get on GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
@@ -54,16 +52,25 @@ Example Remotes:
 
 <details><summary>📲 Click to View QR Codes 📸 Supports Android 8 (API 26) 2017 +</summary>
 
+<br />
+
 [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+
+<br />
 
 [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android/)
 
 </details>
 
+[![Latest Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=github&label=latest%20release&color=34A853)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
+[![Latest Pre-Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=github&include_prereleases&label=pre-release&color=blue)](https://github.com/cssnr/remote-wallpaper-android/releases)
+
 _Note: If installing directly, you may need to allow installation of apps from unknown sources.  
 For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website)._
 
 <details><summary>View Manual Steps to Install from Unknown Sources</summary>
+
+<br />
 
 Note: Downloading and Installing the [apk](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 should take you to the settings area to allow installation if not already enabled. Otherwise:
@@ -78,9 +85,19 @@ should take you to the settings area to allow installation if not already enable
 6. Choose Install and Accept any Play Protect notifications.
 7. The app is now installed. Proceed to the [Setup](#Setup) section below.
 
+---
+
 </details>
 
-### Setup
+_The GitHub APK has been registered with Google's [Android developer verification](https://developer.android.com/developer-verification)._
+
+```
+69:49:A3:78:A6:30:92:86:32:20:D1:08:AD:66:FC:F3:FB:26:C3:47:28:2A:68:BE:F4:5F:05:30:0C:73:2B:D9
+```
+
+[_How to Verify an APK Signature_](https://developer.android.com/tools/apksigner#usage-verify)
+
+## Setup
 
 1. [Install](#Install) and open the app on your device.
 2. Select your update interval and initial remote.
