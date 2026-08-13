@@ -1,6 +1,6 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
-[![APK Size](https://badges.cssnr.com/gh/release/cssnr/zipline-android/latest/asset/app-release.apk/size?label=apk&color=darkgreen)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![APK Size](https://badges.cssnr.com/gh/release/cssnr/remote-wallpaper-android/latest/asset/app-release.apk/size?label=apk&color=darkgreen)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=gradle&label=gradle)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/release.yaml)
@@ -45,8 +45,6 @@ Example Remotes:
 - https://picsum.photos/4800/2400
 - https://images.cssnr.com/aviation
 
-[![GitHub Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=3ddc84)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
-
 ## Install
 
 [![Get on GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
@@ -63,6 +61,9 @@ Example Remotes:
 [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android/)
 
 </details>
+
+[![Latest Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=github&label=latest%20release&color=34A853)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
+[![Latest Pre-Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=github&include_prereleases&label=pre-release&color=blue)](https://github.com/cssnr/remote-wallpaper-android/releases)
 
 _Note: If installing directly, you may need to allow installation of apps from unknown sources.  
 For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website)._
