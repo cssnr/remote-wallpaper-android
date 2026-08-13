@@ -89,7 +89,15 @@ should take you to the settings area to allow installation if not already enable
 
 </details>
 
-### Setup
+_The GitHub APK has been registered with Google's [Android developer verification](https://developer.android.com/developer-verification)._
+
+```
+69:49:A3:78:A6:30:92:86:32:20:D1:08:AD:66:FC:F3:FB:26:C3:47:28:2A:68:BE:F4:5F:05:30:0C:73:2B:D9
+```
+
+[_How to Verify an APK Signature_](https://developer.android.com/tools/apksigner#usage-verify)
+
+## Setup
 
 1. [Install](#Install) and open the app on your device.
 2. Select your update interval and initial remote.
@@ -98,14 +106,6 @@ should take you to the settings area to allow installation if not already enable
 5. Optionally, add the Widget to refresh from the home screen.
 
 [![View Documentation](https://img.shields.io/badge/view_documentation-blue?style=for-the-badge&logo=quicklook)](https://cssnr.github.io/remote-wallpaper-android/)
-
-_The GitHub APK has been registered with Google's [Android developer verification](https://developer.android.com/developer-verification)._
-
-```
-69:49:A3:78:A6:30:92:86:32:20:D1:08:AD:66:FC:F3:FB:26:C3:47:28:2A:68:BE:F4:5F:05:30:0C:73:2B:D9
-```
-
-[_How to Verify an APK Signature_](https://developer.android.com/tools/apksigner#usage-verify)
 
 ## Features
 
