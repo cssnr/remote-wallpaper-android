@@ -153,13 +153,14 @@ class MainActivity : AppCompatActivity() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences_widget, false)
 
         // Update Status Bar
+        //NOTE: This is now handled by enableEdgeToEdge()
         //window.statusBarColor = Color.TRANSPARENT
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
-        //// Update Navigation Bar - NOTE: this is now handled by enableEdgeToEdge()
+        //NOTE: This is now handled by enableEdgeToEdge() navigationBarStyle
         //window.navigationBarColor = Color.TRANSPARENT
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            window.setNavigationBarContrastEnforced(false)
+            window.isNavigationBarContrastEnforced = false
         }
 
         // Set Global Left/Right System Insets
