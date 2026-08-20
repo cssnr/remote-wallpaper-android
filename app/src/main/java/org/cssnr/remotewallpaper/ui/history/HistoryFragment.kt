@@ -26,6 +26,7 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentHistoryBinding
 import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
+import java.util.Locale
 
 const val LOG_TAG = "History"
 
@@ -198,7 +199,7 @@ class HistoryFragment : Fragment() {
             //itemUrl.movementMethod = LinkMovementMethod.getInstance()
             itemUrl.text = data.url ?: "No URL"
 
-            itemStatus.text = data.status.toString()
+            itemStatus.text = String.format(Locale.getDefault(), "%d", data.status)
 
             if (!data.error.isNullOrBlank()) {
                 itemError.text = data.error
