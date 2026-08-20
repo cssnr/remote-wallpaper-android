@@ -13,6 +13,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.Upsert
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import java.util.concurrent.Executors
 
@@ -68,16 +69,25 @@ data class Remote(
     //@PrimaryKey(autoGenerate = true) val id: Long = 0,
     @PrimaryKey val url: String,
     val active: Boolean = false,
+    val etag: String? = null,
+    val lastModified: String? = null,
 )
 
 
-@Database(entities = [Remote::class], version = 1, exportSchema = false)
+@Database(entities = [Remote::class], version = 2, exportSchema = false)
 abstract class RemoteDatabase : RoomDatabase() {
     abstract fun remoteDao(): RemoteDao
 
     companion object {
         @Volatile
         private var instance: RemoteDatabase? = null
+
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Remote ADD COLUMN etag TEXT DEFAULT NULL")
+                db.execSQL("ALTER TABLE Remote ADD COLUMN lastModified TEXT DEFAULT NULL")
+            }
+        }
 
         private val defaultData: List<Remote> = listOf(
             Remote("https://picsum.photos/4800/2400", active = true),
@@ -103,6 +113,7 @@ abstract class RemoteDatabase : RoomDatabase() {
                             }
                         }
                     })
+                    .addMigrations(MIGRATION_1_2)
                     .build().also { instance = it }
             }
     }
