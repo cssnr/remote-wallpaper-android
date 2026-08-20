@@ -13,6 +13,7 @@ import org.cssnr.remotewallpaper.db.HistoryItem
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class HistoryAdapter(
     private var items: List<HistoryItem>,
@@ -63,8 +64,8 @@ class HistoryAdapter(
         } else {
             holder.itemUrl.text = items[position].url
         }
-        holder.itemCode.text = items[position].status.toString()
-        holder.itemId.text = items[position].id.toString()
+        holder.itemCode.text = String.format(Locale.getDefault(), "%d", items[position].status)
+        holder.itemId.text = String.format(Locale.getDefault(), "%d", items[position].id)
         // Date
         val instant = Instant.ofEpochMilli(items[position].timestamp)
         val zonedDateTime = instant.atZone(ZoneId.systemDefault())

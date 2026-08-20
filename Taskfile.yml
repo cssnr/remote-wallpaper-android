@@ -11,22 +11,27 @@ tasks:
       - rm -rf .cache
       - zensical serve --open
 
-  lint:
-    desc: Lint
+  check:
+    desc: Check Non-Kotlin Files
+    aliases: [prettier:check]
     cmds:
       - prettier --check .
       - yamllint -c .github/yamllint.yaml .
       - actionlint -shellcheck="-e SC2129"
 
   format:
-    desc: Format
+    desc: Format Non-Kotlin Files
     aliases: [prettier, prettier:write]
     cmds:
       - prettier --write .
 
+  lint:
+    desc: Gradle Lint
+    cmd: "{{.GRADLEW}} lint {{.CLI_ARGS}}"
+
   compile:
     desc: Compile Kotlin
-    cmd: "{{.GRADLEW}} :app:compileDebugKotlin"
+    cmd: "{{.GRADLEW}} :app:compileDebugKotlin {{.CLI_ARGS}}"
 
   debug:
     desc: Build Debug (recommended android studio)
