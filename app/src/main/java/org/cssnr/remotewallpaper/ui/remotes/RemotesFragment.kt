@@ -23,6 +23,7 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentRemotesBinding
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 
 const val LOG_TAG = "Remotes"
 
@@ -172,7 +173,6 @@ class RemotesFragment : Fragment() {
             .create()
 
         dialog.setOnShowListener {
-            input.requestFocus()
             val sendButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             sendButton.setOnClickListener {
                 sendButton.isEnabled = false
@@ -208,6 +208,9 @@ class RemotesFragment : Fragment() {
         }
 
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add") { _, _ -> }
+
+        dialog.showKeyboard()
+        input.requestFocus()
         dialog.show()
     }
 
