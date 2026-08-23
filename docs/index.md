@@ -30,7 +30,8 @@ icon: lucide/rocket
 
 Remote Wallpaper Android Application.
 
-Set wallpaper from remote URL's at a defined interval. Supports any link that redirects to an image.
+Set wallpaper from remote URL's at a defined interval.
+Supports any image link or links that redirects to an image.
 
 To get started, [Install](#install) the app, view the [Screenshots](#screenshots) and review the [Usage](usage.md).
 
@@ -45,6 +46,7 @@ To get started, [Install](#install) the app, view the [Screenshots](#screenshots
 - Widget with refresh button and updated time.
 - History of all wallpaper used with links.
 - Option to crop wallpaper for device.
+- Supports HTTP Caching.
 
 ### :lucide-calendar-clock: Planned
 
@@ -57,7 +59,7 @@ To get started, [Install](#install) the app, view the [Screenshots](#screenshots
 
 If you run into any issues or have any questions, [support](support.md) is available.
 
-### Setup
+### :lucide-tablet-smartphone: Setup
 
 1. [Install](#install) and open the app on your device.
 2. Select your update interval and initial remote.

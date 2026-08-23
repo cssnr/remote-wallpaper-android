@@ -12,6 +12,9 @@ If you are unsure which provider to choose, [Obtainium :lucide-arrow-up-right:](
 
     [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 
+    <br />
+    <br />
+
     [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android/)
 
 _To install the apk directly you may need to allow installation from unknown sources.  
@@ -31,3 +34,11 @@ For more information see, [Release through a website :lucide-arrow-up-right:](ht
     5. Open the download apk in the app you selected in step #3.
     6. Choose Install and Accept any Play Protect notifications.
     7. The app is now installed. Proceed to the [Setup](#setup) section below.
+
+_The GitHub APK has been registered with Google's [Android developer verification](https://developer.android.com/developer-verification)._
+
+```
+69:49:A3:78:A6:30:92:86:32:20:D1:08:AD:66:FC:F3:FB:26:C3:47:28:2A:68:BE:F4:5F:05:30:0C:73:2B:D9
+```
+
+[_How to Verify an APK Signature_](https://developer.android.com/tools/apksigner#usage-verify)
