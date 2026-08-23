@@ -13,6 +13,7 @@ If you are unsure which provider to choose, [Obtainium :lucide-arrow-up-right:](
     [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 
     <br />
+
     <br />
 
     [![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/remote-wallpaper/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android/)

@@ -73,6 +73,7 @@ For more information, see [Release through a website](https://developer.android.
 <details><summary>View Manual Steps to Install from Unknown Sources</summary>
 
 <br />
+
 <br />
 
 Note: Downloading and Installing the [apk](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
