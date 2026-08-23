@@ -34,6 +34,7 @@ import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
 import java.io.FileOutputStream
 import java.time.ZonedDateTime
@@ -180,7 +181,6 @@ fun Context.showAddDialog() {
         .create()
 
     dialog.setOnShowListener {
-        input.requestFocus()
         val sendButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         sendButton.setOnClickListener {
             sendButton.isEnabled = false
@@ -206,6 +206,9 @@ fun Context.showAddDialog() {
     }
 
     dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Set Image") { _, _ -> }
+
+    dialog.showKeyboard()
+    input.requestFocus()
     dialog.show()
 }
 
