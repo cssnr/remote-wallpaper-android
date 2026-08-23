@@ -37,6 +37,13 @@ interface RemoteDao {
     @Upsert
     fun addOrUpdate(remote: Remote)
 
+    // FIX AI: Update ONLY the cache validator columns. Do NOT use addOrUpdate() for this:
+    // @Upsert overwrites ALL columns, which would reset active to false on rows
+    // that already exist (only one remote may be active at a time).
+    // Rows whose url is not in the table are silently skipped (0 rows updated).
+    @Query("UPDATE Remote SET etag = :etag, lastModified = :lastModified WHERE url = :url")
+    fun updateCacheHeaders(url: String, etag: String?, lastModified: String?)
+
     @Query("UPDATE Remote SET active = 1 WHERE ROWID = (SELECT ROWID FROM Remote LIMIT 1)")
     fun activateFirst()
 

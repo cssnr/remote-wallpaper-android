@@ -281,13 +281,6 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
 
         val newEtag = it.header("ETag")
         val newLastModified = it.header("Last-Modified")
-        if (newEtag != null || newLastModified != null) {
-            val dao = RemoteDatabase.getInstance(this).remoteDao()
-            withContext(Dispatchers.IO) {
-                dao.addOrUpdate(remote.copy(etag = newEtag, lastModified = newLastModified))
-            }
-            Log.d("downloadImage", "Saved cache headers: etag=$newEtag, lastModified=$newLastModified")
-        }
 
         val body = it.body
         val imageFile = File(filesDir, "wallpaper.img")
@@ -299,6 +292,20 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
         }
 
         setAutoCroppedWallpaper(imageFile)
+
+        // FIX AI: Save cache validators AFTER the wallpaper is applied. Persisting them earlier
+        // would let a failed file write, bad image decode (silent return in
+        // setAutoCroppedWallpaper), or setBitmap error still store the ETag - then every
+        // future update would 304-skip with a stale or missing wallpaper.
+        // Uses updateCacheHeaders (NOT addOrUpdate) so the active flag is preserved;
+        // urls not yet in the database (preview downloads from showAddDialog) are skipped.
+        if (newEtag != null || newLastModified != null) {
+            val dao = RemoteDatabase.getInstance(this).remoteDao()
+            withContext(Dispatchers.IO) {
+                dao.updateCacheHeaders(remote.url, newEtag, newLastModified)
+            }
+            Log.d("downloadImage", "Saved cache headers: etag=$newEtag, lastModified=$newLastModified")
+        }
     }
     return DownloadResult.Downloaded(response)
 }
