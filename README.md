@@ -37,8 +37,10 @@
   - [Command Line](#Command-Line)
 - [Contributing](#Contributing)
 
-Remote Wallpaper Android Application. Set wallpaper from remote URL's at a defined interval.
-Supports any link that redirects to an image.
+Remote Wallpaper Android Application.
+
+Set wallpaper from remote URL's at a defined interval.
+Supports any image link or links that redirects to an image.
 
 Example Remotes:
 
@@ -69,6 +71,8 @@ _Note: If installing directly, you may need to allow installation of apps from u
 For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website)._
 
 <details><summary>View Manual Steps to Install from Unknown Sources</summary>
+
+<br />
 
 <br />
 
@@ -114,6 +118,7 @@ _The GitHub APK has been registered with Google's [Android developer verificatio
 - Widget with refresh button and updated time.
 - History of all wallpaper used with links.
 - Option to crop wallpaper for device.
+- Supports HTTP Caching.
 
 ### Planned
 
