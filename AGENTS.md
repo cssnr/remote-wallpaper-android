@@ -9,8 +9,8 @@ Android application to update wallpaper from a remote URL on an interval.
 
 ## Android
 
-Release - applicationId = org.cssnr.remotewallpaper
-Debug - applicationId = org.cssnr.remotewallpaper.dev
+applicationId = org.cssnr.remotewallpaper
+Debug applicationId = org.cssnr.remotewallpaper.dev
 
 minSdk = 26
 targetSdk = 36
