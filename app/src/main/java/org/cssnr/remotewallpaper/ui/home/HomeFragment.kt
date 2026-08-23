@@ -32,6 +32,7 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentHomeBinding
 import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
+import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import java.io.File
 import java.io.FileOutputStream
@@ -188,7 +189,7 @@ fun Context.showAddDialog() {
             if (url.isNotEmpty()) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        downloadImage(url)
+                        downloadImage(Remote(url = url))
                         withContext(Dispatchers.Main) {
                             Toast.makeText(this@showAddDialog, "Done.", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
@@ -208,6 +209,11 @@ fun Context.showAddDialog() {
     dialog.show()
 }
 
+sealed class DownloadResult {
+    data class Downloaded(val response: Response) : DownloadResult()
+    data object NotModified : DownloadResult()
+}
+
 // TODO: updateWallpaper is used globally to update the wallpaper and should be a package
 //  The rest of the functions are only used by updateWallpaper and are internal to updateWallpaper
 suspend fun Context.updateWallpaper(): Boolean {
@@ -220,10 +226,19 @@ suspend fun Context.updateWallpaper(): Boolean {
         Log.d("updateWallpaper", "remote: $remote")
         if (remote != null) {
             history.remote = remote.url
-            val response = withContext(Dispatchers.IO) { downloadImage(remote.url) }
-            history.status = response.code
-            history.url = response.request.url.toString()
-            Log.d("updateWallpaper", "response: $response")
+            val result = withContext(Dispatchers.IO) { downloadImage(remote) }
+            when (result) {
+                is DownloadResult.Downloaded -> {
+                    history.status = result.response.code
+                    history.url = result.response.request.url.toString()
+                    Log.d("updateWallpaper", "response: ${result.response}")
+                }
+                is DownloadResult.NotModified -> {
+                    history.status = 304
+                    history.url = remote.url
+                    Log.i("updateWallpaper", "Image not modified, skipping wallpaper update")
+                }
+            }
             // TODO: Replace timestamp with history.timestamp
             val timestamp: String =
                 ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -246,19 +261,27 @@ suspend fun Context.updateWallpaper(): Boolean {
     }
 }
 
-fun Context.downloadImage(url: String): Response {
+suspend fun Context.downloadImage(remote: Remote): DownloadResult {
     val client = OkHttpClient.Builder()
         .followRedirects(true)
         .build()
 
-    val request = Request.Builder()
-        .url(url)
-        .build()
+    val requestBuilder = Request.Builder().url(remote.url)
+    remote.etag?.let { requestBuilder.header("If-None-Match", it) }
+    remote.lastModified?.let { requestBuilder.header("If-Modified-Since", it) }
 
-    val response = client.newCall(request).execute()
+    val response = client.newCall(requestBuilder.build()).execute()
 
     response.use {
+        if (it.code == 304) {
+            Log.d("downloadImage", "304 Not Modified for ${remote.url}")
+            return DownloadResult.NotModified
+        }
         if (!it.isSuccessful) throw Exception("Failed to download image: $it")
+
+        val newEtag = it.header("ETag")
+        val newLastModified = it.header("Last-Modified")
+
         val body = it.body
         val imageFile = File(filesDir, "wallpaper.img")
 
@@ -269,8 +292,22 @@ fun Context.downloadImage(url: String): Response {
         }
 
         setAutoCroppedWallpaper(imageFile)
+
+        // FIX AI: Save cache validators AFTER the wallpaper is applied. Persisting them earlier
+        // would let a failed file write, bad image decode (silent return in
+        // setAutoCroppedWallpaper), or setBitmap error still store the ETag - then every
+        // future update would 304-skip with a stale or missing wallpaper.
+        // Uses updateCacheHeaders (NOT addOrUpdate) so the active flag is preserved;
+        // urls not yet in the database (preview downloads from showAddDialog) are skipped.
+        if (newEtag != null || newLastModified != null) {
+            val dao = RemoteDatabase.getInstance(this).remoteDao()
+            withContext(Dispatchers.IO) {
+                dao.updateCacheHeaders(remote.url, newEtag, newLastModified)
+            }
+            Log.d("downloadImage", "Saved cache headers: etag=$newEtag, lastModified=$newLastModified")
+        }
     }
-    return response
+    return DownloadResult.Downloaded(response)
 }
 
 fun Context.setAutoCroppedWallpaper(imageFile: File) {

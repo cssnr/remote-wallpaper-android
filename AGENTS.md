@@ -7,6 +7,15 @@ Android application to update wallpaper from a remote URL on an interval.
 - `Taskfile.yml` - [task](https://github.com/go-task/task) commands
 - `docs/` - [Zensical](https://github.com/zensical/zensical) docs
 
+## Android
+
+applicationId = org.cssnr.remotewallpaper
+Debug applicationId = org.cssnr.remotewallpaper.dev
+
+minSdk = 26
+targetSdk = 36
+compileSdk = 37
+
 ## Commands
 
 ALWAYS use the `task *` commands
@@ -22,6 +31,10 @@ ALWAYS use the `task *` commands
 | `task format`  | Prettier write (format non-kotlin files) |
 
 Do NOT use `-q` or pipe Gradle output through `Select-Object` — both hide progress and make long builds look hung.
+
+## Testing
+
+To test on a device use the `adb` command. If no devices are running and attached, ask the user to do this!
 
 ## Rules
 
