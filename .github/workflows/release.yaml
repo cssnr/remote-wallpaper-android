@@ -91,6 +91,11 @@ jobs:
       #
       #    stat app/google-services.json
 
+      - name: "Write Secret Properties"
+        run: |
+          echo "${{ secrets.SECRET_PROPERTIES }}" | base64 --decode > secret.properties
+          wc -l secret.properties
+
       - name: "Write Keystore File"
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.key_file }}

@@ -131,6 +131,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ctx.showFeedbackDialog()
             false
         }
+
+        // Crash Reporting - with disable confirmation
+        val acraEnable = findPreference<SwitchPreferenceCompat>("acra.enable")
+        acraEnable?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("SettingsFragment", "acra.enable: $newValue")
+            ctx.toggleAcra(acraEnable, newValue)
+            false
+        }
     }
 
     private fun updateWorkIntervalSettings(selectedValue: String?) {
@@ -139,6 +147,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val enabled = selectedValue != "0"
             Log.d("updateWorkIntervalSettings", "enabled: $enabled")
             findPreference<SwitchPreferenceCompat>("work_metered")?.isEnabled = enabled
+        }
+    }
+
+    private fun Context.toggleAcra(switchPreference: SwitchPreferenceCompat, newValue: Any) {
+        Log.d("SettingsFragment", "toggleAcra: $newValue")
+        if (newValue as Boolean) {
+            Log.d("SettingsFragment", "ENABLE ACRA")
+            switchPreference.isChecked = true
+        } else {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Please Reconsider")
+                .setMessage("Crash reports help fix bugs and only anonymous data is sent.")
+                .setPositiveButton("Disable Anyway") { _, _ ->
+                    Log.d("SettingsFragment", "DISABLE ACRA")
+                    switchPreference.isChecked = false
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
     }
 

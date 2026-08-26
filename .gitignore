@@ -17,6 +17,7 @@ app/debug
 app/release
 # App
 local.properties
+secret.properties
 *.keystore
 *.logcat
 **/google-services.json

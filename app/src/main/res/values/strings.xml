@@ -65,4 +65,7 @@
         <item>black</item>
         <item>liberty</item>
     </string-array>
+
+    <!-- ACRA Toast -->
+    <string name="acra_toast_text">App crashed and report sent. Disable reporting in Settings.</string>
 </resources>
