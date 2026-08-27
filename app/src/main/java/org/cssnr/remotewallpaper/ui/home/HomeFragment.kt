@@ -332,9 +332,9 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
         "home" -> wallpaperManager.setBitmap(scaled, null, true, WallpaperManager.FLAG_SYSTEM)
         "lock" -> wallpaperManager.setBitmap(scaled, null, true, WallpaperManager.FLAG_LOCK)
     }
-
-    original.recycle()
-    scaled.recycle()
+    // NOTE: These are not required and create a race condition for setting wallpaper
+    //original.recycle()
+    //scaled.recycle()
 }
 
 fun scaleAndCropCenter(src: Bitmap, targetWidth: Int, targetHeight: Int): Bitmap {
