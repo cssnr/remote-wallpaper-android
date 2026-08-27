@@ -158,13 +158,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         } else {
             MaterialAlertDialogBuilder(this)
                 .setTitle("Please Reconsider")
-                .setMessage("Crash reports help fix bugs and only anonymous data is sent.")
-                .setPositiveButton("Disable Anyway") { _, _ ->
+                .setMessage(getString(R.string.acra_disable_message))
+                //.setMessage(Html.fromHtml(getString(R.string.acra_disable_message), Html.FROM_HTML_MODE_LEGACY))
+                .setNeutralButton("More Info") { _, _ ->
+                    startActivity(Intent(Intent.ACTION_VIEW, getString(R.string.acra_info_link).toUri()))
+                }
+                .setPositiveButton("Disable") { _, _ ->
                     Log.d("SettingsFragment", "DISABLE ACRA")
                     switchPreference.isChecked = false
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
+                //.apply {
+                //    findViewById<TextView>(android.R.id.message)?.movementMethod =
+                //        LinkMovementMethod.getInstance()
+                //}
         }
     }
 
