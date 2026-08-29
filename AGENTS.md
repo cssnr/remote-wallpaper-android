@@ -9,8 +9,8 @@ Android application to update wallpaper from a remote URL on an interval.
 
 ## Android
 
-applicationId = org.cssnr.remotewallpaper
-Debug applicationId = org.cssnr.remotewallpaper.dev
+applicationId = "org.cssnr.remotewallpaper" Release
+applicationId = "org.cssnr.remotewallpaper.dev" Debug
 
 minSdk = 26
 targetSdk = 36
@@ -39,3 +39,16 @@ To test on a device use the `adb` command. If no devices are running and attache
 ## Rules
 
 Do NOT run task compile/debug/release/bundle after making edits unless it is REQUIRED!!!
+
+# Application
+
+## Testing
+
+DO NOT uninstall the application to clear data, use: `adb shell pm clear`
+
+For testing 304's you can use any image returned by: https://images.cssnr.com/aviation
+
+Examples:
+
+- https://smashedr.github.io/random-image/aviation/33782_1539281580.jpg
+- https://smashedr.github.io/random-image/aviation/61919_1467456365.jpg
