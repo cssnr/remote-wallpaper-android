@@ -1,5 +1,28 @@
 # TODO
 
+## Fixes Required
+
+### Intent.ACTION_VIEW
+
+All `startActivity` calls to `Intent.ACTION_VIEW` will crash if a browser is not installed.
+See call sites in [SettingsFragment.kt](app/src/main/java/org/cssnr/remotewallpaper/ui/settings/SettingsFragment.kt).
+
+Example:
+
+```kotlin
+startActivity(Intent(Intent.ACTION_VIEW, getString(R.string.acra_info_link).toUri()))
+```
+
+FIX:
+
+```kotlin
+try {
+    startActivity(Intent(Intent.ACTION_VIEW, getString(R.string.acra_info_link).toUri()))
+} catch (e: Exception) {
+    Log.w("SettingsFragment", "openAcraDocs failed: $e")
+}
+```
+
 ## Known Issues
 
 ### HomeFragment.kt:310
