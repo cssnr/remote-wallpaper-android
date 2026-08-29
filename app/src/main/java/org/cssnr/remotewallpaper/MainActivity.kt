@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             packageInfo.versionCode.toLong()
         }
-        Log.d(LOG_TAG, "currentVersion: $currentVersionCode")
+        Log.d(LOG_TAG, "currentVersionCode: $currentVersionCode")
 
         val isFirstRun = !preferences.contains("first_run_shown")
         Log.d(LOG_TAG, "isFirstRun: $isFirstRun")
