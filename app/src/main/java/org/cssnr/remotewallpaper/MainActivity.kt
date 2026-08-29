@@ -199,20 +199,33 @@ class MainActivity : AppCompatActivity() {
             packageInfo.versionCode.toLong()
         }
         Log.d(LOG_TAG, "currentVersion: $currentVersionCode")
-        val lastVersionCode = preferences.getLong("last_version_code", -1L)
-        Log.d(LOG_TAG, "lastVersion: $lastVersionCode")
-        if (lastVersionCode != -1L && currentVersionCode != lastVersionCode) {
-            Log.i(LOG_TAG, "APP UPGRADE DETECTED: $lastVersionCode -> $currentVersionCode")
-            // TODO: Application has upgraded - process $currentVersionCode
-        }
-        if (lastVersionCode != currentVersionCode) {
-            preferences.edit { putLong("last_version_code", currentVersionCode) }
+
+        val isFirstRun = !preferences.contains("first_run_shown")
+        Log.d(LOG_TAG, "isFirstRun: $isFirstRun")
+
+        val previousVersionCode = preferences.getLong("previous_version_code", -1L)
+        Log.d(LOG_TAG, "previousVersion: $previousVersionCode")
+
+        when {
+            isFirstRun -> {
+                Log.i(LOG_TAG, "FIRST RUN DETECTED")
+            }
+            previousVersionCode == -1L -> {
+                Log.i(LOG_TAG, "LEGACY UPGRADE DETECTED (pre-tracking) -> $currentVersionCode")
+                // TODO: handle legacy upgrade
+            }
+            previousVersionCode != currentVersionCode -> {
+                Log.i(LOG_TAG, "APP UPGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
+                // TODO: Application has upgraded - check $currentVersionCode
+            }
         }
 
-        // First Run - Show Setup
-        if (savedInstanceState == null && !preferences.contains("first_run_shown")) {
-            Log.i(LOG_TAG, "FIRST RUN DETECTED")
-            preferences.edit { putBoolean("first_run_shown", true) }
+        preferences.edit {
+            putLong("previous_version_code", currentVersionCode)
+            if (isFirstRun) putBoolean("first_run_shown", true)
+        }
+
+        if (isFirstRun) {
             navController.navigate(
                 R.id.nav_item_setup, null, NavOptions.Builder()
                     .setPopUpTo(navController.graph.id, true)
