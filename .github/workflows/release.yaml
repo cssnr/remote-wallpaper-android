@@ -88,7 +88,6 @@ jobs:
       #- name: "Write Google Services File"
       #  run: |
       #    echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
-      #
       #    stat app/google-services.json
 
       - name: "Write Secret Properties"
@@ -99,11 +98,10 @@ jobs:
       - name: "Write Keystore File"
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.key_file }}
-
           echo ${{ secrets.ANDROID_KEYSTORE_PASS }} | keytool -list -keystore ${{ env.key_file }}
 
       #- name: "Setup Node 24"
-      #  uses: actions/setup-node@v6
+      #  uses: actions/setup-node@v7
       #  with:
       #    node-version: 24
       #
@@ -199,7 +197,7 @@ jobs:
       #
       #- name: "Upload Bundle to Artifacts"
       #  if: ${{ !github.event.release.prerelease }}
-      #  uses: actions/upload-artifact@v6
+      #  uses: actions/upload-artifact@v7
       #  with:
       #    name: bundle
       #    path: ${{ env.aab_path }}
