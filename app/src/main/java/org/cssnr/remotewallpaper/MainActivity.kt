@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         // Update Header Text
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
         val currentVersionName = packageInfo.versionName
-        Log.d(LOG_TAG, "versionName: $currentVersionName")
+        Log.d(LOG_TAG, "currentVersionName: $currentVersionName")
         val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
         val formattedVersion = getString(R.string.version_string, currentVersionName)
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
