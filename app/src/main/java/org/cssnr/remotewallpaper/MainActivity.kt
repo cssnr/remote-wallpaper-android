@@ -209,6 +209,11 @@ class MainActivity : AppCompatActivity() {
         when {
             isFirstRun -> {
                 Log.i(LOG_TAG, "FIRST RUN DETECTED")
+                navController.navigate(
+                    R.id.nav_item_setup, null, NavOptions.Builder()
+                        .setPopUpTo(navController.graph.id, true)
+                        .build()
+                )
             }
             //previousVersionCode == -1L -> {
             //    Log.i(LOG_TAG, "LEGACY UPGRADE DETECTED: unknown -> $currentVersionCode")
@@ -229,14 +234,6 @@ class MainActivity : AppCompatActivity() {
                 putLong("previous_version_code", currentVersionCode)
                 if (isFirstRun) putBoolean("first_run_shown", true)
             }
-        }
-
-        if (isFirstRun) {
-            navController.navigate(
-                R.id.nav_item_setup, null, NavOptions.Builder()
-                    .setPopUpTo(navController.graph.id, true)
-                    .build()
-            )
         }
 
         // Work Manager
