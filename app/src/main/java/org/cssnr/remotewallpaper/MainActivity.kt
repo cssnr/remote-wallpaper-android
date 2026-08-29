@@ -219,7 +219,7 @@ class MainActivity : AppCompatActivity() {
                 // TODO: Upgrade - this is where to add upgrade logic...
             }
             currentVersionCode < previousVersionCode -> {
-                Log.w(LOG_TAG, "VERSION DOWNGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
+                Log.w(LOG_TAG, "APP DOWNGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
                 // TODO: Downgrade - this will never actually happen and should probably be removed
             }
         }
