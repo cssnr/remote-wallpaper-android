@@ -165,6 +165,41 @@ If you run into any issues or need help getting started, please do one of the fo
 [![Discussions](https://img.shields.io/badge/discussions-blue?style=for-the-badge&logo=livechat&logoColor=white)](https://github.com/cssnr/remote-wallpaper-android/discussions)
 [![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/wXy6m2X8wY)
 
+## Crash Reporting
+
+> [!NOTE]  
+> This feature is currently in [beta](https://github.com/cssnr/remote-wallpaper-android/releases) testing.  
+> To provide feedback join the [Discussion](https://github.com/cssnr/remote-wallpaper-android/discussions/42).
+
+Without crash reporting, fixing a bug requires you to:
+
+- Stop what you're doing and open a browser
+- Go to the GitHub repo and create an Issue
+- Explain exactly what you were doing when the app crashed
+- Hope I can re-create the bug myself to get the stack trace
+
+That's a heavy ask for an app that's already broken — it leaves you with a bad experience and
+me without enough data to fix it.
+
+To close that gap without compromising your data or privacy, this app uses
+[ACRA](https://github.com/ACRA/acra) — an open-source crash reporting library. Reports are received by a
+self-hosted [Acrarium](https://github.com/F43nd1r/Acrarium) backend that runs on my own infrastructure,
+so crash data doesn't go to any third parties — no Google or other big-data services.
+
+**You can turn crash reporting on or off at any time with a toggle on the Settings page.**
+
+### What Gets Collected
+
+ACRA only sends reports when the app hits an unhandled crash. By default,
+it only sends the technical context needed to diagnose the crash:
+
+- The **stack trace** of the crash, plus the app and Android versions
+- Basic **device context** — e.g. the device model and OS version
+- A short extract of the app's **own logcat** (the last ~200 lines)
+
+It does **not** track usage or activity, collect a device identifier, or send system or other apps'
+logs. Each report is **anonymized** and sent directly to my server, so only I receive the data.
+
 # Development
 
 Documentation for building the [app](#app) and [docs](#docs).
