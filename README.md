@@ -168,7 +168,7 @@ If you run into any issues or need help getting started, please do one of the fo
 ## Crash Reporting
 
 > [!NOTE]  
-> This feature is currently in [beta](https://github.com/cssnr/remote-wallpaper-android/releases) testing.  
+> This feature is currently in [beta](https://github.com/cssnr/remote-wallpaper-android/releases) testing.
 > To provide feedback join the [Discussion](https://github.com/cssnr/remote-wallpaper-android/discussions/42).
 
 Without crash reporting, fixing a bug requires you to:
