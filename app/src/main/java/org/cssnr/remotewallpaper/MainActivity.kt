@@ -184,12 +184,57 @@ class MainActivity : AppCompatActivity() {
 
         // Update Header Text
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        val versionName = packageInfo.versionName
-        Log.d(LOG_TAG, "versionName: $versionName")
+        val currentVersionName = packageInfo.versionName
+        Log.d(LOG_TAG, "currentVersionName: $currentVersionName")
         val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
-        val formattedVersion = getString(R.string.version_string, versionName)
+        val formattedVersion = getString(R.string.version_string, currentVersionName)
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
+
+        // Version Tracking
+        val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            @Suppress("DEPRECATION")
+            packageInfo.versionCode.toLong()
+        }
+        Log.d(LOG_TAG, "currentVersionCode: $currentVersionCode")
+
+        val isFirstRun = !preferences.contains("first_run_shown")
+        Log.d(LOG_TAG, "isFirstRun: $isFirstRun")
+
+        val previousVersionCode = preferences.getLong("previous_version_code", -1L)
+        Log.d(LOG_TAG, "previousVersion: $previousVersionCode")
+
+        when {
+            isFirstRun -> {
+                Log.i(LOG_TAG, "FIRST RUN DETECTED")
+                navController.navigate(
+                    R.id.nav_item_setup, null, NavOptions.Builder()
+                        .setPopUpTo(navController.graph.id, true)
+                        .build()
+                )
+            }
+            //previousVersionCode == -1L -> {
+            //    Log.i(LOG_TAG, "LEGACY UPGRADE DETECTED: unknown -> $currentVersionCode")
+            //    // TODO: This upgrade will trigger the next block and is not needed
+            //}
+            currentVersionCode > previousVersionCode -> {
+                Log.i(LOG_TAG, "APP UPGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
+                // TODO: Upgrade - this is where to add upgrade logic...
+            }
+            currentVersionCode < previousVersionCode -> {
+                Log.w(LOG_TAG, "APP DOWNGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
+                // TODO: Downgrade - this will never actually happen and should probably be removed
+            }
+        }
+
+        if (previousVersionCode != currentVersionCode) {
+            preferences.edit {
+                putLong("previous_version_code", currentVersionCode)
+                if (isFirstRun) putBoolean("first_run_shown", true)
+            }
+        }
 
         // Work Manager
         val workInterval = preferences.getString("work_interval", null) ?: "0"
@@ -202,16 +247,6 @@ class MainActivity : AppCompatActivity() {
             Log.i(LOG_TAG, "Ensuring Work is Disabled")
             WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
-
-        // Only Handel Intent Once Here after App Start
-        if (savedInstanceState?.getBoolean("intentHandled") != true) {
-            onNewIntent(intent)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean("intentHandled", true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -255,22 +290,11 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         val action = intent.action
         val data = intent.data
-        Log.d(LOG_TAG, "${action}: $data")
+        Log.d(LOG_TAG, "onNewIntent: ${action}: $data")
 
         if (action == Intent.ACTION_MAIN) {
-            Log.d("onNewIntent", "ACTION_MAIN")
-
+            Log.d(LOG_TAG, "onNewIntent: ACTION_MAIN")
             binding.drawerLayout.closeDrawers()
-
-            if (!preferences.contains("first_run_shown")) {
-                Log.i(LOG_TAG, "FIRST RUN DETECTED")
-                preferences.edit { putBoolean("first_run_shown", true) }
-                navController.navigate(
-                    R.id.nav_item_setup, null, NavOptions.Builder()
-                        .setPopUpTo(navController.graph.id, true)
-                        .build()
-                )
-            }
         }
     }
 
