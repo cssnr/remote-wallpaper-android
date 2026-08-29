@@ -210,19 +210,25 @@ class MainActivity : AppCompatActivity() {
             isFirstRun -> {
                 Log.i(LOG_TAG, "FIRST RUN DETECTED")
             }
-            previousVersionCode == -1L -> {
-                Log.i(LOG_TAG, "LEGACY UPGRADE DETECTED (pre-tracking) -> $currentVersionCode")
-                // TODO: handle legacy upgrade
-            }
-            previousVersionCode != currentVersionCode -> {
+            //previousVersionCode == -1L -> {
+            //    Log.i(LOG_TAG, "LEGACY UPGRADE DETECTED: unknown -> $currentVersionCode")
+            //    // TODO: This upgrade will trigger the next block and is not needed
+            //}
+            currentVersionCode > previousVersionCode -> {
                 Log.i(LOG_TAG, "APP UPGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
-                // TODO: Application has upgraded - check $currentVersionCode
+                // TODO: Upgrade - this is where to add upgrade logic...
+            }
+            currentVersionCode < previousVersionCode -> {
+                Log.w(LOG_TAG, "VERSION DOWNGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
+                // TODO: Downgrade - this will never actually happen and should probably be removed
             }
         }
 
-        preferences.edit {
-            putLong("previous_version_code", currentVersionCode)
-            if (isFirstRun) putBoolean("first_run_shown", true)
+        if (previousVersionCode != currentVersionCode) {
+            preferences.edit {
+                putLong("previous_version_code", currentVersionCode)
+                if (isFirstRun) putBoolean("first_run_shown", true)
+            }
         }
 
         if (isFirstRun) {
