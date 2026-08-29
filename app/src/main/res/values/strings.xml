@@ -65,4 +65,11 @@
         <item>black</item>
         <item>liberty</item>
     </string-array>
+
+    <!-- ACRA Toast -->
+    <string name="acra_toast_text">App crashed and report sent. Disable reporting in Settings.</string>
+    <!-- ACRA Disable Dialog -->
+    <!--<string name="acra_disable_message">Reports are only sent when the app crashes. This helps fix bugs and no personal data is sent. <![CDATA[<a href="https://cssnr.github.io/remote-wallpaper-android/">More Info</a>]]>.</string>-->
+    <string name="acra_disable_message">Reports are only sent when the app crashes. This helps fix bugs and no personal data is sent.</string>
+    <string name="acra_info_link">https://github.com/cssnr/remote-wallpaper-android#crash-reporting</string>
 </resources>

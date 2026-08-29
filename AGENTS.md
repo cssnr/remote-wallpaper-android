@@ -30,19 +30,11 @@ ALWAYS use the `task *` commands
 | `task check`   | Prettier check (check non-kotlin files)  |
 | `task format`  | Prettier write (format non-kotlin files) |
 
-Do NOT use `-q` or pipe Gradle output through `Select-Object` — both hide progress and make long builds look hung.
+Do NOT run task compile/debug/release/bundle every turn unless it is REQUIRED!!!
 
 ## Testing
 
 To test on a device use the `adb` command. If no devices are running and attached, ask the user to do this!
-
-## Rules
-
-Do NOT run task compile/debug/release/bundle after making edits unless it is REQUIRED!!!
-
-# Application
-
-## Testing
 
 DO NOT uninstall the application to clear data, use: `adb shell pm clear`
 

@@ -1,5 +1,12 @@
 import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
+// ACRA - Load credentials from secret.properties
+val secretProperties = Properties().apply {
+    val file = rootProject.file("secret.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,6 +28,12 @@ configure<ApplicationExtension> {
         versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // ACRA - Acrarium backend setup: https://www.acra.ch/docs/Setup
+        buildConfigField("String", "ACRA_URI", "\"${secretProperties.getProperty("acra.uri") ?: ""}\"")
+        buildConfigField("String", "ACRA_USER", "\"${secretProperties.getProperty("acra.user") ?: ""}\"")
+        buildConfigField("String", "ACRA_PASS", "\"${secretProperties.getProperty("acra.pass") ?: ""}\"")
+
         manifestPlaceholders["firebaseAnalyticsDeactivated"] = false // enabled
         manifestPlaceholders["firebaseCrashlyticsEnabled"] = true // enabled
     }
@@ -48,6 +61,7 @@ configure<ApplicationExtension> {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -77,6 +91,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.photoview)
+    implementation(libs.acra.http)
+    implementation(libs.acra.toast)
     ksp(libs.moshi.kotlin.codegen)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)

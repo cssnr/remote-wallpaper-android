@@ -1,6 +1,11 @@
 # TODO
 
-## Fixes Required
+## ACRA Release
+
+- Add `Crash Reporting` to the [docs](docs)
+- Update `acra_info_link` in [strings.xml](app/src/main/res/values/strings.xml)
+
+## Required Fixes
 
 ### Intent.ACTION_VIEW
 
