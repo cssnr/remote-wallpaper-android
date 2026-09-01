@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import org.cssnr.remotewallpaper.log.debugLog
 import org.cssnr.remotewallpaper.ui.home.updateWallpaper
 import org.cssnr.remotewallpaper.widget.WidgetProvider
 
@@ -22,12 +23,15 @@ class AppWorker(appContext: Context, workerParams: WorkerParameters) :
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.d("AppWorker", "workInterval: $workInterval")
         if (workInterval == "0") {
-            Log.i("AppWorker", "Work is Disabled.")
+            Log.w("AppWorker", "Work is Disabled.")
+            applicationContext.debugLog("AppWorker: Work is Disabled")
             return Result.success()
         }
 
         // Update Wallpaper
-        applicationContext.updateWallpaper()
+        val updateResult = applicationContext.updateWallpaper()
+        Log.d("AppWorker", "updateResult: $updateResult")
+        applicationContext.debugLog("AppWorker: updateWallpaper: $updateResult")
 
         // Update Widget
         Log.d("AppWorker", "Update Widget")
@@ -44,6 +48,7 @@ class AppWorker(appContext: Context, workerParams: WorkerParameters) :
         }
         Log.d("AppWorker", "sendBroadcast: $intent")
         applicationContext.sendBroadcast(intent)
+        //applicationContext.debugLog("AppWorker: Widget Update Broadcast Sent")
 
         Log.i("AppWorker", "DONE: doWork")
         return Result.success()

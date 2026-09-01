@@ -139,6 +139,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ctx.toggleAcra(acraEnable, newValue)
             false
         }
+
+        // Debug Logs
+        val enableDebugLogs = findPreference<SwitchPreferenceCompat>("enable_debug_logs")
+        val viewDebugLogs = findPreference<Preference>("view_debug_logs")
+        enableDebugLogs?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("enableDebugLogs", "enable_debug_logs: $newValue")
+            val value = newValue as? Boolean == true
+            Log.d("enableDebugLogs", "Boolean value: $value")
+            viewDebugLogs?.isEnabled = value
+            true
+        }
+        viewDebugLogs?.isEnabled = enableDebugLogs?.isChecked == true
+        viewDebugLogs?.setOnPreferenceClickListener {
+            Log.d("viewDebugLogs", "setOnPreferenceClickListener")
+            findNavController().navigate(SettingsFragmentDirections.navActionSettingsDebug())
+            false
+        }
     }
 
     private fun updateWorkIntervalSettings(selectedValue: String?) {

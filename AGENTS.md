@@ -22,7 +22,7 @@ ALWAYS use the `task *` commands
 
 | Command        | Purpose                                  |
 | -------------- | ---------------------------------------- |
-| `task lint`    | Gradle Lint                              |
+| `task lint`    | Gradle Lint - DO NOT RUN                 |
 | `task compile` | Compile Kotlin                           |
 | `task debug`   | Build debug variant (APK)                |
 | `task release` | Build release variant (APK)              |

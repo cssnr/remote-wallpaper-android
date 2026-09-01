@@ -34,6 +34,7 @@ import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.log.debugLog
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
 import java.io.FileOutputStream
@@ -235,11 +236,13 @@ suspend fun Context.updateWallpaper(): Boolean {
                     history.status = result.response.code
                     history.url = result.response.request.url.toString()
                     Log.d("updateWallpaper", "response: ${result.response}")
+                    this.debugLog("updateWallpaper: ${result.response.code} for ${remote.url}")
                 }
                 is DownloadResult.NotModified -> {
                     history.status = 304
                     history.url = remote.url
                     Log.i("updateWallpaper", "Image not modified, skipping wallpaper update")
+                    this.debugLog("updateWallpaper: 304 for ${remote.url}")
                 }
             }
             // TODO: Replace timestamp with history.timestamp
@@ -254,12 +257,14 @@ suspend fun Context.updateWallpaper(): Boolean {
         }
         Log.d("updateWallpaper", "history: $history")
         withContext(Dispatchers.IO) { historyDao.add(history) }
+        this.debugLog("updateWallpaper: No Active Remote")
         return false
     } catch (e: Exception) {
         Log.e("updateWallpaper", "updateWallpaper: Exception: $e")
         history.error = e.message
         Log.d("updateWallpaper", "history: $history")
         withContext(Dispatchers.IO) { historyDao.add(history) }
+        this.debugLog("updateWallpaper: Exception: ${e.message}")
         return false
     }
 }

@@ -13,6 +13,13 @@
         <!--<item name="iconTint">@android:color/white</item>-->
     </style>
 
+    <!--For Debug Fragment Buttons-->
+    <style name="CustomOutlinedStyle" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@color/ic_launcher_background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="iconTint">@android:color/white</item>
+    </style>
+
     <style name="Theme.RemoteWallpaper.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
