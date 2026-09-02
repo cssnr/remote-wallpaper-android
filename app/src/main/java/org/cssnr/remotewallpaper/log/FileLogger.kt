@@ -11,9 +11,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStreamWriter
+import java.io.RandomAccessFile
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.ArrayDeque
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicLong
 
@@ -22,8 +22,8 @@ object DebugFileLogger {
     private const val TAG = "FileLogger"
     private const val LOG_FILE_NAME = "debug_log.txt"
     private const val MAX_LOG_SIZE_BYTES = 4L * 1024 * 1024
-    private const val MAX_LOG_LINES = 2000
-    private const val TRUNCATE_TARGET_BYTES = (MAX_LOG_SIZE_BYTES * 0.8).toLong()
+    private const val MAX_LOG_LINES = 1000
+    private const val TAIL_SLICE_BYTES = 512L * 1024
 
     private val logMutex = Mutex()
     private val clearGeneration = AtomicLong(0)
@@ -97,9 +97,7 @@ object DebugFileLogger {
                 if (!file.exists()) {
                     ""
                 } else {
-                    file.bufferedReader(Charsets.UTF_8).useLines { lines ->
-                        lines.toList().asReversed().joinToString("\n")
-                    }
+                    readTailLines(file).asReversed().joinToString("\n")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Exception reading logs", e)
@@ -108,28 +106,32 @@ object DebugFileLogger {
         }
     }
 
-    private data class TailLine(val line: String, val size: Int)
-
     private fun truncateIfNeeded(logFile: File) {
         if (!logFile.exists() || logFile.length() <= MAX_LOG_SIZE_BYTES) return
-        val lines = ArrayDeque<TailLine>(MAX_LOG_LINES)
-        var total = 0L
-        logFile.bufferedReader(Charsets.UTF_8).useLines { sequence ->
-            sequence.forEach { line ->
-                val entry = TailLine(line, line.encodeToByteArray().size + 1)
-                lines.addLast(entry)
-                total += entry.size
-                while ((total > TRUNCATE_TARGET_BYTES || lines.size > MAX_LOG_LINES) && lines.size > 1) {
-                    total -= lines.removeFirst().size
-                }
-            }
-        }
-
-        val trimmed = if (lines.isEmpty()) "" else lines.joinToString("\n") { it.line } + "\n"
+        val lines = readTailLines(logFile)
+        val trimmed = if (lines.isEmpty()) "" else lines.joinToString("\n") + "\n"
         OutputStreamWriter(
             FileOutputStream(logFile, false), Charsets.UTF_8
         ).buffered().use { it.write(trimmed) }
         Log.i(TAG, "Log truncated to ${lines.size} lines")
+    }
+
+    private fun readTailLines(file: File): List<String> {
+        val fileLength = file.length()
+        if (fileLength == 0L) return emptyList()
+
+        val startOffset = maxOf(0L, fileLength - TAIL_SLICE_BYTES)
+        val readSize = (fileLength - startOffset).toInt()
+        val bytes = RandomAccessFile(file, "r").use { raf ->
+            raf.seek(startOffset)
+            ByteArray(readSize).also { raf.readFully(it) }
+        }
+        val text = String(bytes, Charsets.UTF_8)
+        val sequence = text.lineSequence()
+        val lines = (if (startOffset > 0L) sequence.drop(1) else sequence)
+            .filter { it.isNotEmpty() }
+            .toList()
+        return lines.takeLast(MAX_LOG_LINES)
     }
 }
 

@@ -24,6 +24,7 @@ class DebugFragment : Fragment() {
 
     companion object {
         const val LOG_TAG = "DebugFragment"
+        const val MAX_SHARE_TEXT_LENGTH = 400_000
     }
 
     private var _binding: FragmentDebugBinding? = null
@@ -54,17 +55,19 @@ class DebugFragment : Fragment() {
             if (!isAdded) return@setOnClickListener
             Log.d(LOG_TAG, "copyLogs")
             val text = binding.textView.text.toString().trim()
-            if (text.isNotEmpty()) appCtx.copyToClipboard(text, "Logs Copied")
+            if (text.isNotEmpty()) {
+                appCtx.copyToClipboard(text.take(MAX_SHARE_TEXT_LENGTH), "Logs Copied")
+            }
         }
 
         binding.shareLogs.setOnClickListener {
             if (!isAdded) return@setOnClickListener
             Log.d(LOG_TAG, "shareLogs")
-            val text = binding.textView.text.toString().trim()
+            val text = binding.textView.text.toString()
             if (text.isEmpty()) return@setOnClickListener
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, binding.textView.text)
+                putExtra(Intent.EXTRA_TEXT, text.take(MAX_SHARE_TEXT_LENGTH))
             }
             startActivity(Intent.createChooser(shareIntent, null))
         }
@@ -83,8 +86,6 @@ class DebugFragment : Fragment() {
         binding.clearLogs.setOnClickListener {
             if (!isAdded) return@setOnClickListener
             Log.d(LOG_TAG, "clearLogs")
-            val text = binding.textView.text.toString().trim()
-            if (text.isEmpty()) return@setOnClickListener
             val activityCtx = requireContext()
             MaterialAlertDialogBuilder(activityCtx, R.style.AlertDialogTheme)
                 .setIcon(R.drawable.md_delete_24px)
