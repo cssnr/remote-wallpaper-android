@@ -75,8 +75,6 @@ For more information, see [Release through a website](https://developer.android.
 
 <br />
 
-<br />
-
 Note: Downloading and Installing the [apk](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 should take you to the settings area to allow installation if not already enabled. Otherwise:
 
