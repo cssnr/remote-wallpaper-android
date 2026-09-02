@@ -3,10 +3,7 @@ package org.cssnr.remotewallpaper.log
 import android.content.Context
 import android.util.Log
 import androidx.preference.PreferenceManager
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -24,32 +21,45 @@ object DebugFileLogger {
 
     private const val TAG = "FileLogger"
     private const val LOG_FILE_NAME = "debug_log.txt"
-    private const val MAX_LOG_SIZE_BYTES = 5L * 1024 * 1024
-    private const val MAX_LOG_LINES = 5000
+    private const val MAX_LOG_SIZE_BYTES = 4L * 1024 * 1024
+    private const val MAX_LOG_LINES = 2000
+    private const val TRUNCATE_TARGET_BYTES = (MAX_LOG_SIZE_BYTES * 0.8).toLong()
 
     private val logMutex = Mutex()
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val clearGeneration = AtomicLong(0)
     @Volatile
     private var debugEnabled = false
+    @Volatile
+    private var initialized = false
 
     private val timestampFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss", Locale.US)
 
     fun initialize(context: Context) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        debugEnabled = preferences.getBoolean("enable_debug_logs", false)
+        if (!initialized) {
+            synchronized(this) {
+                if (!initialized) {
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    debugEnabled = preferences.getBoolean("enable_debug_logs", false)
+                    initialized = true
+                }
+            }
+        }
+    }
+
+    fun setDebugEnabled(enabled: Boolean) {
+        debugEnabled = enabled
     }
 
     fun logFile(context: Context): File = File(context.filesDir, LOG_FILE_NAME)
 
-    fun log(context: Context, message: String) {
+    suspend fun log(context: Context, message: String) {
         if (!debugEnabled) return
         val logFile = logFile(context)
         val timeStamp = LocalDateTime.now().format(timestampFormatter)
         val logMessage = "$timeStamp - $message\n"
         val generation = clearGeneration.get()
 
-        scope.launch {
+        withContext(Dispatchers.IO) {
             logMutex.withLock {
                 if (generation != clearGeneration.get()) return@withLock
                 try {
@@ -98,17 +108,24 @@ object DebugFileLogger {
         }
     }
 
+    private data class TailLine(val line: String, val size: Int)
+
     private fun truncateIfNeeded(logFile: File) {
         if (!logFile.exists() || logFile.length() <= MAX_LOG_SIZE_BYTES) return
-        val lines = ArrayDeque<String>(MAX_LOG_LINES)
+        val lines = ArrayDeque<TailLine>(MAX_LOG_LINES)
+        var total = 0L
         logFile.bufferedReader(Charsets.UTF_8).useLines { sequence ->
             sequence.forEach { line ->
-                if (lines.size == MAX_LOG_LINES) lines.removeFirst()
-                lines.addLast(line)
+                val entry = TailLine(line, line.encodeToByteArray().size + 1)
+                lines.addLast(entry)
+                total += entry.size
+                while ((total > TRUNCATE_TARGET_BYTES || lines.size > MAX_LOG_LINES) && lines.size > 1) {
+                    total -= lines.removeFirst().size
+                }
             }
         }
 
-        val trimmed = lines.joinToString("\n", postfix = if (lines.isEmpty()) "" else "\n")
+        val trimmed = if (lines.isEmpty()) "" else lines.joinToString("\n") { it.line } + "\n"
         OutputStreamWriter(
             FileOutputStream(logFile, false), Charsets.UTF_8
         ).buffered().use { it.write(trimmed) }
@@ -116,7 +133,7 @@ object DebugFileLogger {
     }
 }
 
-fun Context.debugLog(message: String) {
+suspend fun Context.debugLog(message: String) {
     DebugFileLogger.initialize(this)
     DebugFileLogger.log(this, message)
 }

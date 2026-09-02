@@ -50,11 +50,6 @@ class DebugFragment : Fragment() {
 
         val appCtx = requireContext().applicationContext
 
-        lifecycleScope.launch {
-            if (!isAdded || _binding == null) return@launch
-            binding.textView.text = appCtx.readLogFile()
-        }
-
         binding.copyLogs.setOnClickListener {
             if (!isAdded) return@setOnClickListener
             Log.d(LOG_TAG, "copyLogs")
@@ -63,6 +58,7 @@ class DebugFragment : Fragment() {
         }
 
         binding.shareLogs.setOnClickListener {
+            if (!isAdded) return@setOnClickListener
             Log.d(LOG_TAG, "shareLogs")
             val text = binding.textView.text.toString().trim()
             if (text.isEmpty()) return@setOnClickListener
@@ -75,9 +71,11 @@ class DebugFragment : Fragment() {
 
         binding.reloadLogs.setOnClickListener {
             Log.d(LOG_TAG, "reloadLogs")
-            lifecycleScope.launch {
+            getViewLifecycleOwner().lifecycleScope.launch {
+                if (!isAdded) return@launch
+                val text = appCtx.readLogFile()
                 if (!isAdded || _binding == null) return@launch
-                binding.textView.text = appCtx.readLogFile()
+                binding.textView.text = text
                 Toast.makeText(appCtx, "Logs Reloaded.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -95,7 +93,7 @@ class DebugFragment : Fragment() {
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Clear") { _, _ ->
                     if (_binding == null) return@setPositiveButton
-                    lifecycleScope.launch {
+                    getViewLifecycleOwner().lifecycleScope.launch {
                         val cleared = DebugFileLogger.clear(appCtx)
                         if (!isAdded || _binding == null) return@launch
                         if (cleared) {
@@ -112,9 +110,11 @@ class DebugFragment : Fragment() {
         binding.swiperefresh.setOnRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
                 Log.d(LOG_TAG, "setOnRefreshListener: onRefresh")
-                lifecycleScope.launch {
+                getViewLifecycleOwner().lifecycleScope.launch {
+                    if (!isAdded) return@launch
+                    val text = appCtx.readLogFile()
                     if (!isAdded || _binding == null) return@launch
-                    binding.textView.text = appCtx.readLogFile()
+                    binding.textView.text = text
                     Toast.makeText(appCtx, "Logs Reloaded.", Toast.LENGTH_SHORT).show()
                     binding.swiperefresh.isRefreshing = false
                 }
@@ -125,10 +125,12 @@ class DebugFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(LOG_TAG, "DebugFragment - onResume")
-        lifecycleScope.launch {
+        val ctx = context ?: return
+        getViewLifecycleOwner().lifecycleScope.launch {
+            if (!isAdded) return@launch
+            val text = ctx.readLogFile()
             if (!isAdded || _binding == null) return@launch
-            val ctx = context ?: return@launch
-            binding.textView.text = ctx.readLogFile()
+            binding.textView.text = text
         }
     }
 
