@@ -9,12 +9,10 @@ Android application to update wallpaper from a remote URL on an interval.
 
 ## Android
 
-applicationId = "org.cssnr.remotewallpaper" Release
-applicationId = "org.cssnr.remotewallpaper.dev" Debug
-
-minSdk = 26
-targetSdk = 36
-compileSdk = 37
+- applicationId = org.cssnr.remotewallpaper.dev
+- minSdk = 26
+- targetSdk = 36
+- compileSdk = 37
 
 ## Commands
 
@@ -22,7 +20,7 @@ ALWAYS use the `task *` commands
 
 | Command        | Purpose                                  |
 | -------------- | ---------------------------------------- |
-| `task lint`    | Gradle Lint                              |
+| `task lint`    | Gradle Lint - DO NOT RUN                 |
 | `task compile` | Compile Kotlin                           |
 | `task debug`   | Build debug variant (APK)                |
 | `task release` | Build release variant (APK)              |

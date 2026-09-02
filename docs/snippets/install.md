@@ -4,6 +4,7 @@ If you are unsure which provider to choose, [Obtainium :lucide-arrow-up-right:](
 
 [![Get on GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/badges/get-on/github.png)](https://github.com/django-files/android-client/releases/latest/download/app-release.apk)
 [![Get on Obtainium](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/badges/get-on/obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android)
+[![Get on OpenApk](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/openapk.png)](https://www.openapk.net/remote-wallpaper-android/org.cssnr.remotewallpaper/)
 
 [![Latest Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&color=34A853&label=Latest%20Release)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
 [![Latest Pre-Release](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?style=for-the-badge&logo=android&label=Pre-Release&include_prereleases&color=blue)](https://github.com/cssnr/remote-wallpaper-android/releases)

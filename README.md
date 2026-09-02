@@ -51,6 +51,7 @@ Example Remotes:
 
 [![Get on GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/github.png)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
 [![Get on Obtainium](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/remote-wallpaper-android)
+[![Get on OpenApk](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get80/openapk.png)](https://www.openapk.net/remote-wallpaper-android/org.cssnr.remotewallpaper/)
 
 <details><summary>📲 Click to View QR Codes 📸 Supports Android 8 (API 26) 2017 +</summary>
 
@@ -71,8 +72,6 @@ _Note: If installing directly, you may need to allow installation of apps from u
 For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website)._
 
 <details><summary>View Manual Steps to Install from Unknown Sources</summary>
-
-<br />
 
 <br />
 
