@@ -79,12 +79,19 @@
     <PreferenceCategory
         android:key="debug_settings"
         android:title="Debugging">
+
         <SwitchPreferenceCompat
             android:key="acra.enable"
             android:title="Enable Crash Reporting"
             android:summary="Send Crash Reports"
             android:icon="@drawable/md_frame_bug_24px"
             android:defaultValue="true" />
+
+        <Preference
+            android:key="view_logs"
+            android:title="View Logs"
+            android:summary="View Application Logs"
+            android:icon="@drawable/md_bug_report_24px" />
 
     </PreferenceCategory>
 

@@ -36,6 +36,14 @@
             app:enterAnim="@anim/slide_in_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+        <!-- View Logs -->
+        <action
+            android:id="@+id/nav_action_view_logs"
+            app:destination="@id/nav_item_logs"
+            app:exitAnim="@anim/slide_out_left"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -43,6 +51,12 @@
         android:name="org.cssnr.remotewallpaper.ui.settings.WidgetSettingsFragment"
         android:label="Widget Settings"
         tools:layout="@xml/preferences_widget" />
+
+    <fragment
+        android:id="@+id/nav_item_logs"
+        android:name="org.cssnr.remotewallpaper.ui.logs.LogsFragment"
+        android:label="View Logs"
+        tools:layout="@layout/fragment_logs" />
 
     <fragment
         android:id="@+id/nav_item_setup"
