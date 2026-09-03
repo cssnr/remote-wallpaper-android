@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentLogsBinding
 import org.cssnr.remotewallpaper.log.DebugLogger
+import org.cssnr.remotewallpaper.log.LogExportResult
 
 class LogsFragment : Fragment() {
 
@@ -58,11 +59,11 @@ class LogsFragment : Fragment() {
         binding.btnCopy.setOnClickListener {
             Log.d("LogsFragment", "btnCopy")
             lifecycleScope.launch {
-                val text = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
-                if (text == null) {
-                    Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
-                } else {
-                    ctx.copyToClipboard(text)
+                val result = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
+                when (result) {
+                    LogExportResult.Error -> Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
+                    LogExportResult.Empty -> Toast.makeText(ctx, "No Logs to Copy", Toast.LENGTH_SHORT).show()
+                    is LogExportResult.Success -> ctx.copyToClipboard(result.text)
                 }
             }
         }
@@ -70,11 +71,11 @@ class LogsFragment : Fragment() {
         binding.btnShare.setOnClickListener {
             Log.d("LogsFragment", "btnShare")
             lifecycleScope.launch {
-                val text = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
-                if (text == null) {
-                    Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
-                } else {
-                    ctx.shareLogs(text)
+                val result = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
+                when (result) {
+                    LogExportResult.Error -> Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
+                    LogExportResult.Empty -> Toast.makeText(ctx, "No Logs to Share", Toast.LENGTH_SHORT).show()
+                    is LogExportResult.Success -> ctx.shareLogs(result.text)
                 }
             }
         }
@@ -117,10 +118,6 @@ class LogsFragment : Fragment() {
     }
 
     private fun Context.shareLogs(text: String) {
-        if (text == "No logs") {
-            Toast.makeText(this, "No Logs to Share", Toast.LENGTH_SHORT).show()
-            return
-        }
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "RemoteWallpaper Logs")

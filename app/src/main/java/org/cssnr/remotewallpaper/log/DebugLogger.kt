@@ -69,6 +69,12 @@ abstract class LogDatabase : RoomDatabase() {
     }
 }
 
+sealed interface LogExportResult {
+    data class Success(val text: String) : LogExportResult
+    data object Empty : LogExportResult
+    data object Error : LogExportResult
+}
+
 object DebugLogger {
 
     private const val LOG_TAG = "DebugLogger"
@@ -126,25 +132,28 @@ object DebugLogger {
         }
     }
 
-    suspend fun exportAsText(context: Context): String? {
+    suspend fun exportAsText(context: Context): LogExportResult {
         return try {
             withContext(Dispatchers.IO) {
                 val logs = database(context).logDao().getAllNow()
                 if (logs.isEmpty()) {
-                    return@withContext "No logs"
-                }
-                val formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss", Locale.US)
-                logs.joinToString("\n") { entry ->
-                    val time = Instant.ofEpochMilli(entry.timestamp)
-                        .atZone(ZoneId.systemDefault())
-                        .format(formatter)
-                    "$time ${entry.levelEnum.name}: ${entry.message}"
+                    LogExportResult.Empty
+                } else {
+                    val formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss", Locale.US)
+                    LogExportResult.Success(
+                        logs.joinToString("\n") { entry ->
+                            val time = Instant.ofEpochMilli(entry.timestamp)
+                                .atZone(ZoneId.systemDefault())
+                                .format(formatter)
+                            "$time ${entry.levelEnum.name}: ${entry.message}"
+                        }
+                    )
                 }
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to export logs", e)
             ACRA.errorReporter.handleSilentException(e)
-            null
+            LogExportResult.Error
         }
     }
 
