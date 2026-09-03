@@ -139,6 +139,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ctx.toggleAcra(acraEnable, newValue)
             false
         }
+
+        // View Logs
+        findPreference<Preference>("view_logs")?.setOnPreferenceClickListener {
+            Log.d("view_logs", "setOnPreferenceClickListener")
+            val action = SettingsFragmentDirections.navActionViewLogs()
+            findNavController().navigate(action)
+            false
+        }
     }
 
     private fun updateWorkIntervalSettings(selectedValue: String?) {

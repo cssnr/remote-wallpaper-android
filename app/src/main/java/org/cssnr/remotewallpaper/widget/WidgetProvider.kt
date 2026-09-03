@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.log.DebugLogger
 import org.cssnr.remotewallpaper.ui.home.updateWallpaper
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -40,8 +41,9 @@ class WidgetProvider : AppWidgetProvider() {
             }
             Log.d("Widget[onReceive]", "GlobalScope.launch: START")
             CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
-                val update = context.updateWallpaper()
-                Log.d("Widget[onReceive]", "context.updateWallpaper: $update")
+                val updateResult = context.updateWallpaper()
+                Log.d("Widget[onReceive]", "context.updateWallpaper: $updateResult")
+                DebugLogger.i(context, "Widget: updateWallpaper: $updateResult")
                 val appWidgetManager = AppWidgetManager.getInstance(context)
                 onUpdate(context, appWidgetManager, intArrayOf(appWidgetId))
                 Log.d("Widget[onReceive]", "GlobalScope.launch: DONE")
