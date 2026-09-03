@@ -1,4 +1,4 @@
-package org.cssnr.remotewallpaper.ui.logs
+package org.cssnr.remotewallpaper.ui.settings.logs
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -59,7 +59,11 @@ class LogsFragment : Fragment() {
             Log.d("LogsFragment", "btnCopy")
             lifecycleScope.launch {
                 val text = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
-                ctx.copyToClipboard(text)
+                if (text == null) {
+                    Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
+                } else {
+                    ctx.copyToClipboard(text)
+                }
             }
         }
 
@@ -67,7 +71,11 @@ class LogsFragment : Fragment() {
             Log.d("LogsFragment", "btnShare")
             lifecycleScope.launch {
                 val text = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
-                ctx.shareLogs(text)
+                if (text == null) {
+                    Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
+                } else {
+                    ctx.shareLogs(text)
+                }
             }
         }
 

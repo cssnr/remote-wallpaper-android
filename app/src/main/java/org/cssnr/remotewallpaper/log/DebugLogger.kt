@@ -1,6 +1,7 @@
 package org.cssnr.remotewallpaper.log
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
@@ -9,7 +10,9 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
+import org.acra.ACRA
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -68,7 +71,9 @@ abstract class LogDatabase : RoomDatabase() {
 
 object DebugLogger {
 
+    private const val LOG_TAG = "DebugLogger"
     private const val PURGE_DAYS = 7L
+    private const val ENABLED_KEY = "enable_debug_logs"
 
     @Volatile
     private var purged = false
@@ -81,12 +86,21 @@ object DebugLogger {
             instance ?: LogDatabase.getInstance(context).also { instance = it }
         }
 
+    private fun isEnabled(context: Context): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(ENABLED_KEY, true)
+
     suspend fun log(context: Context, level: LogLevel, message: String) {
-        purgeIfNeeded(context)
-        withContext(Dispatchers.IO) {
-            database(context).logDao().insert(
-                LogEntry(level = level.ordinal, message = message)
-            )
+        if (!isEnabled(context)) return
+        try {
+            purgeIfNeeded(context)
+            withContext(Dispatchers.IO) {
+                database(context).logDao().insert(
+                    LogEntry(level = level.ordinal, message = message)
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Failed to write log entry", e)
         }
     }
 
@@ -101,29 +115,49 @@ object DebugLogger {
     fun getLogs(context: Context): Flow<List<LogEntry>> =
         database(context).logDao().getAll()
 
-    suspend fun clear(context: Context) = withContext(Dispatchers.IO) {
-        database(context).logDao().clearAll()
+    suspend fun clear(context: Context) {
+        try {
+            withContext(Dispatchers.IO) {
+                database(context).logDao().clearAll()
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Failed to clear logs", e)
+            ACRA.errorReporter.handleSilentException(e)
+        }
     }
 
-    suspend fun exportAsText(context: Context): String = withContext(Dispatchers.IO) {
-        val logs = database(context).logDao().getAllNow()
-        if (logs.isEmpty()) {
-            return@withContext "No logs"
-        }
-        val formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss", Locale.US)
-        logs.joinToString("\n") { entry ->
-            val time = Instant.ofEpochMilli(entry.timestamp)
-                .atZone(ZoneId.systemDefault())
-                .format(formatter)
-            "$time ${entry.levelEnum.name}: ${entry.message}"
+    suspend fun exportAsText(context: Context): String? {
+        return try {
+            withContext(Dispatchers.IO) {
+                val logs = database(context).logDao().getAllNow()
+                if (logs.isEmpty()) {
+                    return@withContext "No logs"
+                }
+                val formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss", Locale.US)
+                logs.joinToString("\n") { entry ->
+                    val time = Instant.ofEpochMilli(entry.timestamp)
+                        .atZone(ZoneId.systemDefault())
+                        .format(formatter)
+                    "$time ${entry.levelEnum.name}: ${entry.message}"
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Failed to export logs", e)
+            ACRA.errorReporter.handleSilentException(e)
+            null
         }
     }
 
     private suspend fun purgeIfNeeded(context: Context) {
         if (purged) return
-        withContext(Dispatchers.IO) {
-            val cutoff = System.currentTimeMillis() - PURGE_DAYS * 24 * 60 * 60 * 1000L
-            database(context).logDao().deleteOlderThan(cutoff)
+        try {
+            withContext(Dispatchers.IO) {
+                val cutoff = System.currentTimeMillis() - PURGE_DAYS * 24 * 60 * 60 * 1000L
+                database(context).logDao().deleteOlderThan(cutoff)
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Failed to purge old logs", e)
+            ACRA.errorReporter.handleSilentException(e)
         }
         purged = true
     }

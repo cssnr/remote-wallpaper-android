@@ -1,4 +1,4 @@
-package org.cssnr.remotewallpaper.ui.logs
+package org.cssnr.remotewallpaper.ui.settings.logs
 
 import android.annotation.SuppressLint
 import android.content.Context

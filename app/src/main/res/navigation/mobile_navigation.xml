@@ -54,7 +54,7 @@
 
     <fragment
         android:id="@+id/nav_item_logs"
-        android:name="org.cssnr.remotewallpaper.ui.logs.LogsFragment"
+        android:name="org.cssnr.remotewallpaper.ui.settings.logs.LogsFragment"
         android:label="View Logs"
         tools:layout="@layout/fragment_logs" />
 
