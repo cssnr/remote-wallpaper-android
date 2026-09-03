@@ -1,5 +1,7 @@
 # TODO
 
+- Replace Toast with Snackbar
+
 ## ACRA Release
 
 - Add `Crash Reporting` to the [docs](docs)
