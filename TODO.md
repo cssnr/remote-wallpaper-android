@@ -1,5 +1,6 @@
 # TODO
 
+- Document Application Logs
 - Replace Toast with Snackbar
 
 ## ACRA Release
