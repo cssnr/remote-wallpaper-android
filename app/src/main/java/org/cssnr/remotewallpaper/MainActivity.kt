@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         // Handle Custom Navigation Items
         val navLinks = mapOf(
             R.id.nav_item_github to getString(R.string.github_url),
-            R.id.nav_itewm_website to getString(R.string.website_url),
+            R.id.nav_item_website to getString(R.string.website_url),
         )
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawers()
