@@ -21,17 +21,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import nl.dionsegijn.konfetti.core.Angle
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.Spread
+import nl.dionsegijn.konfetti.core.emitter.Emitter
 import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentSetupBinding
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import org.cssnr.remotewallpaper.work.enqueueWorkRequest
-import nl.dionsegijn.konfetti.core.Angle
-import nl.dionsegijn.konfetti.core.Party
-import nl.dionsegijn.konfetti.core.Position
-import nl.dionsegijn.konfetti.core.Spread
-import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.concurrent.TimeUnit
 
 class SetupFragment : Fragment() {
@@ -144,9 +144,9 @@ class SetupFragment : Fragment() {
         val spinnerAdapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, urls)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.initialRemoteSpinner.adapter = spinnerAdapter
-        Log.d(LOG_TAG, "Initial Remote Spinner Items: $urls")
+        Log.d(LOG_TAG, "Initial Spinner Items: $urls")
         binding.initialRemoteSpinner.setSelection(0)
-        Log.d(LOG_TAG, "Initial Remote Spinner Selection: ${binding.initialRemoteSpinner.selectedItem}")
+        Log.d(LOG_TAG, "Initial Spinner Selection: ${binding.initialRemoteSpinner.selectedItem}")
 
         val startAppListener: (View) -> Unit = { view ->
             Log.d(LOG_TAG, "startAppListener: view: $view")
