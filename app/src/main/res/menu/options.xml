@@ -16,4 +16,11 @@
         android:icon="@drawable/fa_github"
         android:title="GitHub"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/option_contact_support"
+        android:icon="@drawable/md_contact_support_24px"
+        android:title="Get Support"
+        app:showAsAction="ifRoom" />
+
 </menu>

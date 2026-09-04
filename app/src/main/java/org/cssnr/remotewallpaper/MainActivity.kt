@@ -293,6 +293,14 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.option_contact_support -> {
+                Log.d(LOG_TAG, "onOptionsItemSelected: option_contact_support")
+                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.website_url).toUri())
+                Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
+                startActivity(intent)
+                true
+            }
+
             R.id.option_github -> {
                 Log.d(LOG_TAG, "onOptionsItemSelected: option_github")
                 val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
