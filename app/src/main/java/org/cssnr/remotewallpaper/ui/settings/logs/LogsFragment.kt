@@ -120,7 +120,7 @@ class LogsFragment : Fragment() {
     private fun Context.shareLogs(text: String) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "RemoteWallpaper Logs")
+            putExtra(Intent.EXTRA_SUBJECT, "Remote Wallpaper Logs")
             putExtra(Intent.EXTRA_TEXT, text)
         }
         startActivity(Intent.createChooser(intent, "Share Logs"))

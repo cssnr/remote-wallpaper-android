@@ -79,7 +79,7 @@ object DebugLogger {
 
     private const val LOG_TAG = "DebugLogger"
     private const val PURGE_DAYS = 7L
-    private const val ENABLED_KEY = "enable_debug_logs"
+    private const val ENABLED_KEY = "enable_app_logs"
 
     @Volatile
     private var purged = false
