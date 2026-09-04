@@ -96,7 +96,7 @@
 
         <Preference
             android:key="view_logs"
-            android:title="Application Logs"
+            android:title="View Logs"
             android:summary="View Application Logs"
             android:icon="@drawable/md_manage_search_24px" />
 
