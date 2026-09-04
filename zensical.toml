@@ -190,6 +190,7 @@ name = "Website"
 
 [project.markdown_extensions.toc]
 permalink = true
+toc_depth = 3
 
 [project.markdown_extensions.pymdownx.arithmatex]
 generic = true
