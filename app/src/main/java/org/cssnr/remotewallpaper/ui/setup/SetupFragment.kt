@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -26,6 +27,12 @@ import org.cssnr.remotewallpaper.databinding.FragmentSetupBinding
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import org.cssnr.remotewallpaper.work.enqueueWorkRequest
+import nl.dionsegijn.konfetti.core.Angle
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.Spread
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import java.util.concurrent.TimeUnit
 
 class SetupFragment : Fragment() {
 
@@ -33,6 +40,8 @@ class SetupFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(requireContext()) }
+
+    private val viewModel: SetupViewModel by viewModels()
 
     private var mainActivity: MainActivity? = null
 
@@ -199,6 +208,27 @@ class SetupFragment : Fragment() {
             val dao = RemoteDatabase.getInstance(ctx).remoteDao()
             dao.getAll()
         }
+
+        if (viewModel.confettiShown.value != true) {
+            viewModel.confettiShown.value = true
+            dropConfetti()
+        }
+    }
+
+    private fun dropConfetti() {
+        Log.d(LOG_TAG, "dropConfetti")
+        val party = Party(
+            speed = 0f,
+            maxSpeed = 15f,
+            damping = 0.9f,
+            angle = Angle.BOTTOM,
+            spread = Spread.SMALL,
+            colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+            position = Position.Relative(0.0, 0.0).between(Position.Relative(1.0, 0.0)),
+            emitter = Emitter(duration = 2, TimeUnit.SECONDS).perSecond(40),
+            timeToLive = 3000L,
+        )
+        binding.konfettiView.start(party)
     }
 
     override fun onStart() {

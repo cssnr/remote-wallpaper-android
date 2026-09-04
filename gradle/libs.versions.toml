@@ -26,6 +26,7 @@ okhttp = "5.5.0"
 retrofit = "3.0.0"
 moshiKotlinCodegen = "1.15.2"
 photoview = "1.0.3"
+konfettiXml = "2.0.5"
 acra = "5.13.1"
 # taptargetview = "1.15.0"
 
@@ -60,6 +61,7 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshiKotlinCodegen" }
 photoview = { group = "io.getstream", name = "photoview", version.ref = "photoview" }
+konfetti-xml = { group = "nl.dionsegijn", name = "konfetti-xml", version.ref = "konfettiXml" }
 acra-http = { group = "ch.acra", name = "acra-http", version.ref = "acra" }
 acra-toast = { group = "ch.acra", name = "acra-toast", version.ref = "acra" }
 # taptargetview = { group = "com.getkeepsafe.taptargetview", name = "taptargetview", version.ref = "taptargetview" }
