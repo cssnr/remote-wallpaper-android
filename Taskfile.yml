@@ -58,6 +58,10 @@ tasks:
     desc: Clear Data
     cmd: "adb {{.CLI_ARGS}} shell pm clear {{.PACKAGE}}"
 
+  install:
+    desc: Install Debug APK
+    cmd: "adb {{.CLI_ARGS}} install -r app/build/outputs/apk/debug/app-debug.apk"
+
   uninstall:
     desc: Uninstall App
     cmd: "adb {{.CLI_ARGS}} shell pm uninstall {{.PACKAGE}}"
