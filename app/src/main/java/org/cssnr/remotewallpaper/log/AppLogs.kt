@@ -75,9 +75,9 @@ sealed interface LogExportResult {
     data object Error : LogExportResult
 }
 
-object DebugLogger {
+object AppLogs {
 
-    private const val LOG_TAG = "DebugLogger"
+    private const val LOG_TAG = "AppLogs"
     private const val PURGE_DAYS = 7L
     private const val ENABLED_KEY = "enable_app_logs"
 

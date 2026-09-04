@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentLogsBinding
-import org.cssnr.remotewallpaper.log.DebugLogger
+import org.cssnr.remotewallpaper.log.AppLogs
 import org.cssnr.remotewallpaper.log.LogExportResult
 
 class LogsFragment : Fragment() {
@@ -59,7 +59,7 @@ class LogsFragment : Fragment() {
         binding.btnCopy.setOnClickListener {
             Log.d("LogsFragment", "btnCopy")
             lifecycleScope.launch {
-                val result = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
+                val result = withContext(Dispatchers.IO) { AppLogs.exportAsText(ctx) }
                 when (result) {
                     LogExportResult.Error -> Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
                     LogExportResult.Empty -> Toast.makeText(ctx, "No Logs to Copy", Toast.LENGTH_SHORT).show()
@@ -71,7 +71,7 @@ class LogsFragment : Fragment() {
         binding.btnShare.setOnClickListener {
             Log.d("LogsFragment", "btnShare")
             lifecycleScope.launch {
-                val result = withContext(Dispatchers.IO) { DebugLogger.exportAsText(ctx) }
+                val result = withContext(Dispatchers.IO) { AppLogs.exportAsText(ctx) }
                 when (result) {
                     LogExportResult.Error -> Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
                     LogExportResult.Empty -> Toast.makeText(ctx, "No Logs to Share", Toast.LENGTH_SHORT).show()
@@ -89,7 +89,7 @@ class LogsFragment : Fragment() {
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Delete") { _, _ ->
                     lifecycleScope.launch {
-                        withContext(Dispatchers.IO) { DebugLogger.clear(ctx) }
+                        withContext(Dispatchers.IO) { AppLogs.clear(ctx) }
                         Toast.makeText(ctx, "Logs Deleted", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -102,7 +102,7 @@ class LogsFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            DebugLogger.getLogs(ctx).collectLatest { logs ->
+            AppLogs.getLogs(ctx).collectLatest { logs ->
                 Log.d("LogsFragment", "collectLatest: ${logs.size}")
                 adapter.updateData(logs)
                 binding.emptyState.visibility =
