@@ -2,6 +2,7 @@ package org.cssnr.remotewallpaper.log
 
 import android.content.Context
 import android.util.Log
+import androidx.preference.PreferenceManager
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
@@ -10,11 +11,10 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
-import org.acra.ACRA
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.acra.ACRA
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

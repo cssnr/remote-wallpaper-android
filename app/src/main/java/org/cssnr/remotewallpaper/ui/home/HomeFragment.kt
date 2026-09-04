@@ -238,6 +238,7 @@ suspend fun Context.updateWallpaper(): Boolean {
                     Log.d("updateWallpaper", "response: ${result.response}")
                     AppLogs.d(this, "updateWallpaper: ${result.response.code} for ${remote.url}")
                 }
+
                 is DownloadResult.NotModified -> {
                     history.status = 304
                     history.url = remote.url
@@ -312,7 +313,7 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
             withContext(Dispatchers.IO) {
                 dao.updateCacheHeaders(remote.url, newEtag, newLastModified)
             }
-            Log.d("downloadImage", "Saved cache headers: etag=$newEtag, lastModified=$newLastModified")
+            Log.d("downloadImage", "headers: etag=$newEtag, lastModified=$newLastModified")
         }
     }
     return DownloadResult.Downloaded(response)

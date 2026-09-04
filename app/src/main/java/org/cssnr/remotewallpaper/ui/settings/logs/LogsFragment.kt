@@ -61,8 +61,12 @@ class LogsFragment : Fragment() {
             lifecycleScope.launch {
                 val result = withContext(Dispatchers.IO) { AppLogs.exportAsText(ctx) }
                 when (result) {
-                    LogExportResult.Error -> Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
-                    LogExportResult.Empty -> Toast.makeText(ctx, "No Logs to Copy", Toast.LENGTH_SHORT).show()
+                    LogExportResult.Error ->
+                        Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
+
+                    LogExportResult.Empty ->
+                        Toast.makeText(ctx, "No Logs to Copy", Toast.LENGTH_SHORT).show()
+
                     is LogExportResult.Success -> ctx.copyToClipboard(result.text)
                 }
             }
@@ -73,8 +77,12 @@ class LogsFragment : Fragment() {
             lifecycleScope.launch {
                 val result = withContext(Dispatchers.IO) { AppLogs.exportAsText(ctx) }
                 when (result) {
-                    LogExportResult.Error -> Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
-                    LogExportResult.Empty -> Toast.makeText(ctx, "No Logs to Share", Toast.LENGTH_SHORT).show()
+                    LogExportResult.Error ->
+                        Toast.makeText(ctx, "Failed to export logs", Toast.LENGTH_SHORT).show()
+
+                    LogExportResult.Empty ->
+                        Toast.makeText(ctx, "No Logs to Share", Toast.LENGTH_SHORT).show()
+
                     is LogExportResult.Success -> ctx.shareLogs(result.text)
                 }
             }
