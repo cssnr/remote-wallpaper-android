@@ -61,13 +61,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:text="Welcome" />
 
             <LinearLayout
-                android:layout_width="240dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
                 <TextView
@@ -87,9 +86,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="240dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
                 <TextView
@@ -109,79 +107,48 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:labelFor="@+id/work_interval_spinner"
+                    android:labelFor="@+id/initial_remote_spinner"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textColor="?attr/colorPrimary"
                     android:textSize="16sp"
                     android:text="Choose Initial Images Remote" />
-                <RadioGroup
-                    android:id="@+id/initial_provider"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <RadioButton
-                        android:id="@+id/option_picsum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="https://picsum.photos/4800/2400" />
-                    <RadioButton
-                        android:id="@+id/option_aviation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="https://images.cssnr.com/aviation" />
-                    <!--<RadioButton-->
-                    <!--    android:id="@+id/option_custom"-->
-                    <!--    android:layout_width="wrap_content"-->
-                    <!--    android:layout_height="wrap_content"-->
-                    <!--    android:ellipsize="end"-->
-                    <!--    android:maxLines="1"-->
-                    <!--    android:text="Enter Remote (can be added later)" />-->
-                </RadioGroup>
-                <!--<EditText-->
-                <!--    android:id="@+id/custom_url"-->
-                <!--    android:layout_width="match_parent"-->
-                <!--    android:layout_height="wrap_content"-->
-                <!--    android:gravity="center_horizontal"-->
-                <!--    android:autofillHints="Full Remote URL"-->
-                <!--    android:hint="Full Remote URL"-->
-                <!--    android:inputType="textUri"-->
-                <!--    android:visibility="gone" />-->
+                <Spinner
+                    android:id="@+id/initial_remote_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:padding="8dp" />
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                    android:textStyle="italic"
-                    android:text="You can add more remotes after you start..." />
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                    android:textStyle="bold|italic"
+                    android:text="Note: You can add more remotes after you start..." />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="240dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <Button
                     android:id="@+id/btn_download"
-                    android:layout_width="240dp"
+                    android:layout_width="260dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="Set Wallpaner and Start"
+                    android:text="Set Wallpaper and Start"
                     android:backgroundTint="@android:color/holo_green_dark"/>
                 <Button
                     android:id="@+id/btn_start"
-                    android:layout_width="240dp"
+                    android:layout_width="260dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
                     android:text="Just Start the App" />
             </LinearLayout>
 

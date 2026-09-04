@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.RadioButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
@@ -19,9 +19,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentSetupBinding
+import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
@@ -127,18 +129,15 @@ class SetupFragment : Fragment() {
                 }
             }
 
-        //binding.optionPicsum.setOnTouchListener { _, _ ->
-        //    Log.d(LOG_TAG, "optionPicsum.setOnTouchListener")
-        //    //binding.initialProvider.background = null
-        //    false
-        //}
-
-        // Initial Provider Radio
-        binding.initialProvider.check(R.id.option_picsum)
-        //binding.optionCustom.setOnCheckedChangeListener { _, isChecked ->
-        //    Log.d("RadioButton", "Checked: $isChecked")
-        //    binding.customUrl.visibility = if (isChecked) View.VISIBLE else View.GONE
-        //}
+        // Initial Remote Spinner
+        Log.d(LOG_TAG, "Setting up Initial Remote Spinner")
+        val urls = RemoteDatabase.defaultData.map { it.url }
+        val spinnerAdapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, urls)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.initialRemoteSpinner.adapter = spinnerAdapter
+        Log.d(LOG_TAG, "Initial Remote Spinner Items: $urls")
+        binding.initialRemoteSpinner.setSelection(0)
+        Log.d(LOG_TAG, "Initial Remote Spinner Selection: ${binding.initialRemoteSpinner.selectedItem}")
 
         val startAppListener: (View) -> Unit = { view ->
             Log.d(LOG_TAG, "startAppListener: view: $view")
@@ -163,29 +162,38 @@ class SetupFragment : Fragment() {
             Log.d(LOG_TAG, "startAppListener: bundle: $bundle")
 
             // Selected Remote
-            val selectedId = binding.initialProvider.checkedRadioButtonId
-            Log.d(LOG_TAG, "startAppListener: selectedId: $selectedId")
-            val selectedText = binding.root.findViewById<RadioButton>(selectedId).text.toString()
+            val selectedText = binding.initialRemoteSpinner.selectedItem?.toString() ?: ""
             Log.d(LOG_TAG, "startAppListener: selectedText: $selectedText")
-            if (selectedText != "https://picsum.photos/4800/2400") {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val dao = RemoteDatabase.getInstance(ctx).remoteDao()
-                    val remote = dao.getByUrl(selectedText)
-                    Log.d(LOG_TAG, "startAppListener: remote: $remote")
-                    dao.activate(remote)
-                }
-            }
 
-            // Navigate Home
-            val navController = findNavController()
-            navController.navigate(
-                R.id.nav_action_setup_home, bundle, NavOptions.Builder()
-                    .setPopUpTo(navController.graph.id, true)
-                    .build()
-            )
+            viewLifecycleOwner.lifecycleScope.launch {
+                Log.d(LOG_TAG, "startAppListener: lifecycleScope.launch")
+                withContext(Dispatchers.IO) {
+                    val dao = RemoteDatabase.getInstance(ctx).remoteDao()
+                    val active = dao.getActive()
+                    Log.d(LOG_TAG, "startAppListener: active: $active")
+                    if (selectedText.isNotEmpty() && active?.url != selectedText) {
+                        Log.d(LOG_TAG, "startAppListener: activating: $selectedText")
+                        val remote = dao.getByUrl(selectedText) ?: Remote(selectedText).also {
+                            dao.addOrUpdate(it)
+                        }
+                        Log.d(LOG_TAG, "startAppListener: remote: $remote")
+                        dao.activate(remote)
+                    }
+                }
+
+                // Navigate Home
+                val navController = findNavController()
+                navController.navigate(
+                    R.id.nav_action_setup_home, bundle, NavOptions.Builder()
+                        .setPopUpTo(navController.graph.id, true)
+                        .build()
+                )
+            }
         }
         binding.btnDownload.setOnClickListener(startAppListener)
         binding.btnStart.setOnClickListener(startAppListener)
+
+        // Create Database (defaultData is seeded during onCreate)
         CoroutineScope(Dispatchers.IO).launch {
             Log.d(LOG_TAG, "Creating Initial Data")
             val dao = RemoteDatabase.getInstance(ctx).remoteDao()

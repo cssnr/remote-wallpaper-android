@@ -5,8 +5,6 @@ import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Entity
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
@@ -15,7 +13,6 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import java.util.concurrent.Executors
 
 @Dao
 interface RemoteDao {
@@ -27,12 +24,6 @@ interface RemoteDao {
 
     @Query("SELECT * FROM remote WHERE url = :url LIMIT 1")
     fun getByUrl(url: String): Remote?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(remotes: List<Remote>)
-
-    //@Insert
-    //fun add(remote: Remote)
 
     @Upsert
     fun addOrUpdate(remote: Remote)
@@ -96,7 +87,7 @@ abstract class RemoteDatabase : RoomDatabase() {
             }
         }
 
-        private val defaultData: List<Remote> = listOf(
+        val defaultData: List<Remote> = listOf(
             Remote("https://picsum.photos/4800/2400", active = true),
             Remote("https://picsum.photos/4800/2400?blur=10", active = false),
             Remote("https://picsum.photos/4800/2400?grayscale", active = false),
@@ -113,10 +104,16 @@ abstract class RemoteDatabase : RoomDatabase() {
                     .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
-                            Executors.newSingleThreadExecutor().execute {
-                                getInstance(context).remoteDao().apply {
-                                    insertAll(defaultData)
-                                }
+                            defaultData.forEach { remote ->
+                                db.execSQL(
+                                    "INSERT OR REPLACE INTO Remote (url, active, etag, lastModified) VALUES (?, ?, ?, ?)",
+                                    arrayOf<Any?>(
+                                        remote.url,
+                                        if (remote.active) 1 else 0,
+                                        remote.etag,
+                                        remote.lastModified
+                                    )
+                                )
                             }
                         }
                     })
