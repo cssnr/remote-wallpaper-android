@@ -221,11 +221,12 @@ class MainActivity : AppCompatActivity() {
             //    // TODO: This upgrade will trigger the next block and is not needed
             //}
             currentVersionCode > previousVersionCode -> {
-                Log.i(LOG_TAG, "APP UPGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
+                Log.i(LOG_TAG, "APP UPGRADE: $previousVersionCode -> $currentVersionCode")
                 // TODO: Upgrade - this is where to add upgrade logic...
             }
+
             currentVersionCode < previousVersionCode -> {
-                Log.w(LOG_TAG, "APP DOWNGRADE DETECTED: $previousVersionCode -> $currentVersionCode")
+                Log.w(LOG_TAG, "APP DOWNGRADE: $previousVersionCode -> $currentVersionCode")
                 // TODO: Downgrade - this will never actually happen and should probably be removed
             }
         }
@@ -272,6 +273,19 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(Intent.ACTION_VIEW, getString(R.string.github_url).toUri())
                 Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
                 startActivity(intent)
+                true
+            }
+
+            // NOTE: Navigate to top level of settings if on a sub-page (widgets or logs)
+            R.id.nav_settings -> {
+                Log.i(LOG_TAG, "SETTINGS OPTIONS CLICK")
+                val menuItem = binding.navView.menu.findItem(R.id.nav_settings)
+                NavigationUI.onNavDestinationSelected(menuItem, navController)
+                navController.navigate(
+                    R.id.nav_settings, null, NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_settings, true)
+                        .build()
+                )
                 true
             }
 

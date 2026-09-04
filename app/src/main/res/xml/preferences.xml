@@ -89,9 +89,9 @@
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
-            android:key="enable_debug_logs"
-            android:title="Enable Debug Logs"
-            android:summary="For Debugging"
+            android:key="enable_app_logs"
+            android:title="Enable Application Logs"
+            android:summary="For Local Debugging"
             android:icon="@drawable/md_bug_report_24px" />
 
         <Preference
