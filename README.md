@@ -121,6 +121,7 @@ _The GitHub APK has been registered with Google's [Android developer verificatio
 
 ### Planned
 
+- Option to Cycle Through Remotes.
 - Image Effects; Blur, Grayscale, etc.
 - JSON Result Parser with Custom keys.
 
@@ -165,10 +166,6 @@ If you run into any issues or need help getting started, please do one of the fo
 [![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/wXy6m2X8wY)
 
 ## Crash Reporting
-
-> [!NOTE]  
-> This feature is currently in [beta](https://github.com/cssnr/remote-wallpaper-android/releases) testing.
-> To provide feedback join the [Discussion](https://github.com/cssnr/remote-wallpaper-android/discussions/42).
 
 Without crash reporting, fixing a bug requires you to:
 
