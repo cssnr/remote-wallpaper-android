@@ -50,6 +50,7 @@ To get started, [Install](#install) the app, view the [Screenshots](#screenshots
 
 ### :lucide-calendar-clock: Planned
 
+- Option to Cycle Through Remotes.
 - Image Effects; Blur, Grayscale, etc.
 - JSON Result Parser with Custom keys.
 

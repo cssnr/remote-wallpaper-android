@@ -121,6 +121,7 @@ _The GitHub APK has been registered with Google's [Android developer verificatio
 
 ### Planned
 
+- Option to Cycle Through Remotes.
 - Image Effects; Blur, Grayscale, etc.
 - JSON Result Parser with Custom keys.
 
