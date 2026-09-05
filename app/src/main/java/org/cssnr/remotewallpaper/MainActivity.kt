@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         // Handle Custom Navigation Items
         val navLinks = mapOf(
             R.id.nav_item_github to getString(R.string.github_url),
-            R.id.nav_itewm_website to getString(R.string.website_url),
+            R.id.nav_item_website to getString(R.string.website_url),
         )
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawers()
@@ -290,6 +290,14 @@ class MainActivity : AppCompatActivity() {
                         .setPopUpTo(R.id.nav_remotes, true)
                         .build()
                 )
+                true
+            }
+
+            R.id.option_contact_support -> {
+                Log.d(LOG_TAG, "onOptionsItemSelected: option_contact_support")
+                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.website_url).toUri())
+                Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
+                startActivity(intent)
                 true
             }
 

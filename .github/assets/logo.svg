@@ -1,0 +1,45 @@
+<svg width="108" height="108" viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="redCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FE907A"/>
+      <stop offset="100%" stop-color="#FC5B3D"/>
+    </linearGradient>
+    <linearGradient id="yellowCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFD680"/>
+      <stop offset="100%" stop-color="#FFBB25"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="0.1">
+      <stop offset="0%" stop-color="#82D4FE"/>
+      <stop offset="100%" stop-color="#38B1F2"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0%" stop-color="#FFD680"/>
+      <stop offset="100%" stop-color="#FFBB25"/>
+    </linearGradient>
+    <linearGradient id="mtnLight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#733266"/>
+      <stop offset="100%" stop-color="#5A1A56"/>
+    </linearGradient>
+    <linearGradient id="mtnDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A1355"/>
+      <stop offset="100%" stop-color="#380B40"/>
+    </linearGradient>
+    <clipPath id="cardClip">
+      <rect x="0" y="0" width="81" height="81" rx="6"/>
+    </clipPath>
+  </defs>
+
+  <!-- back card (red) -->
+  <rect x="27" y="27" width="81" height="81" rx="6" fill="url(#redCard)"/>
+
+  <!-- middle card (yellow) -->
+  <rect x="13.5" y="13.5" width="81" height="81" rx="6" fill="url(#yellowCard)"/>
+
+  <!-- front card: sky + sun + mountains, clipped to rounded square, flush at the top-left corner -->
+  <g clip-path="url(#cardClip)">
+    <rect x="0" y="0" width="81" height="81" fill="url(#sky)"/>
+    <circle cx="40.1" cy="26.6" r="13.1" fill="url(#sun)"/>
+    <polygon points="-14.8,81 21.1,42.2 44.3,81" fill="url(#mtnLight)"/>
+    <polygon points="29.5,81 54,39 103.4,81" fill="url(#mtnDark)"/>
+  </g>
+</svg>

@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.photoview)
+    implementation(libs.konfetti.xml)
     implementation(libs.acra.http)
     implementation(libs.acra.toast)
     ksp(libs.moshi.kotlin.codegen)
