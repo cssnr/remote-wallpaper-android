@@ -31,7 +31,7 @@
                 android:title="GitHub" />
 
             <item
-                android:id="@+id/nav_itewm_website"
+                android:id="@+id/nav_item_website"
                 android:icon="@drawable/md_captive_portal_24px"
                 android:title="Website" />
         </menu>

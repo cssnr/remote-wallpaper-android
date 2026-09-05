@@ -35,6 +35,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
 import org.cssnr.remotewallpaper.work.enqueueWorkRequest
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         // Handle Custom Navigation Items
         val navLinks = mapOf(
             R.id.nav_item_github to getString(R.string.github_url),
-            R.id.nav_itewm_website to getString(R.string.website_url),
+            R.id.nav_item_website to getString(R.string.website_url),
         )
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawers()
@@ -223,6 +224,30 @@ class MainActivity : AppCompatActivity() {
             currentVersionCode > previousVersionCode -> {
                 Log.i(LOG_TAG, "APP UPGRADE: $previousVersionCode -> $currentVersionCode")
                 // TODO: Upgrade - this is where to add upgrade logic...
+                // Show ACRA Update Message
+                if (33L in (previousVersionCode + 1)..currentVersionCode) {
+                    Log.i(LOG_TAG, "ACRA Update Detected...")
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.acra_update_title)
+                        .setMessage(R.string.acra_update_message)
+                        .setNeutralButton("More Info") { _, _ ->
+                            Log.i(LOG_TAG, "Update Dialog: More Info")
+                            val uri = getString(R.string.acra_info_link).toUri()
+                            startActivity(Intent(Intent.ACTION_VIEW, uri))
+                        }
+                        .setNegativeButton("Settings") { _, _ ->
+                            Log.i(LOG_TAG, "Update Dialog: Settings")
+                            val menuItem = binding.navView.menu.findItem(R.id.nav_settings)
+                            NavigationUI.onNavDestinationSelected(menuItem, navController)
+                            navController.navigate(
+                                R.id.nav_settings, null, NavOptions.Builder()
+                                    .setPopUpTo(R.id.nav_settings, true)
+                                    .build()
+                            )
+                        }
+                        .setPositiveButton("Close", null)
+                        .show()
+                }
             }
 
             currentVersionCode < previousVersionCode -> {
@@ -265,6 +290,14 @@ class MainActivity : AppCompatActivity() {
                         .setPopUpTo(R.id.nav_remotes, true)
                         .build()
                 )
+                true
+            }
+
+            R.id.option_contact_support -> {
+                Log.d(LOG_TAG, "onOptionsItemSelected: option_contact_support")
+                val intent = Intent(Intent.ACTION_VIEW, getString(R.string.website_url).toUri())
+                Log.d(LOG_TAG, "onOptionsItemSelected: intent: $intent")
+                startActivity(intent)
                 true
             }
 
