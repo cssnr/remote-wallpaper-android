@@ -187,20 +187,27 @@ class RemotesFragment : Fragment() {
                     input.error = "Invalid URL"
                 } else {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
-                        // TODO: Make a @Transaction to handle this...
-                        dao.addOrUpdate(Remote(url = url))
-                        val active = dao.getActive()
-                        if (active == null) {
-                            val remote = dao.getByUrl(url)
-                            Log.i("showAddDialog", "dao.activate: $remote")
-                            dao.activate(remote!!)
-                        }
-                        val remotes = dao.getAll()
-                        withContext(Dispatchers.Main) {
-                            adapter.updateData(remotes)
-                            dialog.dismiss()
-                            this@showAddDialog.showSnackbar("URL Added.")
+                        try {
+                            val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
+                            // TODO: Make a @Transaction to handle this...
+                            dao.addOrUpdate(Remote(url = url))
+                            val active = dao.getActive()
+                            if (active == null) {
+                                val remote = dao.getByUrl(url)
+                                Log.i("showAddDialog", "dao.activate: $remote")
+                                dao.activate(remote!!)
+                            }
+                            val remotes = dao.getAll()
+                            withContext(Dispatchers.Main) {
+                                adapter.updateData(remotes)
+                                dialog.dismiss()
+                                this@showAddDialog.showSnackbar("URL Added.")
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                sendButton.isEnabled = true
+                                input.error = e.message ?: "Unknown Error"
+                            }
                         }
                     }
                 }
