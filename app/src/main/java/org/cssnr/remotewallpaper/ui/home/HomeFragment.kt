@@ -196,7 +196,9 @@ fun Context.showAddDialog() {
                             dialog.dismiss()
                         }
                     } catch (e: Exception) {
-                        this@showAddDialog.showSnackbar(e.message ?: "Unknown Error")
+                        withContext(Dispatchers.Main) {
+                            this@showAddDialog.showSnackbar(e.message ?: "Unknown Error")
+                        }
                     }
                 }
             } else {

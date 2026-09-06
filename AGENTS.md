@@ -18,15 +18,15 @@ Android application to update wallpaper from a remote URL on an interval.
 
 ALWAYS use the `task *` commands
 
-| Command        | Purpose                                  |
-| -------------- | ---------------------------------------- |
-| `task lint`    | Gradle Lint - DO NOT RUN                 |
-| `task compile` | Compile Kotlin - DO NOT truncate output  |
-| `task debug`   | Build debug variant (APK)                |
-| `task release` | Build release variant (APK)              |
-| `task bundle`  | Build Android App Bundle (AAB)           |
-| `task check`   | Prettier check (check non-kotlin files)  |
-| `task format`  | Prettier write (format non-kotlin files) |
+| Command        | Purpose                                      |
+| -------------- | -------------------------------------------- |
+| `task lint`    | Gradle Lint - DO NOT RUN                     |
+| `task compile` | Compile Kotlin - DO NOT truncate output      |
+| `task debug`   | Build debug variant (APK)                    |
+| `task release` | Build release variant (APK)                  |
+| `task bundle`  | Build Android App Bundle (AAB)               |
+| `task check`   | Prettier check (check non-kotlin/xml files)  |
+| `task format`  | Prettier write (format non-kotlin/xml files) |
 
 Do NOT run task compile/debug/release/bundle every turn unless it is REQUIRED!!!
 
