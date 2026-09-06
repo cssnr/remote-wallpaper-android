@@ -17,6 +17,6 @@ fun Context.showSnackbar(message: CharSequence) {
     if (activity.isFinishing || activity.isDestroyed) return
     val host = activity.findViewById<ViewGroup>(R.id.snackbar_host) ?: return
     Snackbar.make(host, message, Snackbar.LENGTH_LONG)
-        .setCloseIconVisible(true)
+        .setAction("Close") {}
         .show()
 }

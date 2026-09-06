@@ -97,6 +97,7 @@ class RemotesFragment : Fragment() {
                         dao.getAll()
                     }
                     adapter.updateData(remotes)
+                    ctx.showSnackbar("Remote Deleted.")
                     //remotesViewModel.stationData.value = remotes
                 }
             }
