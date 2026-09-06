@@ -246,7 +246,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             this@showFeedbackDialog.showSnackbar("Feedback Sent. Thank You!")
                         } else {
                             sendButton.isEnabled = true
-                            input.error = "Error: ${response.code()}"
+                            input.error = response.errorBody()?.string()
+                                ?.takeIf { it.isNotBlank() }
+                                ?: "Error: ${response.code()}"
                         }
                     }
                 } else {
