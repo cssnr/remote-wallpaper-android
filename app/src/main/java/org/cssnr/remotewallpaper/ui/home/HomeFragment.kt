@@ -145,11 +145,12 @@ class HomeFragment : Fragment() {
     suspend fun Context.reloadWallpaper() {
         activity?.findViewById<LinearLayout>(R.id.main_loading_layout)?.visibility = View.VISIBLE
         //_binding?.loadingOverlay?.visibility = View.VISIBLE
-        if (updateWallpaper()) {
+        val error = updateWallpaper()
+        if (error == null) {
             updateData()
             showSnackbar("Done.")
         } else {
-            showSnackbar("No Remotes.")
+            showSnackbar(error)
         }
         activity?.findViewById<LinearLayout>(R.id.main_loading_layout)?.visibility = View.GONE
         //_binding?.loadingOverlay?.visibility = View.GONE
@@ -222,7 +223,7 @@ sealed class DownloadResult {
 
 // TODO: updateWallpaper is used globally to update the wallpaper and should be a package
 //  The rest of the functions are only used by updateWallpaper and are internal to updateWallpaper
-suspend fun Context.updateWallpaper(): Boolean {
+suspend fun Context.updateWallpaper(): String? {
     // TODO: This version is testing historyDao vs above version. It will all be refactored...
     val historyDao = HistoryDatabase.getInstance(this).historyDao()
     val history = HistoryItem()
@@ -256,19 +257,19 @@ suspend fun Context.updateWallpaper(): Boolean {
             preferences.edit { putString("last_update", timestamp) }
             Log.d("updateWallpaper", "history: $history")
             withContext(Dispatchers.IO) { historyDao.add(history) }
-            return true
+            return null
         }
         Log.d("updateWallpaper", "history: $history")
         withContext(Dispatchers.IO) { historyDao.add(history) }
         AppLogs.w(this, "updateWallpaper: No Active Remote")
-        return false
+        return "No Remotes."
     } catch (e: Exception) {
         Log.e("updateWallpaper", "updateWallpaper: Exception: $e")
         history.error = e.message
         Log.d("updateWallpaper", "history: $history")
         withContext(Dispatchers.IO) { historyDao.add(history) }
         AppLogs.e(this, "updateWallpaper: Exception: ${e.message}")
-        return false
+        return e.message ?: "Unknown Error"
     }
 }
 
