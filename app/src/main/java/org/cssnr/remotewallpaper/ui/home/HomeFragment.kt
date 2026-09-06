@@ -193,12 +193,13 @@ fun Context.showAddDialog() {
                     try {
                         downloadImage(Remote(url = url))
                         withContext(Dispatchers.Main) {
-                            this@showAddDialog.showSnackbar("Done.")
                             dialog.dismiss()
+                            this@showAddDialog.showSnackbar("Done.")
                         }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
-                            this@showAddDialog.showSnackbar(e.message ?: "Unknown Error")
+                            sendButton.isEnabled = true
+                            input.error = e.message ?: "Unknown Error"
                         }
                     }
                 }

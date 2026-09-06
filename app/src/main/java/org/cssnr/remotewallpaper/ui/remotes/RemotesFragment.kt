@@ -198,9 +198,9 @@ class RemotesFragment : Fragment() {
                         }
                         val remotes = dao.getAll()
                         withContext(Dispatchers.Main) {
-                            this@showAddDialog.showSnackbar("URL Added.")
                             adapter.updateData(remotes)
                             dialog.dismiss()
+                            this@showAddDialog.showSnackbar("URL Added.")
                         }
                     }
                 }
