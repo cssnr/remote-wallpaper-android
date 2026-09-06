@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +22,7 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentRemotesBinding
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 
 const val LOG_TAG = "Remotes"
@@ -197,8 +197,7 @@ class RemotesFragment : Fragment() {
                         }
                         val remotes = dao.getAll()
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@showAddDialog, "URL Added.", Toast.LENGTH_SHORT)
-                                .show()
+                            this@showAddDialog.showSnackbar("URL Added.")
                             adapter.updateData(remotes)
                             dialog.dismiss()
                         }

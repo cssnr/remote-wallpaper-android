@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +25,7 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentHistoryBinding
 import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
+import org.cssnr.remotewallpaper.showSnackbar
 import java.util.Locale
 
 const val LOG_TAG = "History"
@@ -128,7 +128,7 @@ class HistoryFragment : Fragment() {
             Log.d(LOG_TAG, "setOnRefreshListener: onRefresh")
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) { ctx.updateData() }
-                Toast.makeText(ctx, "History Reloaded", Toast.LENGTH_SHORT).show()
+                ctx.showSnackbar("History Reloaded")
                 _binding?.swiperefresh?.isRefreshing = false
             }
         }
@@ -213,7 +213,7 @@ class HistoryFragment : Fragment() {
             val clipboard = this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Text", text)
             clipboard.setPrimaryClip(clip)
-            Toast.makeText(this, msg ?: "Copied to Clipboard", Toast.LENGTH_SHORT).show()
+            showSnackbar(msg ?: "Copied to Clipboard")
         }
     }
 

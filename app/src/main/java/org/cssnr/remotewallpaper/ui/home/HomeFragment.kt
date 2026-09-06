@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.core.graphics.scale
@@ -35,6 +34,7 @@ import org.cssnr.remotewallpaper.db.HistoryItem
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import org.cssnr.remotewallpaper.log.AppLogs
+import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
 import java.io.FileOutputStream
@@ -108,7 +108,7 @@ class HomeFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             } else {
-                Toast.makeText(ctx, "No Image URL!", Toast.LENGTH_SHORT).show()
+                ctx.showSnackbar("No Image URL!")
             }
         }
 
@@ -147,9 +147,9 @@ class HomeFragment : Fragment() {
         //_binding?.loadingOverlay?.visibility = View.VISIBLE
         if (updateWallpaper()) {
             updateData()
-            Toast.makeText(this, "Done.", Toast.LENGTH_SHORT).show()
+            showSnackbar("Done.")
         } else {
-            Toast.makeText(this, "No Remotes.", Toast.LENGTH_SHORT).show()
+            showSnackbar("No Remotes.")
         }
         activity?.findViewById<LinearLayout>(R.id.main_loading_layout)?.visibility = View.GONE
         //_binding?.loadingOverlay?.visibility = View.GONE
@@ -192,11 +192,11 @@ fun Context.showAddDialog() {
                     try {
                         downloadImage(Remote(url = url))
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@showAddDialog, "Done.", Toast.LENGTH_SHORT).show()
+                            this@showAddDialog.showSnackbar("Done.")
                             dialog.dismiss()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(this@showAddDialog, e.message, Toast.LENGTH_SHORT).show()
+                        this@showAddDialog.showSnackbar(e.message ?: "Unknown Error")
                     }
                 }
             } else {

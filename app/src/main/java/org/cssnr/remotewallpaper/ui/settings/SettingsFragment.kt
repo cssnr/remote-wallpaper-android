@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.net.toUri
@@ -28,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.api.FeedbackApi
+import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
@@ -249,7 +249,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             "Error: ${response.code()}"
                         }
                         Log.d("showFeedbackDialog", "msg: $msg")
-                        Toast.makeText(this@showFeedbackDialog, msg, Toast.LENGTH_LONG).show()
+                        this@showFeedbackDialog.showSnackbar(msg)
                     }
                 } else {
                     sendButton.isEnabled = true
