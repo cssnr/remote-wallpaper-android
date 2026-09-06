@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.net.toUri
@@ -28,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.api.FeedbackApi
+import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
@@ -240,16 +240,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     lifecycleScope.launch {
                         val response = withContext(Dispatchers.IO) { api.sendFeedback(message) }
                         Log.d("showFeedbackDialog", "response: $response")
-                        val msg = if (response.isSuccessful) {
+                        if (response.isSuccessful) {
                             findPreference<Preference>("send_feedback")?.isEnabled = false
                             dialog.dismiss()
-                            "Feedback Sent. Thank You!"
+                            this@showFeedbackDialog.showSnackbar("Feedback Sent. Thank You!")
                         } else {
                             sendButton.isEnabled = true
-                            "Error: ${response.code()}"
+                            input.error = response.errorBody()?.string()
+                                ?.takeIf { it.isNotBlank() }
+                                ?: "Error: ${response.code()}"
                         }
-                        Log.d("showFeedbackDialog", "msg: $msg")
-                        Toast.makeText(this@showFeedbackDialog, msg, Toast.LENGTH_LONG).show()
                     }
                 } else {
                     sendButton.isEnabled = true

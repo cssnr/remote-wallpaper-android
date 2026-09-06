@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +22,7 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentRemotesBinding
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 
 const val LOG_TAG = "Remotes"
@@ -97,6 +97,7 @@ class RemotesFragment : Fragment() {
                         dao.getAll()
                     }
                     adapter.updateData(remotes)
+                    ctx.showSnackbar("Remote Deleted.")
                     //remotesViewModel.stationData.value = remotes
                 }
             }
@@ -186,21 +187,27 @@ class RemotesFragment : Fragment() {
                     input.error = "Invalid URL"
                 } else {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
-                        // TODO: Make a @Transaction to handle this...
-                        dao.addOrUpdate(Remote(url = url))
-                        val active = dao.getActive()
-                        if (active == null) {
-                            val remote = dao.getByUrl(url)
-                            Log.i("showAddDialog", "dao.activate: $remote")
-                            dao.activate(remote!!)
-                        }
-                        val remotes = dao.getAll()
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(this@showAddDialog, "URL Added.", Toast.LENGTH_SHORT)
-                                .show()
-                            adapter.updateData(remotes)
-                            dialog.dismiss()
+                        try {
+                            val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
+                            // TODO: Make a @Transaction to handle this...
+                            dao.addOrUpdate(Remote(url = url))
+                            val active = dao.getActive()
+                            if (active == null) {
+                                val remote = dao.getByUrl(url)
+                                Log.i("showAddDialog", "dao.activate: $remote")
+                                dao.activate(remote!!)
+                            }
+                            val remotes = dao.getAll()
+                            withContext(Dispatchers.Main) {
+                                adapter.updateData(remotes)
+                                dialog.dismiss()
+                                this@showAddDialog.showSnackbar("URL Added.")
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                sendButton.isEnabled = true
+                                input.error = e.message ?: "Unknown Error"
+                            }
                         }
                     }
                 }

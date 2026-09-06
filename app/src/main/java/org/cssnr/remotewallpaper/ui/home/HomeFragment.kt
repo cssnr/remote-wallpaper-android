@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.core.graphics.scale
@@ -35,6 +34,7 @@ import org.cssnr.remotewallpaper.db.HistoryItem
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import org.cssnr.remotewallpaper.log.AppLogs
+import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
 import java.io.FileOutputStream
@@ -108,7 +108,7 @@ class HomeFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             } else {
-                Toast.makeText(ctx, "No Image URL!", Toast.LENGTH_SHORT).show()
+                ctx.showSnackbar("No Image URL!")
             }
         }
 
@@ -145,11 +145,12 @@ class HomeFragment : Fragment() {
     suspend fun Context.reloadWallpaper() {
         activity?.findViewById<LinearLayout>(R.id.main_loading_layout)?.visibility = View.VISIBLE
         //_binding?.loadingOverlay?.visibility = View.VISIBLE
-        if (updateWallpaper()) {
+        val error = updateWallpaper()
+        if (error == null) {
             updateData()
-            Toast.makeText(this, "Done.", Toast.LENGTH_SHORT).show()
+            showSnackbar("Done.")
         } else {
-            Toast.makeText(this, "No Remotes.", Toast.LENGTH_SHORT).show()
+            showSnackbar(error)
         }
         activity?.findViewById<LinearLayout>(R.id.main_loading_layout)?.visibility = View.GONE
         //_binding?.loadingOverlay?.visibility = View.GONE
@@ -192,11 +193,14 @@ fun Context.showAddDialog() {
                     try {
                         downloadImage(Remote(url = url))
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@showAddDialog, "Done.", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
+                            this@showAddDialog.showSnackbar("Done.")
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(this@showAddDialog, e.message, Toast.LENGTH_SHORT).show()
+                        withContext(Dispatchers.Main) {
+                            sendButton.isEnabled = true
+                            input.error = e.message ?: "Unknown Error"
+                        }
                     }
                 }
             } else {
@@ -220,7 +224,7 @@ sealed class DownloadResult {
 
 // TODO: updateWallpaper is used globally to update the wallpaper and should be a package
 //  The rest of the functions are only used by updateWallpaper and are internal to updateWallpaper
-suspend fun Context.updateWallpaper(): Boolean {
+suspend fun Context.updateWallpaper(): String? {
     // TODO: This version is testing historyDao vs above version. It will all be refactored...
     val historyDao = HistoryDatabase.getInstance(this).historyDao()
     val history = HistoryItem()
@@ -254,19 +258,19 @@ suspend fun Context.updateWallpaper(): Boolean {
             preferences.edit { putString("last_update", timestamp) }
             Log.d("updateWallpaper", "history: $history")
             withContext(Dispatchers.IO) { historyDao.add(history) }
-            return true
+            return null
         }
         Log.d("updateWallpaper", "history: $history")
         withContext(Dispatchers.IO) { historyDao.add(history) }
         AppLogs.w(this, "updateWallpaper: No Active Remote")
-        return false
+        return "No Remotes."
     } catch (e: Exception) {
         Log.e("updateWallpaper", "updateWallpaper: Exception: $e")
         history.error = e.message
         Log.d("updateWallpaper", "history: $history")
         withContext(Dispatchers.IO) { historyDao.add(history) }
         AppLogs.e(this, "updateWallpaper: Exception: ${e.message}")
-        return false
+        return e.message ?: "Unknown Error"
     }
 }
 
