@@ -104,9 +104,10 @@ class HomeFragment : Fragment() {
 
         binding.btnCopy.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
-            if (latest?.url != null) {
+            val url = latest?.url
+            if (url != null) {
                 val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                clipboard.setPrimaryClip(ClipData.newPlainText("URL", latest?.url))
+                clipboard.setPrimaryClip(ClipData.newPlainText("URL", url))
                 ctx.showSnackbar("URL Copied to Clipboard")
             } else {
                 ctx.showSnackbar("No Image URL!")
