@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -269,6 +270,8 @@ class RemotesFragment : Fragment() {
                             adapter.updateData(remotes) { updateToolbarState() }
                             dialog.dismiss()
                             this@showAddDialog.showSnackbar("URL Added.")
+                        } catch (e: CancellationException) {
+                            throw e
                         } catch (e: Exception) {
                             sendButton.isEnabled = true
                             input.error = e.message ?: "Unknown Error"

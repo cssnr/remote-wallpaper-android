@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -189,6 +190,8 @@ fun Context.showAddDialog(scope: CoroutineScope, onSuccess: suspend () -> Unit =
                             .edit { putString("last_update", timestamp) }
                         onSuccess()
                         showSnackbar("Done.")
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         showSnackbar(e.message ?: "Unknown Error")
                     } finally {
@@ -267,6 +270,8 @@ suspend fun Context.updateWallpaper(): String? {
         }
         AppLogs.w(this, "updateWallpaper: No Active Remote")
         return "No Remotes."
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         Log.e("updateWallpaper", "updateWallpaper: Exception: $e")
         history.error = e.message
