@@ -260,8 +260,6 @@ suspend fun Context.updateWallpaper(): String? {
             withContext(Dispatchers.IO) { historyDao.add(history) }
             return null
         }
-        Log.d("updateWallpaper", "history: $history")
-        withContext(Dispatchers.IO) { historyDao.add(history) }
         AppLogs.w(this, "updateWallpaper: No Active Remote")
         return "No Remotes."
     } catch (e: Exception) {
