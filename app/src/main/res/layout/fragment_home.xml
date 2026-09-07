@@ -41,35 +41,63 @@
             android:text="Loading..." />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/bottom_bar"
-        android:layout_width="0dp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/home_toolbar"
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingVertical="2dp"
-        android:paddingHorizontal="6dp"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/open_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Open" />
-        <Button
-            android:id="@+id/load_single_bgn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Load Single" />
-        <Button
-            android:id="@+id/reload_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="Reload"
-            app:backgroundTint="@android:color/holo_green_dark" />
-    </FrameLayout>
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp">
+
+            <ImageButton
+                android:id="@+id/btn_copy"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Copy URL"
+                android:src="@drawable/md_content_copy_24px"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btn_open"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Open Image"
+                android:src="@drawable/md_open_in_new_24px"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btn_load_single"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Load Image"
+                android:src="@drawable/md_media_link_24px"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btn_reload"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Reload Wallpaper"
+                android:src="@drawable/md_refresh_24px"
+                app:tint="?attr/colorOnSurface" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <!--<LinearLayout-->
     <!--    android:id="@+id/loading_overlay"-->
