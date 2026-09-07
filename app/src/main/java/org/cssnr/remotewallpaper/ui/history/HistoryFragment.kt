@@ -1,6 +1,5 @@
 package org.cssnr.remotewallpaper.ui.history
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -55,7 +54,6 @@ class HistoryFragment : Fragment() {
         _binding = null
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "RemotesFragment - onViewCreated: ${savedInstanceState?.size()}")
@@ -82,7 +80,7 @@ class HistoryFragment : Fragment() {
         // Initialize Adapter
         if (!::adapter.isInitialized) {
             Log.i(LOG_TAG, "INITIALIZE: HistoryAdapter")
-            adapter = HistoryAdapter(emptyList(), ::onClick, ::onLongClick)
+            adapter = HistoryAdapter(::onClick, ::onLongClick)
         }
         binding.remotesList.layoutManager = LinearLayoutManager(ctx)
         if (binding.remotesList.adapter == null) {

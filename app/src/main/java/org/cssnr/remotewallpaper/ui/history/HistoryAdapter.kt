@@ -1,12 +1,13 @@
 package org.cssnr.remotewallpaper.ui.history
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import org.cssnr.remotewallpaper.R
@@ -17,49 +18,47 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class HistoryAdapter(
-    private var items: List<HistoryItem>,
     private val onItemClick: (View, HistoryItem) -> Unit,
     private val onItemLongClick: (HistoryItem) -> Unit,
-) :
-    RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+) : ListAdapter<HistoryItem, HistoryAdapter.ViewHolder>(DiffCallback) {
 
     private lateinit var context: Context
 
     private val selectedIds = mutableSetOf<Long>()
 
-    fun isAllSelected(): Boolean = items.isNotEmpty() && selectedIds.size == items.size
+    fun isAllSelected(): Boolean =
+        currentList.isNotEmpty() && selectedIds.size == currentList.size
 
     val hasSelection: Boolean
         get() = selectedIds.isNotEmpty()
-
-    val selectedCount: Int
-        get() = selectedIds.size
 
     val selected: List<Long>
         get() = selectedIds.toList()
 
     fun toggleSelection(id: Long) {
+        val position = currentList.indexOfFirst { it.id == id }
         if (!selectedIds.add(id)) {
             selectedIds.remove(id)
         }
-        notifyDataSetChanged()
+        if (position >= 0) {
+            notifyItemChanged(position)
+        }
     }
 
     fun clearSelection() {
         if (selectedIds.isNotEmpty()) {
             selectedIds.clear()
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0, currentList.size)
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun toggleSelectAll() {
         if (isAllSelected()) {
             selectedIds.clear()
         } else {
-            selectedIds.addAll(items.map { it.id })
+            selectedIds.addAll(currentList.map { it.id })
         }
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, currentList.size)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -77,10 +76,8 @@ class HistoryAdapter(
         return ViewHolder(view)
     }
 
-    override fun getItemCount() = items.size
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = items[position]
+        val data = getItem(position)
         //Log.d(LOG_TAG, "LOAD: $position - $data")
 
         // On Click
@@ -97,15 +94,15 @@ class HistoryAdapter(
         }
 
         // Data
-        if (!items[position].error.isNullOrEmpty()) {
-            holder.itemUrl.text = items[position].error
+        if (!data.error.isNullOrEmpty()) {
+            holder.itemUrl.text = data.error
         } else {
-            holder.itemUrl.text = items[position].url
+            holder.itemUrl.text = data.url
         }
-        holder.itemCode.text = String.format(Locale.getDefault(), "%d", items[position].status)
-        holder.itemId.text = String.format(Locale.getDefault(), "%d", items[position].id)
+        holder.itemCode.text = String.format(Locale.getDefault(), "%d", data.status)
+        holder.itemId.text = String.format(Locale.getDefault(), "%d", data.id)
         // Date
-        val instant = Instant.ofEpochMilli(items[position].timestamp)
+        val instant = Instant.ofEpochMilli(data.timestamp)
         val zonedDateTime = instant.atZone(ZoneId.systemDefault())
         val display = zonedDateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm:ss"))
         holder.itemTimestamp.text = display
@@ -114,18 +111,29 @@ class HistoryAdapter(
         holder.itemCard.isChecked = data.id in selectedIds
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newItems: List<HistoryItem>) {
         Log.i(LOG_TAG, "updateData: ${newItems.size}")
-        items = newItems
-        notifyDataSetChanged()
+        submitList(newItems)
     }
 
-    //@SuppressLint("NotifyDataSetChanged")
-    //fun addItem(item: HistoryItem) {
-    //    Log.i(LOG_TAG, "addItem: $item")
-    //    items + item
-    //    Log.d(LOG_TAG, "getItemCount(): ${getItemCount()}")
-    //    notifyItemInserted(getItemCount())
-    //}
+//    @SuppressLint("NotifyDataSetChanged")
+//    fun addItem(item: HistoryItem) {
+//        Log.i(LOG_TAG, "addItem: $item")
+//        items + item
+//        Log.d(LOG_TAG, "getItemCount(): ${getItemCount()}")
+//        notifyItemInserted(getItemCount())
+//    }
+
+    companion object {
+        private val DiffCallback = object : DiffUtil.ItemCallback<HistoryItem>() {
+            override fun areItemsTheSame(oldItem: HistoryItem, newItem: HistoryItem): Boolean =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: HistoryItem, newItem: HistoryItem): Boolean =
+                oldItem.url == newItem.url &&
+                        oldItem.status == newItem.status &&
+                        oldItem.error == newItem.error &&
+                        oldItem.timestamp == newItem.timestamp
+        }
+    }
 }

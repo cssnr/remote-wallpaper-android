@@ -1,6 +1,5 @@
 package org.cssnr.remotewallpaper.ui.remotes
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -52,7 +51,6 @@ class RemotesFragment : Fragment() {
         _binding = null
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "RemotesFragment - onViewCreated: ${savedInstanceState?.size()}")
@@ -90,7 +88,7 @@ class RemotesFragment : Fragment() {
         // Initialize Adapter
         if (!::adapter.isInitialized) {
             Log.i(LOG_TAG, "INITIALIZE: RemotesAdapter")
-            adapter = RemotesAdapter(emptyList(), ::onClick, ::onLongClick)
+            adapter = RemotesAdapter(::onClick, ::onLongClick)
         }
         binding.remotesList.layoutManager = LinearLayoutManager(ctx)
         if (binding.remotesList.adapter == null) {
