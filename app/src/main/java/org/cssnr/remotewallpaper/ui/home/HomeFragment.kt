@@ -1,6 +1,8 @@
 package org.cssnr.remotewallpaper.ui.home
 
 import android.app.WallpaperManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -100,7 +102,18 @@ class HomeFragment : Fragment() {
         //    binding.imageView.setImageBitmap(bitmap)
         //}
 
-        binding.openBtn.setOnClickListener {
+        binding.btnCopy.setOnClickListener {
+            Log.d(LOG_TAG, "setOnClickListener")
+            if (latest?.url != null) {
+                val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.setPrimaryClip(ClipData.newPlainText("URL", latest?.url))
+                ctx.showSnackbar("URL Copied to Clipboard")
+            } else {
+                ctx.showSnackbar("No Image URL!")
+            }
+        }
+
+        binding.btnOpen.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
             if (latest?.url != null) {
                 val uri = latest?.url?.toUri()
@@ -112,12 +125,12 @@ class HomeFragment : Fragment() {
             }
         }
 
-        binding.loadSingleBgn.setOnClickListener {
+        binding.btnLoadSingle.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
             ctx.showAddDialog()
         }
 
-        binding.reloadBtn.setOnClickListener {
+        binding.btnReload.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
             lifecycleScope.launch { ctx.reloadWallpaper() }
         }
