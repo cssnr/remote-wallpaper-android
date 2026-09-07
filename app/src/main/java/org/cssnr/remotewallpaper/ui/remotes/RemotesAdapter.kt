@@ -15,16 +15,12 @@ import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.db.Remote
 
 class RemotesAdapter(
+    private val selectedUrls: MutableSet<String>,
     private val onItemClick: (Remote) -> Unit,
     private val onItemLongClick: (Remote) -> Unit,
 ) : ListAdapter<Remote, RemotesAdapter.ViewHolder>(DiffCallback) {
 
     private lateinit var context: Context
-
-    private val selectedUrls = mutableSetOf<String>()
-
-    fun isAllSelected(): Boolean =
-        currentList.isNotEmpty() && selectedUrls.size == currentList.size
 
     val hasSelection: Boolean
         get() = selectedUrls.isNotEmpty()
@@ -50,7 +46,7 @@ class RemotesAdapter(
     }
 
     fun toggleSelectAll() {
-        if (isAllSelected()) {
+        if (hasSelection) {
             selectedUrls.clear()
         } else {
             selectedUrls.addAll(currentList.map { it.url })

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.color.MaterialColors
@@ -35,6 +36,8 @@ class RemotesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: RemotesAdapter
+
+    private val viewModel: RemotesViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -89,7 +92,7 @@ class RemotesFragment : Fragment() {
         // Initialize Adapter
         if (!::adapter.isInitialized) {
             Log.i(LOG_TAG, "INITIALIZE: RemotesAdapter")
-            adapter = RemotesAdapter(::onClick, ::onLongClick)
+            adapter = RemotesAdapter(viewModel.selectedUrls, ::onClick, ::onLongClick)
         }
         binding.remotesList.layoutManager = LinearLayoutManager(ctx)
         if (binding.remotesList.adapter == null) {
@@ -215,17 +218,19 @@ class RemotesFragment : Fragment() {
             )
         )
 
-        val selectActive = adapter.isAllSelected()
+        viewBinding.btnSelectAll.setImageResource(
+            if (hasSelection) R.drawable.md_playlist_remove_24px else R.drawable.md_data_check_24px
+        )
         viewBinding.btnSelectAll.imageTintList = ColorStateList.valueOf(
-            MaterialColors.getColor(
-                requireContext(),
-                if (selectActive) {
-                    androidx.appcompat.R.attr.colorPrimary
-                } else {
-                    com.google.android.material.R.attr.colorOnSurface
-                },
-                0
-            )
+            if (!hasSelection) {
+                requireContext().getColor(R.color.select_all_green)
+            } else {
+                MaterialColors.getColor(
+                    requireContext(),
+                    com.google.android.material.R.attr.colorOnSurface,
+                    0
+                )
+            }
         )
     }
 

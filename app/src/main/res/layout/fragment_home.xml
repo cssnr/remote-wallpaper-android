@@ -60,12 +60,30 @@
             android:paddingVertical="4dp">
 
             <ImageButton
+                android:id="@+id/btn_reload"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Reload Wallpaper"
+                android:src="@drawable/md_refresh_24px"
+                app:tint="@color/select_all_green" />
+
+            <ImageButton
                 android:id="@+id/btn_copy"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Copy URL"
                 android:src="@drawable/md_content_copy_24px"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btn_share"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Share Image"
+                android:src="@drawable/md_share_24px"
                 app:tint="?attr/colorOnSurface" />
 
             <ImageButton
@@ -84,15 +102,6 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Load Image"
                 android:src="@drawable/md_media_link_24px"
-                app:tint="?attr/colorOnSurface" />
-
-            <ImageButton
-                android:id="@+id/btn_reload"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Reload Wallpaper"
-                android:src="@drawable/md_refresh_24px"
                 app:tint="?attr/colorOnSurface" />
 
         </LinearLayout>

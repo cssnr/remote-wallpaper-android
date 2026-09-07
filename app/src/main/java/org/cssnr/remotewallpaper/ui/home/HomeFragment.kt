@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.core.content.FileProvider
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -100,6 +101,22 @@ class HomeFragment : Fragment() {
             } else {
                 ctx.showSnackbar("No Image URL!")
             }
+        }
+
+        binding.btnShare.setOnClickListener {
+            Log.d(LOG_TAG, "setOnClickListener")
+            val imageFile = File(ctx.filesDir, "wallpaper.img")
+            if (!imageFile.exists()) {
+                ctx.showSnackbar("No Image to Share!")
+                return@setOnClickListener
+            }
+            val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", imageFile)
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/*"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(intent, "Share Image"))
         }
 
         binding.btnLoadSingle.setOnClickListener {
