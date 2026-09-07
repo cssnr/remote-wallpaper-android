@@ -19,7 +19,6 @@ import androidx.core.content.edit
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -104,7 +103,7 @@ class HomeFragment : Fragment() {
 
         binding.btnLoadSingle.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
-            ctx.showAddDialog { ctx.updateData() }
+            ctx.showAddDialog(requireActivity().lifecycleScope) { ctx.updateData() }
         }
 
         binding.btnReload.setOnClickListener {
@@ -156,8 +155,8 @@ class HomeFragment : Fragment() {
     }
 }
 
-// TODO: This is shared with RemotesFragment but will most likely not be used here in the end
-fun Context.showAddDialog(onSuccess: suspend () -> Unit = {}) {
+fun Context.showAddDialog(scope: CoroutineScope, onSuccess: suspend () -> Unit = {}) {
+    val activity = findActivity()
     val inflater = LayoutInflater.from(this)
     val view = inflater.inflate(R.layout.dialog_add_url, null)
     val input = view.findViewById<EditText>(R.id.image_url)
@@ -178,9 +177,7 @@ fun Context.showAddDialog(onSuccess: suspend () -> Unit = {}) {
                 sendButton.isEnabled = true
                 input.error = "URL is Required"
             } else {
-                val scope = (findActivity() as? LifecycleOwner)?.lifecycleScope
-                    ?: CoroutineScope(Dispatchers.IO)
-                val loadingLayout = findActivity()?.findViewById<LinearLayout>(R.id.main_loading_layout)
+                val loadingLayout = activity?.findViewById<LinearLayout>(R.id.main_loading_layout)
                 dialog.dismiss()
                 loadingLayout?.visibility = View.VISIBLE
                 scope.launch {
@@ -234,7 +231,6 @@ sealed class DownloadResult {
 // TODO: updateWallpaper is used globally to update the wallpaper and should be a package
 //  The rest of the functions are only used by updateWallpaper and are internal to updateWallpaper
 suspend fun Context.updateWallpaper(): String? {
-    // TODO: This version is testing historyDao vs above version. It will all be refactored...
     val historyDao = HistoryDatabase.getInstance(this).historyDao()
     val history = HistoryItem()
     try {

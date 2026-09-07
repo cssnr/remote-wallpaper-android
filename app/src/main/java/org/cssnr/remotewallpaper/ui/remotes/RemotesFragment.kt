@@ -189,12 +189,12 @@ class RemotesFragment : Fragment() {
             ////    .setAnchorView(R.id.fab).show()
             //val newFragment = AddDialogFragment()
             //newFragment.show(parentFragmentManager, "AddDialogFragment")
-            ctx.showAddDialog(adapter)
+            ctx.showAddDialog(adapter, requireActivity().lifecycleScope)
         }
 
         if (arguments?.getBoolean("add_remote", false) == true) {
             arguments?.remove("add_remote")
-            ctx.showAddDialog(adapter)
+            ctx.showAddDialog(adapter, requireActivity().lifecycleScope)
         }
     }
 
@@ -228,7 +228,7 @@ class RemotesFragment : Fragment() {
         )
     }
 
-    private fun Context.showAddDialog(adapter: RemotesAdapter) {
+    private fun Context.showAddDialog(adapter: RemotesAdapter, scope: CoroutineScope) {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.dialog_add_url, null)
         val input = view.findViewById<EditText>(R.id.image_url)
@@ -252,28 +252,26 @@ class RemotesFragment : Fragment() {
                     sendButton.isEnabled = true
                     input.error = "Invalid URL"
                 } else {
-                    CoroutineScope(Dispatchers.IO).launch {
+                    scope.launch {
                         try {
-                            val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
-                            // TODO: Make a @Transaction to handle this...
-                            dao.addOrUpdate(Remote(url = url))
-                            val active = dao.getActive()
-                            if (active == null) {
-                                val remote = dao.getByUrl(url)
-                                Log.i("showAddDialog", "dao.activate: $remote")
-                                dao.activate(remote!!)
+                            val remotes = withContext(Dispatchers.IO) {
+                                val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
+                                // TODO: Make a @Transaction to handle this...
+                                dao.addOrUpdate(Remote(url = url))
+                                val active = dao.getActive()
+                                if (active == null) {
+                                    val remote = dao.getByUrl(url)
+                                    Log.i("showAddDialog", "dao.activate: $remote")
+                                    dao.activate(remote!!)
+                                }
+                                dao.getAll()
                             }
-                            val remotes = dao.getAll()
-                            withContext(Dispatchers.Main) {
-                                adapter.updateData(remotes) { updateToolbarState() }
-                                dialog.dismiss()
-                                this@showAddDialog.showSnackbar("URL Added.")
-                            }
+                            adapter.updateData(remotes) { updateToolbarState() }
+                            dialog.dismiss()
+                            this@showAddDialog.showSnackbar("URL Added.")
                         } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                sendButton.isEnabled = true
-                                input.error = e.message ?: "Unknown Error"
-                            }
+                            sendButton.isEnabled = true
+                            input.error = e.message ?: "Unknown Error"
                         }
                     }
                 }
