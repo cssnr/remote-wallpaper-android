@@ -134,7 +134,7 @@ class RemotesFragment : Fragment() {
                             val all = dao.getAll()
                             val selected = all.filter { it.url in toDelete }
                             val deletedActive = selected.any { it.active }
-                            selected.forEach { dao.delete(it) }
+                            dao.deleteByUrls(toDelete)
                             if (deletedActive) {
                                 Log.d(LOG_TAG, "activateFirst")
                                 dao.activateFirst()
@@ -142,8 +142,7 @@ class RemotesFragment : Fragment() {
                             dao.getAll()
                         }
                         adapter.clearSelection()
-                        adapter.updateData(remotes)
-                        updateToolbarState()
+                        adapter.updateData(remotes) { updateToolbarState() }
                         ctx.showSnackbar("Remotes Deleted.")
                     }
                 }
@@ -164,7 +163,7 @@ class RemotesFragment : Fragment() {
             val dao = RemoteDatabase.getInstance(ctx).remoteDao()
             val remotes = withContext(Dispatchers.IO) { dao.getAll() }
             Log.d(LOG_TAG, "remotes.size ${remotes.size}")
-            adapter.updateData(remotes)
+            adapter.updateData(remotes) { updateToolbarState() }
             //remotesViewModel.stationData.value = remotes
         }
 
@@ -200,9 +199,10 @@ class RemotesFragment : Fragment() {
     }
 
     private fun updateToolbarState() {
+        val viewBinding = _binding ?: return
         val hasSelection = adapter.hasSelection
-        binding.btnDelete.isEnabled = hasSelection
-        binding.btnDelete.imageTintList = ColorStateList.valueOf(
+        viewBinding.btnDelete.isEnabled = hasSelection
+        viewBinding.btnDelete.imageTintList = ColorStateList.valueOf(
             MaterialColors.getColor(
                 requireContext(),
                 if (hasSelection) {
@@ -215,7 +215,7 @@ class RemotesFragment : Fragment() {
         )
 
         val selectActive = adapter.isAllSelected()
-        binding.btnSelectAll.imageTintList = ColorStateList.valueOf(
+        viewBinding.btnSelectAll.imageTintList = ColorStateList.valueOf(
             MaterialColors.getColor(
                 requireContext(),
                 if (selectActive) {
@@ -265,7 +265,7 @@ class RemotesFragment : Fragment() {
                             }
                             val remotes = dao.getAll()
                             withContext(Dispatchers.Main) {
-                                adapter.updateData(remotes)
+                                adapter.updateData(remotes) { updateToolbarState() }
                                 dialog.dismiss()
                                 this@showAddDialog.showSnackbar("URL Added.")
                             }

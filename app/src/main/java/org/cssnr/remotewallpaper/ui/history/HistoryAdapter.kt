@@ -111,9 +111,10 @@ class HistoryAdapter(
         holder.itemCard.isChecked = data.id in selectedIds
     }
 
-    fun updateData(newItems: List<HistoryItem>) {
+    fun updateData(newItems: List<HistoryItem>, onCommitted: (() -> Unit)? = null) {
         Log.i(LOG_TAG, "updateData: ${newItems.size}")
-        submitList(newItems)
+        selectedIds.retainAll(newItems.map { it.id }.toSet())
+        submitList(newItems) { onCommitted?.invoke() }
     }
 
 //    @SuppressLint("NotifyDataSetChanged")

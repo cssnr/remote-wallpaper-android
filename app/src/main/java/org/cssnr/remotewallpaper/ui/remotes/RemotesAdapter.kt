@@ -109,9 +109,10 @@ class RemotesAdapter(
         )
     }
 
-    fun updateData(newItems: List<Remote>) {
+    fun updateData(newItems: List<Remote>, onCommitted: (() -> Unit)? = null) {
         Log.i(LOG_TAG, "updateData: ${newItems.size}")
-        submitList(newItems)
+        selectedUrls.retainAll(newItems.map { it.url }.toSet())
+        submitList(newItems) { onCommitted?.invoke() }
     }
 
 //    @SuppressLint("NotifyDataSetChanged")

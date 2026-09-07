@@ -32,6 +32,7 @@
             android:minLines="2"
             android:maxLines="2"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:ignore="RtlSymmetry"
             tools:text="http://theofficialabsolutelongestdomainnameregisteredontheworldwideweb.international/areallylongpathafter/thenalongerpath/file.txt" />
 
         <FrameLayout

@@ -25,6 +25,7 @@
         android:minLines="2"
         android:maxLines="3"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        tools:ignore="RtlSymmetry"
         tools:text="San Jose, San Jose International Airport" />
 
 </com.google.android.material.card.MaterialCardView>

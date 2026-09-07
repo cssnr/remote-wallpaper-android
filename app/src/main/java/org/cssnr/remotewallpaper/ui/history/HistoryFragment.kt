@@ -123,14 +123,11 @@ class HistoryFragment : Fragment() {
                     lifecycleScope.launch {
                         val dao = HistoryDatabase.getInstance(ctx).historyDao()
                         val items = withContext(Dispatchers.IO) {
-                            val all = dao.getAll()
-                            val selected = all.filter { it.id in toDelete }
-                            selected.forEach { dao.delete(it) }
+                            dao.deleteByIds(toDelete)
                             dao.getAll()
                         }
                         adapter.clearSelection()
-                        adapter.updateData(items)
-                        updateToolbarState()
+                        adapter.updateData(items) { updateToolbarState() }
                         ctx.showSnackbar("History Deleted.")
                     }
                 }
@@ -168,9 +165,10 @@ class HistoryFragment : Fragment() {
     }
 
     private fun updateToolbarState() {
+        val viewBinding = _binding ?: return
         val hasSelection = adapter.hasSelection
-        binding.btnDelete.isEnabled = hasSelection
-        binding.btnDelete.imageTintList = ColorStateList.valueOf(
+        viewBinding.btnDelete.isEnabled = hasSelection
+        viewBinding.btnDelete.imageTintList = ColorStateList.valueOf(
             MaterialColors.getColor(
                 requireContext(),
                 if (hasSelection) {
@@ -183,7 +181,7 @@ class HistoryFragment : Fragment() {
         )
 
         val selectActive = adapter.isAllSelected()
-        binding.btnSelectAll.imageTintList = ColorStateList.valueOf(
+        viewBinding.btnSelectAll.imageTintList = ColorStateList.valueOf(
             MaterialColors.getColor(
                 requireContext(),
                 if (selectActive) {
@@ -200,7 +198,7 @@ class HistoryFragment : Fragment() {
         val dao = HistoryDatabase.getInstance(this).historyDao()
         val remotes = withContext(Dispatchers.IO) { dao.getAll() }
         Log.d(LOG_TAG, "remotes.size ${remotes.size}")
-        withContext(Dispatchers.Main) { adapter.updateData(remotes) }
+        withContext(Dispatchers.Main) { adapter.updateData(remotes) { updateToolbarState() } }
     }
 
     private fun Context.showItemContextMenu(view: View, data: HistoryItem) {
