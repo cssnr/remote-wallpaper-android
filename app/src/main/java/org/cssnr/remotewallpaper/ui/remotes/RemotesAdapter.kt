@@ -6,9 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.db.Remote
 
@@ -21,8 +22,45 @@ class RemotesAdapter(
 
     private lateinit var context: Context
 
+    private val selectedUrls = mutableSetOf<String>()
+
+    fun isAllSelected(): Boolean = items.isNotEmpty() && selectedUrls.size == items.size
+
+    val hasSelection: Boolean
+        get() = selectedUrls.isNotEmpty()
+
+    val selectedCount: Int
+        get() = selectedUrls.size
+
+    val selected: List<String>
+        get() = selectedUrls.toList()
+
+    fun toggleSelection(url: String) {
+        if (!selectedUrls.add(url)) {
+            selectedUrls.remove(url)
+        }
+        notifyDataSetChanged()
+    }
+
+    fun clearSelection() {
+        if (selectedUrls.isNotEmpty()) {
+            selectedUrls.clear()
+            notifyDataSetChanged()
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun toggleSelectAll() {
+        if (isAllSelected()) {
+            selectedUrls.clear()
+        } else {
+            selectedUrls.addAll(items.map { it.url })
+        }
+        notifyDataSetChanged()
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val itemWrapper: LinearLayout = view.findViewById(R.id.item_wrapper)
+        val itemCard: MaterialCardView = view.findViewById(R.id.item_card)
         val propertiesName: TextView = view.findViewById(R.id.properties_name)
         //val propertiesID: TextView = view.findViewById(R.id.properties_id)
         //val propertiesElevation: TextView = view.findViewById(R.id.properties_elevation)
@@ -57,12 +95,21 @@ class RemotesAdapter(
         // URL
         holder.propertiesName.text = items[position].url
 
-        // Background Border
-        if (data.active) {
-            holder.itemWrapper.setBackgroundResource(R.drawable.item_border_selected)
-        } else {
-            holder.itemWrapper.setBackgroundResource(R.drawable.item_border)
-        }
+        // Selected (show checkmark)
+        holder.itemCard.isChecked = data.url in selectedUrls
+
+        // Active (fill tile background)
+        holder.itemCard.setCardBackgroundColor(
+            MaterialColors.getColor(
+                context,
+                if (data.active) {
+                    com.google.android.material.R.attr.colorSecondaryContainer
+                } else {
+                    com.google.android.material.R.attr.colorSurface
+                },
+                0
+            )
+        )
     }
 
     @SuppressLint("NotifyDataSetChanged")

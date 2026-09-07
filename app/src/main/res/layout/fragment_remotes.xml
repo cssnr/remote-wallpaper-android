@@ -16,6 +16,7 @@
         android:layout_marginHorizontal="2dp"
         android:clipToPadding="false"
         android:contentDescription="Station List"
+        android:paddingBottom="96dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,6 +25,65 @@
         tools:viewBindingType="androidx.recyclerview.widget.RecyclerView"
         tools:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/item_remote" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/remotes_toolbar"
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp">
+
+            <ImageButton
+                android:id="@+id/btn_select_all"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Select All"
+                android:src="@drawable/md_tv_options_edit_channels_24px"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btn_go_top"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Go to Top"
+                android:src="@drawable/md_keyboard_double_arrow_up_24px"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btn_go_bottom"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Go to Bottom"
+                android:src="@drawable/md_keyboard_double_arrow_down_24px"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btn_delete"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Delete Selected"
+                android:enabled="false"
+                android:src="@drawable/md_delete_24px"
+                app:tint="?attr/colorError" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_station"

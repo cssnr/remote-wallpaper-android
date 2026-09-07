@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.db.HistoryItem
 import java.time.Instant
@@ -24,8 +25,45 @@ class HistoryAdapter(
 
     private lateinit var context: Context
 
+    private val selectedIds = mutableSetOf<Long>()
+
+    fun isAllSelected(): Boolean = items.isNotEmpty() && selectedIds.size == items.size
+
+    val hasSelection: Boolean
+        get() = selectedIds.isNotEmpty()
+
+    val selectedCount: Int
+        get() = selectedIds.size
+
+    val selected: List<Long>
+        get() = selectedIds.toList()
+
+    fun toggleSelection(id: Long) {
+        if (!selectedIds.add(id)) {
+            selectedIds.remove(id)
+        }
+        notifyDataSetChanged()
+    }
+
+    fun clearSelection() {
+        if (selectedIds.isNotEmpty()) {
+            selectedIds.clear()
+            notifyDataSetChanged()
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun toggleSelectAll() {
+        if (isAllSelected()) {
+            selectedIds.clear()
+        } else {
+            selectedIds.addAll(items.map { it.id })
+        }
+        notifyDataSetChanged()
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        //val itemWrapper: LinearLayout = view.findViewById(R.id.item_wrapper)
+        val itemCard: MaterialCardView = view.findViewById(R.id.item_card)
         val itemUrl: TextView = view.findViewById(R.id.item_url)
         val itemTimestamp: TextView = view.findViewById(R.id.item_timestamp)
         val itemCode: TextView = view.findViewById(R.id.item_code)
@@ -71,6 +109,9 @@ class HistoryAdapter(
         val zonedDateTime = instant.atZone(ZoneId.systemDefault())
         val display = zonedDateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm:ss"))
         holder.itemTimestamp.text = display
+
+        // Selected (show checkmark)
+        holder.itemCard.isChecked = data.id in selectedIds
     }
 
     @SuppressLint("NotifyDataSetChanged")
