@@ -116,8 +116,8 @@ class HomeFragment : Fragment() {
 
         binding.btnOpen.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
-            if (latest?.url != null) {
-                val uri = latest?.url?.toUri()
+            val uri = latest?.url?.toUri()
+            if (uri != null) {
                 Log.d(LOG_TAG, "uri: $uri")
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
