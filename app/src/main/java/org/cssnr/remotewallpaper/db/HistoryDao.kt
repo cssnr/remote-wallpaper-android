@@ -41,6 +41,9 @@ interface HistoryDao {
     @Delete
     fun delete(historyitem: HistoryItem)
 
+    @Query("DELETE FROM historyitem WHERE id IN (:ids)")
+    fun deleteByIds(ids: List<Long>)
+
     @Query("DELETE FROM historyitem")
     fun deleteAll()
 }

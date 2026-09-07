@@ -1,7 +1,7 @@
 package org.cssnr.remotewallpaper.ui.remotes
 
-import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +51,6 @@ class RemotesFragment : Fragment() {
         _binding = null
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "RemotesFragment - onViewCreated: ${savedInstanceState?.size()}")
@@ -60,6 +60,11 @@ class RemotesFragment : Fragment() {
 
         fun onClick(data: Remote) {
             Log.i(LOG_TAG, "onClick: $data")
+            if (adapter.hasSelection) {
+                adapter.toggleSelection(data.url)
+                updateToolbarState()
+                return
+            }
             lifecycleScope.launch {
                 if (!data.active) {
                     val dao = RemoteDatabase.getInstance(ctx).remoteDao()
@@ -71,49 +76,80 @@ class RemotesFragment : Fragment() {
                     Log.d(LOG_TAG, "remotes: $remotes")
                     adapter.updateData(remotes)
                 }
-
-                //val api = WeatherApi(ctx)
-                //val response = api.getLatest(data.stationId)
-                //Log.d(LOG_TAG, "response.isSuccessful: ${response.isSuccessful}")
-                //val latest = response.body()
-                //Log.d(LOG_TAG, "latest: $latest")
             }
         }
 
         fun onLongClick(data: Remote) {
             Log.d(LOG_TAG, "onLongClick: $data")
-            fun callback(station: Remote) {
-                Log.d(LOG_TAG, "callback: ${data.url}")
-
-                lifecycleScope.launch {
-                    val dao = RemoteDatabase.getInstance(ctx).remoteDao()
-                    Log.i(LOG_TAG, "DELETING: ${data.url}")
-                    val remotes = withContext(Dispatchers.IO) {
-                        dao.delete(station)
-                        if (station.active) {
-                            Log.d(LOG_TAG, "activateFirst")
-                            dao.activateFirst()
-                        }
-                        dao.getAll()
-                    }
-                    adapter.updateData(remotes)
-                    ctx.showSnackbar("Remote Deleted.")
-                    //remotesViewModel.stationData.value = remotes
-                }
-            }
-            ctx.deleteConfirmDialog(data, ::callback)
+            adapter.toggleSelection(data.url)
+            updateToolbarState()
         }
 
         // Initialize Adapter
         if (!::adapter.isInitialized) {
             Log.i(LOG_TAG, "INITIALIZE: RemotesAdapter")
-            adapter = RemotesAdapter(emptyList(), ::onClick, ::onLongClick)
+            adapter = RemotesAdapter(::onClick, ::onLongClick)
         }
         binding.remotesList.layoutManager = LinearLayoutManager(ctx)
         if (binding.remotesList.adapter == null) {
             Log.i(LOG_TAG, "INITIALIZE: remotesList.adapter")
             binding.remotesList.adapter = adapter
         }
+
+        binding.btnGoTop.setOnClickListener {
+            Log.d(LOG_TAG, "btnGoTop")
+            if (adapter.itemCount > 0) {
+                binding.remotesList.scrollToPosition(0)
+            }
+        }
+
+        binding.btnGoBottom.setOnClickListener {
+            Log.d(LOG_TAG, "btnGoBottom")
+            if (adapter.itemCount > 0) {
+                binding.remotesList.scrollToPosition(adapter.itemCount - 1)
+            }
+        }
+
+        binding.btnSelectAll.setOnClickListener {
+            Log.d(LOG_TAG, "btnSelectAll")
+            adapter.toggleSelectAll()
+            updateToolbarState()
+        }
+
+        binding.btnDelete.setOnClickListener {
+            Log.d(LOG_TAG, "btnDelete")
+            val toDelete = adapter.selected
+            if (toDelete.isEmpty()) {
+                return@setOnClickListener
+            }
+            MaterialAlertDialogBuilder(ctx, R.style.AlertDialogTheme)
+                .setTitle("Delete Remotes?")
+                .setIcon(R.drawable.md_delete_24px)
+                .setMessage("${toDelete.size} remote${if (toDelete.size == 1) "" else "s"} selected.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Delete") { _, _ ->
+                    lifecycleScope.launch {
+                        val dao = RemoteDatabase.getInstance(ctx).remoteDao()
+                        val remotes = withContext(Dispatchers.IO) {
+                            val all = dao.getAll()
+                            val selected = all.filter { it.url in toDelete }
+                            val deletedActive = selected.any { it.active }
+                            dao.deleteByUrls(toDelete)
+                            if (deletedActive) {
+                                Log.d(LOG_TAG, "activateFirst")
+                                dao.activateFirst()
+                            }
+                            dao.getAll()
+                        }
+                        adapter.clearSelection()
+                        adapter.updateData(remotes) { updateToolbarState() }
+                        ctx.showSnackbar("Remotes Deleted.")
+                    }
+                }
+                .show()
+        }
+
+        updateToolbarState()
 
         //// Create the observer which updates the UI.
         //val stationObserver = Observer<List<Remote>> { data ->
@@ -127,7 +163,7 @@ class RemotesFragment : Fragment() {
             val dao = RemoteDatabase.getInstance(ctx).remoteDao()
             val remotes = withContext(Dispatchers.IO) { dao.getAll() }
             Log.d(LOG_TAG, "remotes.size ${remotes.size}")
-            adapter.updateData(remotes)
+            adapter.updateData(remotes) { updateToolbarState() }
             //remotesViewModel.stationData.value = remotes
         }
 
@@ -160,6 +196,36 @@ class RemotesFragment : Fragment() {
             arguments?.remove("add_remote")
             ctx.showAddDialog(adapter)
         }
+    }
+
+    private fun updateToolbarState() {
+        val viewBinding = _binding ?: return
+        val hasSelection = adapter.hasSelection
+        viewBinding.btnDelete.isEnabled = hasSelection
+        viewBinding.btnDelete.imageTintList = ColorStateList.valueOf(
+            MaterialColors.getColor(
+                requireContext(),
+                if (hasSelection) {
+                    android.R.attr.colorError
+                } else {
+                    com.google.android.material.R.attr.colorOnSurfaceVariant
+                },
+                0
+            )
+        )
+
+        val selectActive = adapter.isAllSelected()
+        viewBinding.btnSelectAll.imageTintList = ColorStateList.valueOf(
+            MaterialColors.getColor(
+                requireContext(),
+                if (selectActive) {
+                    androidx.appcompat.R.attr.colorPrimary
+                } else {
+                    com.google.android.material.R.attr.colorOnSurface
+                },
+                0
+            )
+        )
     }
 
     private fun Context.showAddDialog(adapter: RemotesAdapter) {
@@ -199,7 +265,7 @@ class RemotesFragment : Fragment() {
                             }
                             val remotes = dao.getAll()
                             withContext(Dispatchers.Main) {
-                                adapter.updateData(remotes)
+                                adapter.updateData(remotes) { updateToolbarState() }
                                 dialog.dismiss()
                                 this@showAddDialog.showSnackbar("URL Added.")
                             }
@@ -219,20 +285,6 @@ class RemotesFragment : Fragment() {
         dialog.showKeyboard()
         input.requestFocus()
         dialog.show()
-    }
-
-    private fun Context.deleteConfirmDialog(
-        remote: Remote,
-        callback: (station: Remote) -> Unit,
-    ) {
-        Log.d("deleteConfirmDialog", "remote: $remote")
-        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-            .setTitle("Delete Remote?")
-            .setIcon(R.drawable.md_delete_24px)
-            .setMessage(remote.url)
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Delete") { _, _ -> callback(remote) }
-            .show()
     }
 
     private fun isStringUrl(input: String): Boolean {

@@ -56,6 +56,9 @@ interface RemoteDao {
 
     @Delete
     fun delete(remote: Remote)
+
+    @Query("DELETE FROM remote WHERE url IN (:urls)")
+    fun deleteByUrls(urls: List<String>)
 }
 
 

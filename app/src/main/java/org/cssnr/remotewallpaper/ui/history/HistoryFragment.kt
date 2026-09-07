@@ -1,11 +1,11 @@
 package org.cssnr.remotewallpaper.ui.history
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +17,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,7 +54,6 @@ class HistoryFragment : Fragment() {
         _binding = null
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "RemotesFragment - onViewCreated: ${savedInstanceState?.size()}")
@@ -63,48 +63,78 @@ class HistoryFragment : Fragment() {
 
         fun onClick(view: View, data: HistoryItem) {
             Log.i(LOG_TAG, "onClick: $data")
+            if (adapter.hasSelection) {
+                adapter.toggleSelection(data.id)
+                updateToolbarState()
+                return
+            }
             ctx.showItemContextMenu(view, data)
-            //lifecycleScope.launch {
-            //    if (!data.active) {
-            //        val dao = HistoryDatabase.getInstance(ctx).historyDao()
-            //        Log.d(LOG_TAG, "Activating: ${data.url}")
-            //        val remotes = withContext(Dispatchers.IO) {
-            //            dao.activate(data)
-            //            dao.getAll()
-            //        }
-            //        Log.d(LOG_TAG, "remotes: $remotes")
-            //        adapter.updateData(remotes)
-            //    }
-            //}
         }
 
         fun onLongClick(data: HistoryItem) {
             Log.d(LOG_TAG, "onLongClick: $data")
-            fun callback(item: HistoryItem) {
-                Log.d(LOG_TAG, "callback: item: $item")
-                lifecycleScope.launch {
-                    val dao = HistoryDatabase.getInstance(ctx).historyDao()
-                    Log.i(LOG_TAG, "DELETING: ${data.url}")
-                    val remotes = withContext(Dispatchers.IO) {
-                        dao.delete(data)
-                        dao.getAll()
-                    }
-                    adapter.updateData(remotes)
-                }
-            }
-            ctx.deleteConfirmDialog(data, ::callback)
+            adapter.toggleSelection(data.id)
+            updateToolbarState()
         }
 
         // Initialize Adapter
         if (!::adapter.isInitialized) {
             Log.i(LOG_TAG, "INITIALIZE: HistoryAdapter")
-            adapter = HistoryAdapter(emptyList(), ::onClick, ::onLongClick)
+            adapter = HistoryAdapter(::onClick, ::onLongClick)
         }
         binding.remotesList.layoutManager = LinearLayoutManager(ctx)
         if (binding.remotesList.adapter == null) {
             Log.i(LOG_TAG, "INITIALIZE: remotesList.adapter")
             binding.remotesList.adapter = adapter
         }
+
+        binding.btnGoTop.setOnClickListener {
+            Log.d(LOG_TAG, "btnGoTop")
+            if (adapter.itemCount > 0) {
+                binding.remotesList.scrollToPosition(0)
+            }
+        }
+
+        binding.btnGoBottom.setOnClickListener {
+            Log.d(LOG_TAG, "btnGoBottom")
+            if (adapter.itemCount > 0) {
+                binding.remotesList.scrollToPosition(adapter.itemCount - 1)
+            }
+        }
+
+        binding.btnSelectAll.setOnClickListener {
+            Log.d(LOG_TAG, "btnSelectAll")
+            adapter.toggleSelectAll()
+            updateToolbarState()
+        }
+
+        binding.btnDelete.setOnClickListener {
+            Log.d(LOG_TAG, "btnDelete")
+            val toDelete = adapter.selected
+            if (toDelete.isEmpty()) {
+                return@setOnClickListener
+            }
+            MaterialAlertDialogBuilder(ctx, R.style.AlertDialogTheme)
+                .setTitle("Delete History Items?")
+                .setIcon(R.drawable.md_delete_24px)
+                .setMessage("${toDelete.size} item${if (toDelete.size == 1) "" else "s"} selected.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Delete") { _, _ ->
+                    lifecycleScope.launch {
+                        val dao = HistoryDatabase.getInstance(ctx).historyDao()
+                        val items = withContext(Dispatchers.IO) {
+                            dao.deleteByIds(toDelete)
+                            dao.getAll()
+                        }
+                        adapter.clearSelection()
+                        adapter.updateData(items) { updateToolbarState() }
+                        ctx.showSnackbar("History Deleted.")
+                    }
+                }
+                .show()
+        }
+
+        updateToolbarState()
 
         //// Create the observer which updates the UI.
         //val stationObserver = Observer<List<Remote>> { data ->
@@ -134,11 +164,41 @@ class HistoryFragment : Fragment() {
         }
     }
 
+    private fun updateToolbarState() {
+        val viewBinding = _binding ?: return
+        val hasSelection = adapter.hasSelection
+        viewBinding.btnDelete.isEnabled = hasSelection
+        viewBinding.btnDelete.imageTintList = ColorStateList.valueOf(
+            MaterialColors.getColor(
+                requireContext(),
+                if (hasSelection) {
+                    android.R.attr.colorError
+                } else {
+                    com.google.android.material.R.attr.colorOnSurfaceVariant
+                },
+                0
+            )
+        )
+
+        val selectActive = adapter.isAllSelected()
+        viewBinding.btnSelectAll.imageTintList = ColorStateList.valueOf(
+            MaterialColors.getColor(
+                requireContext(),
+                if (selectActive) {
+                    androidx.appcompat.R.attr.colorPrimary
+                } else {
+                    com.google.android.material.R.attr.colorOnSurface
+                },
+                0
+            )
+        )
+    }
+
     private suspend fun Context.updateData() {
         val dao = HistoryDatabase.getInstance(this).historyDao()
         val remotes = withContext(Dispatchers.IO) { dao.getAll() }
         Log.d(LOG_TAG, "remotes.size ${remotes.size}")
-        withContext(Dispatchers.Main) { adapter.updateData(remotes) }
+        withContext(Dispatchers.Main) { adapter.updateData(remotes) { updateToolbarState() } }
     }
 
     private fun Context.showItemContextMenu(view: View, data: HistoryItem) {
@@ -166,20 +226,6 @@ class HistoryFragment : Fragment() {
             }
         }
         popup.show()
-    }
-
-    private fun Context.deleteConfirmDialog(
-        item: HistoryItem,
-        callback: (item: HistoryItem) -> Unit,
-    ) {
-        Log.d("deleteConfirmDialog", "item: $item")
-        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-            .setTitle("Delete Item ${item.id}?")
-            .setIcon(R.drawable.md_delete_24px)
-            .setMessage(item.url)
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Delete") { _, _ -> callback(item) }
-            .show()
     }
 
     fun Context.showDetailsDialog(data: HistoryItem) {
