@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
@@ -117,6 +118,8 @@ class WidgetProvider : AppWidgetProvider() {
             views.setInt(R.id.widget_root, "setBackgroundColor", finalBgColor)
             views.setInt(R.id.widget_refresh_button, "setColorFilter", selectedTextColor)
             views.setInt(R.id.update_interval_icon, "setColorFilter", selectedTextColor)
+            views.setInt(R.id.lock_screen_icon, "setColorFilter", selectedTextColor)
+            views.setInt(R.id.home_screen_icon, "setColorFilter", selectedTextColor)
             views.setTextColor(R.id.remote_url, selectedTextColor)
             views.setTextColor(R.id.update_interval, selectedTextColor)
             views.setTextColor(R.id.update_time, selectedTextColor)
@@ -152,6 +155,24 @@ class WidgetProvider : AppWidgetProvider() {
                 }
                 Log.d("Widget[onUpdate]", "intervalText: $intervalText")
                 views.setTextViewText(R.id.update_interval, intervalText)
+
+                // Screens
+                val setScreens = preferences.getString("set_screens", "both") ?: "both"
+                Log.d("Widget[onUpdate]", "setScreens: $setScreens")
+                when (setScreens) {
+                    "lock" -> {
+                        views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
+                        views.setViewVisibility(R.id.home_screen_icon, View.GONE)
+                    }
+                    "home" -> {
+                        views.setViewVisibility(R.id.lock_screen_icon, View.GONE)
+                        views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
+                    }
+                    else -> {
+                        views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
+                        views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
+                    }
+                }
 
                 // Time
                 //val time = DateFormat.getTimeFormat(context).format(Date())

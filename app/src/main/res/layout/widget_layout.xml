@@ -51,8 +51,8 @@
             tools:ignore="UseCompoundDrawables">
             <ImageView
                 android:id="@+id/update_interval_icon"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 android:layout_marginTop="1dp"
                 android:contentDescription="STFU"
                 android:src="@drawable/md_avg_time_24px" />
@@ -60,11 +60,29 @@
                 android:id="@+id/update_interval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="4dp"
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                 android:textSize="11sp"
                 android:text="Off"
                 tools:text="Off" />
+
+            <ImageView
+                android:id="@+id/lock_screen_icon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="1dp"
+                android:contentDescription="Lock screen"
+                android:src="@drawable/md_lock_24px" />
+
+            <ImageView
+                android:id="@+id/home_screen_icon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="1dp"
+                android:contentDescription="Home screen"
+                android:src="@drawable/md_home_24px" />
         </LinearLayout>
 
         <TextView
