@@ -4,7 +4,5 @@
 
     <color name="selected_border">#87b3f4</color>
 
-    <color name="select_all_green">#4CAF50</color>
-
     <color name="default_widget_background">#80FFFFFF</color>
 </resources>

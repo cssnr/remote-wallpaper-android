@@ -221,17 +221,6 @@ class RemotesFragment : Fragment() {
         viewBinding.btnSelectAll.setImageResource(
             if (hasSelection) R.drawable.md_playlist_remove_24px else R.drawable.md_data_check_24px
         )
-        viewBinding.btnSelectAll.imageTintList = ColorStateList.valueOf(
-            if (!hasSelection) {
-                requireContext().getColor(R.color.select_all_green)
-            } else {
-                MaterialColors.getColor(
-                    requireContext(),
-                    com.google.android.material.R.attr.colorOnSurface,
-                    0
-                )
-            }
-        )
     }
 
     private fun Context.showAddDialog(adapter: RemotesAdapter, scope: CoroutineScope) {
