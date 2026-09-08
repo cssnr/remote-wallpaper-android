@@ -1,5 +1,6 @@
 package org.cssnr.remotewallpaper.ui.home
 
+import android.app.Activity
 import android.app.WallpaperManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -131,17 +132,8 @@ class HomeFragment : Fragment() {
 
         binding.btnAddRemote.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
-            val navController =
-                activity?.findNavController(R.id.nav_host_fragment_content_main)
-                    ?: return@setOnClickListener
-            val menuItem =
-                requireActivity().findViewById<NavigationView>(R.id.nav_view).menu.findItem(R.id.nav_remotes)
-            NavigationUI.onNavDestinationSelected(menuItem, navController)
-            navController.navigate(
-                R.id.nav_remotes,
-                Bundle().apply { putBoolean("add_remote", true) },
-                NavOptions.Builder().setPopUpTo(R.id.nav_remotes, true).build(),
-            )
+            val hostActivity = activity ?: return@setOnClickListener
+            openAddRemote(hostActivity)
         }
 
         binding.btnReload.setOnClickListener {
@@ -193,6 +185,18 @@ class HomeFragment : Fragment() {
     }
 }
 
+private fun openAddRemote(activity: Activity) {
+    val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
+    val menuItem =
+        activity.findViewById<NavigationView>(R.id.nav_view).menu.findItem(R.id.nav_remotes)
+    NavigationUI.onNavDestinationSelected(menuItem, navController)
+    navController.navigate(
+        R.id.nav_remotes,
+        Bundle().apply { putBoolean("add_remote", true) },
+        NavOptions.Builder().setPopUpTo(R.id.nav_remotes, true).build(),
+    )
+}
+
 fun Context.showAddDialog(
     scope: CoroutineScope,
     onSuccess: suspend () -> Unit = {},
@@ -209,17 +213,7 @@ fun Context.showAddDialog(
         .setPositiveButton("Add", null)
         .setNeutralButton("Remotes") { dialogInterface, _ ->
             dialogInterface.dismiss()
-            if (activity != null) {
-                val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
-                val menuItem =
-                    activity.findViewById<NavigationView>(R.id.nav_view).menu.findItem(R.id.nav_remotes)
-                NavigationUI.onNavDestinationSelected(menuItem, navController)
-                navController.navigate(
-                    R.id.nav_remotes,
-                    null,
-                    NavOptions.Builder().setPopUpTo(R.id.nav_remotes, true).build(),
-                )
-            }
+            if (activity != null) openAddRemote(activity)
         }
         .create()
 
