@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +47,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 
 class HomeFragment : Fragment() {
 
@@ -126,6 +129,21 @@ class HomeFragment : Fragment() {
             ctx.showAddDialog(requireActivity().lifecycleScope) { ctx.updateData() }
         }
 
+        binding.btnAddRemote.setOnClickListener {
+            Log.d(LOG_TAG, "setOnClickListener")
+            val navController =
+                activity?.findNavController(R.id.nav_host_fragment_content_main)
+                    ?: return@setOnClickListener
+            val menuItem =
+                requireActivity().findViewById<NavigationView>(R.id.nav_view).menu.findItem(R.id.nav_remotes)
+            NavigationUI.onNavDestinationSelected(menuItem, navController)
+            navController.navigate(
+                R.id.nav_remotes,
+                Bundle().apply { putBoolean("add_remote", true) },
+                NavOptions.Builder().setPopUpTo(R.id.nav_remotes, true).build(),
+            )
+        }
+
         binding.btnReload.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
             lifecycleScope.launch { ctx.reloadWallpaper() }
@@ -191,7 +209,17 @@ fun Context.showAddDialog(
         .setPositiveButton("Add", null)
         .setNeutralButton("Remotes") { dialogInterface, _ ->
             dialogInterface.dismiss()
-            activity?.findNavController(R.id.nav_host_fragment_content_main)?.navigate(R.id.nav_remotes)
+            if (activity != null) {
+                val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
+                val menuItem =
+                    activity.findViewById<NavigationView>(R.id.nav_view).menu.findItem(R.id.nav_remotes)
+                NavigationUI.onNavDestinationSelected(menuItem, navController)
+                navController.navigate(
+                    R.id.nav_remotes,
+                    null,
+                    NavOptions.Builder().setPopUpTo(R.id.nav_remotes, true).build(),
+                )
+            }
         }
         .create()
 

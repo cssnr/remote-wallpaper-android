@@ -104,6 +104,15 @@
                 android:src="@drawable/md_media_link_24px"
                 app:tint="?attr/colorOnSurface" />
 
+            <ImageButton
+                android:id="@+id/btn_add_remote"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Add Remote"
+                android:src="@drawable/md_add_circle_24px"
+                app:tint="?attr/colorPrimary" />
+
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
