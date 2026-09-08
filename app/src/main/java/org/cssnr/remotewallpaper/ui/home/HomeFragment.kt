@@ -185,14 +185,17 @@ class HomeFragment : Fragment() {
     }
 }
 
-private fun openAddRemote(activity: Activity) {
+private fun openAddRemote(activity: Activity, url: String? = null) {
     val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
     val menuItem =
         activity.findViewById<NavigationView>(R.id.nav_view).menu.findItem(R.id.nav_remotes)
     NavigationUI.onNavDestinationSelected(menuItem, navController)
     navController.navigate(
         R.id.nav_remotes,
-        Bundle().apply { putBoolean("add_remote", true) },
+        Bundle().apply {
+            putBoolean("add_remote", true)
+            if (!url.isNullOrEmpty()) putString("remote_url", url)
+        },
         NavOptions.Builder().setPopUpTo(R.id.nav_remotes, true).build(),
     )
 }
@@ -213,7 +216,9 @@ fun Context.showAddDialog(
         .setPositiveButton("Add", null)
         .setNeutralButton("Remotes") { dialogInterface, _ ->
             dialogInterface.dismiss()
-            if (activity != null) openAddRemote(activity)
+            if (activity != null) {
+                openAddRemote(activity, input.text.toString().trim())
+            }
         }
         .create()
 

@@ -198,7 +198,9 @@ class RemotesFragment : Fragment() {
 
         if (arguments?.getBoolean("add_remote", false) == true) {
             arguments?.remove("add_remote")
-            ctx.showAddDialog(adapter, requireActivity().lifecycleScope)
+            val addUrl = arguments?.getString("remote_url")
+            arguments?.remove("remote_url")
+            ctx.showAddDialog(adapter, requireActivity().lifecycleScope, addUrl)
         }
     }
 
@@ -223,10 +225,18 @@ class RemotesFragment : Fragment() {
         )
     }
 
-    private fun Context.showAddDialog(adapter: RemotesAdapter, scope: CoroutineScope) {
+    private fun Context.showAddDialog(
+        adapter: RemotesAdapter,
+        scope: CoroutineScope,
+        initialUrl: String? = null,
+    ) {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.dialog_add_url, null)
         val input = view.findViewById<EditText>(R.id.image_url)
+        if (!initialUrl.isNullOrEmpty()) {
+            input.setText(initialUrl)
+            input.setSelection(initialUrl.length)
+        }
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(view)
