@@ -42,6 +42,7 @@ import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import org.cssnr.remotewallpaper.log.AppLogs
 import org.cssnr.remotewallpaper.findActivity
+import org.cssnr.remotewallpaper.normalizeUrl
 import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
@@ -228,26 +229,31 @@ fun Context.showAddDialog(
             sendButton.isEnabled = false
             val url = input.text.toString().trim()
             Log.d("showAddDialog", "url: $url")
+            val normalizedUrl = normalizeUrl(url)
             if (url.isEmpty()) {
                 sendButton.isEnabled = true
                 input.error = "URL is Required"
+            } else if (normalizedUrl == null) {
+                sendButton.isEnabled = true
+                input.error = "Invalid URL"
             } else {
                 val loadingLayout = activity?.findViewById<LinearLayout>(R.id.main_loading_layout)
-                dialog.dismiss()
                 loadingLayout?.visibility = View.VISIBLE
                 scope.launch {
                     try {
-                        val result = withContext(Dispatchers.IO) { downloadImage(Remote(url = url)) }
-                        addHistory(url, result)
+                        val result = withContext(Dispatchers.IO) { downloadImage(Remote(url = normalizedUrl)) }
+                        addHistory(normalizedUrl, result)
                         val timestamp = ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                         PreferenceManager.getDefaultSharedPreferences(this@showAddDialog)
                             .edit { putString("last_update", timestamp) }
                         onSuccess()
+                        dialog.dismiss()
                         showSnackbar("Done.")
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Exception) {
-                        showSnackbar(e.message ?: "Unknown Error")
+                        sendButton.isEnabled = true
+                        input.error = e.message ?: "Unknown Error"
                     } finally {
                         withContext(Dispatchers.Main) { loadingLayout?.visibility = View.GONE }
                     }

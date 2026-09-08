@@ -20,11 +20,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.databinding.FragmentRemotesBinding
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
+import org.cssnr.remotewallpaper.normalizeUrl
 import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 
@@ -250,10 +250,11 @@ class RemotesFragment : Fragment() {
                 sendButton.isEnabled = false
                 val url = input.text.toString().trim()
                 Log.d("showAddDialog", "url: $url")
+                val normalizedUrl = normalizeUrl(url)
                 if (url.isEmpty()) {
                     sendButton.isEnabled = true
                     input.error = "URL is Required"
-                } else if (!isStringUrl(url)) {
+                } else if (normalizedUrl == null) {
                     sendButton.isEnabled = true
                     input.error = "Invalid URL"
                 } else {
@@ -262,10 +263,10 @@ class RemotesFragment : Fragment() {
                             val remotes = withContext(Dispatchers.IO) {
                                 val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
                                 // TODO: Make a @Transaction to handle this...
-                                dao.addOrUpdate(Remote(url = url))
+                                dao.addOrUpdate(Remote(url = normalizedUrl))
                                 val active = dao.getActive()
                                 if (active == null) {
-                                    val remote = dao.getByUrl(url)
+                                    val remote = dao.getByUrl(normalizedUrl)
                                     Log.i("showAddDialog", "dao.activate: $remote")
                                     dao.activate(remote!!)
                                 }
@@ -290,14 +291,5 @@ class RemotesFragment : Fragment() {
         dialog.showKeyboard()
         input.requestFocus()
         dialog.show()
-    }
-
-    private fun isStringUrl(input: String): Boolean {
-        val url = input.toHttpUrlOrNull() ?: return false
-        // if (input != url.toString()) return false
-        if (url.scheme !in listOf("http", "https")) return false
-        if (url.host.isBlank()) return false
-        if (url.toString().length > 2048) return false
-        return true
     }
 }
