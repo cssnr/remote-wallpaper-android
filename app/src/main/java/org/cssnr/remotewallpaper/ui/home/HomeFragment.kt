@@ -1,5 +1,6 @@
 package org.cssnr.remotewallpaper.ui.home
 
+import android.app.Activity
 import android.app.WallpaperManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -14,14 +15,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.core.content.FileProvider
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,12 +41,16 @@ import org.cssnr.remotewallpaper.db.HistoryItem
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
 import org.cssnr.remotewallpaper.log.AppLogs
+import org.cssnr.remotewallpaper.findActivity
 import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
 import java.io.FileOutputStream
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import androidx.navigation.NavOptions
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 
 class HomeFragment : Fragment() {
 
@@ -74,33 +83,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "onViewCreated: savedInstanceState: ${savedInstanceState?.size()}")
 
-        val updateWallpaper = arguments?.getBoolean("update_wallpaper") == true
-        Log.i(LOG_TAG, "updateWallpaper: $updateWallpaper")
-
         val ctx = requireContext()
-
-        lifecycleScope.launch {
-            ctx.updateData()
-            if (updateWallpaper) {
-                Log.i(LOG_TAG, "Loading Wallpaper")
-                arguments?.remove("update_wallpaper")
-                ctx.reloadWallpaper()
-            }
-        }
-
-        //// TODO: Copied to onResume - Make an update function...
-        //lifecycleScope.launch {
-        //    val dao = HistoryDatabase.getInstance(ctx).historyDao()
-        //    latest = withContext(Dispatchers.IO) { dao.getLast() }
-        //    Log.d(LOG_TAG, "latest ${latest?.url}")
-        //    binding.textView.text = latest?.url ?: "URL Not Found!"
-        //}
-        //
-        //val imageFile = File(ctx.filesDir, "wallpaper.img")
-        //if (imageFile.exists()) {
-        //    val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-        //    binding.imageView.setImageBitmap(bitmap)
-        //}
 
         binding.btnCopy.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
@@ -126,9 +109,31 @@ class HomeFragment : Fragment() {
             }
         }
 
+        binding.btnShare.setOnClickListener {
+            Log.d(LOG_TAG, "setOnClickListener")
+            val imageFile = File(ctx.filesDir, "wallpaper.img")
+            if (!imageFile.exists()) {
+                ctx.showSnackbar("No Image to Share!")
+                return@setOnClickListener
+            }
+            val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", imageFile)
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/*"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(intent, "Share Image"))
+        }
+
         binding.btnLoadSingle.setOnClickListener {
             Log.d(LOG_TAG, "setOnClickListener")
-            ctx.showAddDialog()
+            ctx.showAddDialog(requireActivity().lifecycleScope) { ctx.updateData() }
+        }
+
+        binding.btnAddRemote.setOnClickListener {
+            Log.d(LOG_TAG, "setOnClickListener")
+            val hostActivity = activity ?: return@setOnClickListener
+            openAddRemote(hostActivity)
         }
 
         binding.btnReload.setOnClickListener {
@@ -140,20 +145,16 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(LOG_TAG, "onResume")
-        lifecycleScope.launch { requireContext().updateData() }
-        // TODO: Copied from onCreate - Make an update function...
-        //lifecycleScope.launch {
-        //    val dao = HistoryDatabase.getInstance(requireContext()).historyDao()
-        //    latest = withContext(Dispatchers.IO) { dao.getLast() }
-        //    Log.d(LOG_TAG, "latest ${latest?.url}")
-        //    binding.textView.text = latest?.url ?: "URL Not Found!"
-        //}
-        //
-        //val imageFile = File(ctx.filesDir, "wallpaper.img")
-        //if (imageFile.exists()) {
-        //    val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-        //    binding.imageView.setImageBitmap(bitmap)
-        //}
+        lifecycleScope.launch {
+            val ctx = requireContext()
+            if (arguments?.getBoolean("update_wallpaper") == true) {
+                Log.i(LOG_TAG, "updateWallpaper: true")
+                arguments?.remove("update_wallpaper")
+                ctx.reloadWallpaper()
+            } else {
+                ctx.updateData()
+            }
+        }
     }
 
     suspend fun Context.reloadWallpaper() {
@@ -184,16 +185,41 @@ class HomeFragment : Fragment() {
     }
 }
 
-// TODO: This is shared with RemotesFragment but will most likely not be used here in the end
-fun Context.showAddDialog() {
+private fun openAddRemote(activity: Activity, url: String? = null) {
+    val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
+    val menuItem =
+        activity.findViewById<NavigationView>(R.id.nav_view).menu.findItem(R.id.nav_remotes)
+    NavigationUI.onNavDestinationSelected(menuItem, navController)
+    navController.navigate(
+        R.id.nav_remotes,
+        Bundle().apply {
+            putBoolean("add_remote", true)
+            if (!url.isNullOrEmpty()) putString("remote_url", url)
+        },
+        NavOptions.Builder().setPopUpTo(R.id.nav_remotes, true).build(),
+    )
+}
+
+fun Context.showAddDialog(
+    scope: CoroutineScope,
+    onSuccess: suspend () -> Unit = {},
+) {
+    val activity = findActivity()
     val inflater = LayoutInflater.from(this)
     val view = inflater.inflate(R.layout.dialog_add_url, null)
     val input = view.findViewById<EditText>(R.id.image_url)
+    view.findViewById<TextView>(R.id.image_hint)?.visibility = View.VISIBLE
 
     val dialog = MaterialAlertDialogBuilder(this)
         .setView(view)
         .setNegativeButton("Cancel", null)
         .setPositiveButton("Add", null)
+        .setNeutralButton("Remotes") { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            if (activity != null) {
+                openAddRemote(activity, input.text.toString().trim())
+            }
+        }
         .create()
 
     dialog.setOnShowListener {
@@ -202,24 +228,30 @@ fun Context.showAddDialog() {
             sendButton.isEnabled = false
             val url = input.text.toString().trim()
             Log.d("showAddDialog", "url: $url")
-            if (url.isNotEmpty()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        downloadImage(Remote(url = url))
-                        withContext(Dispatchers.Main) {
-                            dialog.dismiss()
-                            this@showAddDialog.showSnackbar("Done.")
-                        }
-                    } catch (e: Exception) {
-                        withContext(Dispatchers.Main) {
-                            sendButton.isEnabled = true
-                            input.error = e.message ?: "Unknown Error"
-                        }
-                    }
-                }
-            } else {
+            if (url.isEmpty()) {
                 sendButton.isEnabled = true
                 input.error = "URL is Required"
+            } else {
+                val loadingLayout = activity?.findViewById<LinearLayout>(R.id.main_loading_layout)
+                dialog.dismiss()
+                loadingLayout?.visibility = View.VISIBLE
+                scope.launch {
+                    try {
+                        val result = withContext(Dispatchers.IO) { downloadImage(Remote(url = url)) }
+                        addHistory(url, result)
+                        val timestamp = ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        PreferenceManager.getDefaultSharedPreferences(this@showAddDialog)
+                            .edit { putString("last_update", timestamp) }
+                        onSuccess()
+                        showSnackbar("Done.")
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        showSnackbar(e.message ?: "Unknown Error")
+                    } finally {
+                        withContext(Dispatchers.Main) { loadingLayout?.visibility = View.GONE }
+                    }
+                }
             }
         }
     }
@@ -231,6 +263,23 @@ fun Context.showAddDialog() {
     dialog.show()
 }
 
+suspend fun Context.addHistory(sourceUrl: String, result: DownloadResult) {
+    val history = HistoryItem().also {
+        it.remote = sourceUrl
+        it.url = when (result) {
+            is DownloadResult.Downloaded -> result.response.request.url.toString()
+            is DownloadResult.NotModified -> sourceUrl
+        }
+        it.status = when (result) {
+            is DownloadResult.Downloaded -> result.response.code
+            is DownloadResult.NotModified -> 304
+        }
+    }
+    Log.d("addHistory", "history: $history")
+    val dao = HistoryDatabase.getInstance(this).historyDao()
+    withContext(Dispatchers.IO) { dao.add(history) }
+}
+
 sealed class DownloadResult {
     data class Downloaded(val response: Response) : DownloadResult()
     data object NotModified : DownloadResult()
@@ -239,7 +288,6 @@ sealed class DownloadResult {
 // TODO: updateWallpaper is used globally to update the wallpaper and should be a package
 //  The rest of the functions are only used by updateWallpaper and are internal to updateWallpaper
 suspend fun Context.updateWallpaper(): String? {
-    // TODO: This version is testing historyDao vs above version. It will all be refactored...
     val historyDao = HistoryDatabase.getInstance(this).historyDao()
     val history = HistoryItem()
     try {
@@ -276,6 +324,8 @@ suspend fun Context.updateWallpaper(): String? {
         }
         AppLogs.w(this, "updateWallpaper: No Active Remote")
         return "No Remotes."
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         Log.e("updateWallpaper", "updateWallpaper: Exception: $e")
         history.error = e.message

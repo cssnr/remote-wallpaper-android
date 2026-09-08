@@ -6,7 +6,7 @@ import android.content.ContextWrapper
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 
-private tailrec fun Context.findActivity(): Activity? = when (this) {
+internal tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null

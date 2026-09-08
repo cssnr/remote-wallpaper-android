@@ -53,8 +53,7 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Select All"
-                android:src="@drawable/md_tv_options_edit_channels_24px"
-                app:tint="?attr/colorOnSurface" />
+                android:src="@drawable/md_data_check_24px" />
 
             <ImageButton
                 android:id="@+id/btn_go_top"

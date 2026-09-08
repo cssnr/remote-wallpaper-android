@@ -18,16 +18,12 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class HistoryAdapter(
+    private val selectedIds: MutableSet<Long>,
     private val onItemClick: (View, HistoryItem) -> Unit,
     private val onItemLongClick: (HistoryItem) -> Unit,
 ) : ListAdapter<HistoryItem, HistoryAdapter.ViewHolder>(DiffCallback) {
 
     private lateinit var context: Context
-
-    private val selectedIds = mutableSetOf<Long>()
-
-    fun isAllSelected(): Boolean =
-        currentList.isNotEmpty() && selectedIds.size == currentList.size
 
     val hasSelection: Boolean
         get() = selectedIds.isNotEmpty()
@@ -53,7 +49,7 @@ class HistoryAdapter(
     }
 
     fun toggleSelectAll() {
-        if (isAllSelected()) {
+        if (hasSelection) {
             selectedIds.clear()
         } else {
             selectedIds.addAll(currentList.map { it.id })

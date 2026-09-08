@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +36,8 @@ class RemotesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: RemotesAdapter
+
+    private val viewModel: RemotesViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,7 +92,7 @@ class RemotesFragment : Fragment() {
         // Initialize Adapter
         if (!::adapter.isInitialized) {
             Log.i(LOG_TAG, "INITIALIZE: RemotesAdapter")
-            adapter = RemotesAdapter(::onClick, ::onLongClick)
+            adapter = RemotesAdapter(viewModel.selectedUrls, ::onClick, ::onLongClick)
         }
         binding.remotesList.layoutManager = LinearLayoutManager(ctx)
         if (binding.remotesList.adapter == null) {
@@ -189,12 +193,14 @@ class RemotesFragment : Fragment() {
             ////    .setAnchorView(R.id.fab).show()
             //val newFragment = AddDialogFragment()
             //newFragment.show(parentFragmentManager, "AddDialogFragment")
-            ctx.showAddDialog(adapter)
+            ctx.showAddDialog(adapter, requireActivity().lifecycleScope)
         }
 
         if (arguments?.getBoolean("add_remote", false) == true) {
             arguments?.remove("add_remote")
-            ctx.showAddDialog(adapter)
+            val addUrl = arguments?.getString("remote_url")
+            arguments?.remove("remote_url")
+            ctx.showAddDialog(adapter, requireActivity().lifecycleScope, addUrl)
         }
     }
 
@@ -214,24 +220,23 @@ class RemotesFragment : Fragment() {
             )
         )
 
-        val selectActive = adapter.isAllSelected()
-        viewBinding.btnSelectAll.imageTintList = ColorStateList.valueOf(
-            MaterialColors.getColor(
-                requireContext(),
-                if (selectActive) {
-                    androidx.appcompat.R.attr.colorPrimary
-                } else {
-                    com.google.android.material.R.attr.colorOnSurface
-                },
-                0
-            )
+        viewBinding.btnSelectAll.setImageResource(
+            if (hasSelection) R.drawable.md_playlist_remove_24px else R.drawable.md_data_check_24px
         )
     }
 
-    private fun Context.showAddDialog(adapter: RemotesAdapter) {
+    private fun Context.showAddDialog(
+        adapter: RemotesAdapter,
+        scope: CoroutineScope,
+        initialUrl: String? = null,
+    ) {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.dialog_add_url, null)
         val input = view.findViewById<EditText>(R.id.image_url)
+        if (!initialUrl.isNullOrEmpty()) {
+            input.setText(initialUrl)
+            input.setSelection(initialUrl.length)
+        }
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(view)
@@ -252,28 +257,28 @@ class RemotesFragment : Fragment() {
                     sendButton.isEnabled = true
                     input.error = "Invalid URL"
                 } else {
-                    CoroutineScope(Dispatchers.IO).launch {
+                    scope.launch {
                         try {
-                            val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
-                            // TODO: Make a @Transaction to handle this...
-                            dao.addOrUpdate(Remote(url = url))
-                            val active = dao.getActive()
-                            if (active == null) {
-                                val remote = dao.getByUrl(url)
-                                Log.i("showAddDialog", "dao.activate: $remote")
-                                dao.activate(remote!!)
+                            val remotes = withContext(Dispatchers.IO) {
+                                val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
+                                // TODO: Make a @Transaction to handle this...
+                                dao.addOrUpdate(Remote(url = url))
+                                val active = dao.getActive()
+                                if (active == null) {
+                                    val remote = dao.getByUrl(url)
+                                    Log.i("showAddDialog", "dao.activate: $remote")
+                                    dao.activate(remote!!)
+                                }
+                                dao.getAll()
                             }
-                            val remotes = dao.getAll()
-                            withContext(Dispatchers.Main) {
-                                adapter.updateData(remotes) { updateToolbarState() }
-                                dialog.dismiss()
-                                this@showAddDialog.showSnackbar("URL Added.")
-                            }
+                            adapter.updateData(remotes) { updateToolbarState() }
+                            dialog.dismiss()
+                            this@showAddDialog.showSnackbar("URL Added.")
+                        } catch (e: CancellationException) {
+                            throw e
                         } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                sendButton.isEnabled = true
-                                input.error = e.message ?: "Unknown Error"
-                            }
+                            sendButton.isEnabled = true
+                            input.error = e.message ?: "Unknown Error"
                         }
                     }
                 }
