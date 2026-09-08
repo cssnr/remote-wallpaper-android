@@ -17,12 +17,15 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.edit
 import androidx.core.content.FileProvider
+import androidx.core.content.edit
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -40,8 +43,8 @@ import org.cssnr.remotewallpaper.db.HistoryDatabase
 import org.cssnr.remotewallpaper.db.HistoryItem
 import org.cssnr.remotewallpaper.db.Remote
 import org.cssnr.remotewallpaper.db.RemoteDatabase
-import org.cssnr.remotewallpaper.log.AppLogs
 import org.cssnr.remotewallpaper.findActivity
+import org.cssnr.remotewallpaper.log.AppLogs
 import org.cssnr.remotewallpaper.normalizeUrl
 import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
@@ -49,9 +52,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 
 class HomeFragment : Fragment() {
 
@@ -241,9 +241,11 @@ fun Context.showAddDialog(
                 loadingLayout?.visibility = View.VISIBLE
                 scope.launch {
                     try {
-                        val result = withContext(Dispatchers.IO) { downloadImage(Remote(url = normalizedUrl)) }
+                        val result =
+                            withContext(Dispatchers.IO) { downloadImage(Remote(url = normalizedUrl)) }
                         addHistory(normalizedUrl, result)
-                        val timestamp = ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        val timestamp =
+                            ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                         PreferenceManager.getDefaultSharedPreferences(this@showAddDialog)
                             .edit { putString("last_update", timestamp) }
                         onSuccess()

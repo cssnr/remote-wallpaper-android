@@ -164,10 +164,12 @@ class WidgetProvider : AppWidgetProvider() {
                         views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
                         views.setViewVisibility(R.id.home_screen_icon, View.GONE)
                     }
+
                     "home" -> {
                         views.setViewVisibility(R.id.lock_screen_icon, View.GONE)
                         views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
                     }
+
                     else -> {
                         views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
                         views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
