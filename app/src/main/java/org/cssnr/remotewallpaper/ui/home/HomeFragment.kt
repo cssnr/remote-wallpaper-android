@@ -46,6 +46,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import androidx.navigation.findNavController
 
 class HomeFragment : Fragment() {
 
@@ -174,7 +175,10 @@ class HomeFragment : Fragment() {
     }
 }
 
-fun Context.showAddDialog(scope: CoroutineScope, onSuccess: suspend () -> Unit = {}) {
+fun Context.showAddDialog(
+    scope: CoroutineScope,
+    onSuccess: suspend () -> Unit = {},
+) {
     val activity = findActivity()
     val inflater = LayoutInflater.from(this)
     val view = inflater.inflate(R.layout.dialog_add_url, null)
@@ -185,6 +189,10 @@ fun Context.showAddDialog(scope: CoroutineScope, onSuccess: suspend () -> Unit =
         .setView(view)
         .setNegativeButton("Cancel", null)
         .setPositiveButton("Add", null)
+        .setNeutralButton("Remotes") { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            activity?.findNavController(R.id.nav_host_fragment_content_main)?.navigate(R.id.nav_remotes)
+        }
         .create()
 
     dialog.setOnShowListener {
