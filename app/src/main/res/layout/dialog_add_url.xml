@@ -61,6 +61,17 @@
     </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/image_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        android:text="Loads a one-time image URL. Use Remotes to save the URL."
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
 </LinearLayout>
 </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

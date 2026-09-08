@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.core.content.FileProvider
@@ -178,6 +179,7 @@ fun Context.showAddDialog(scope: CoroutineScope, onSuccess: suspend () -> Unit =
     val inflater = LayoutInflater.from(this)
     val view = inflater.inflate(R.layout.dialog_add_url, null)
     val input = view.findViewById<EditText>(R.id.image_url)
+    view.findViewById<TextView>(R.id.image_hint)?.visibility = View.VISIBLE
 
     val dialog = MaterialAlertDialogBuilder(this)
         .setView(view)
