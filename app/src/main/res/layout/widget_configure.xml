@@ -6,15 +6,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center">
 
-    <LinearLayout
-        android:id="@+id/config_root"
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="24dp"
-        android:orientation="vertical"
-        android:background="@drawable/bg_widget_config"
         tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:id="@+id/config_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="24dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_widget_config"
+            tools:ignore="UselessParent">
 
         <!-- Icon/Title -->
         <TextView
@@ -121,6 +126,13 @@
             android:max="100"
             app:showSeekBarValue="true" />
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/show_screen_icons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Show Screen Icons" />
+
         <!-- Save Widget Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/confirm_button"
@@ -129,4 +141,5 @@
             android:text="Save Widget Settings" />
 
     </LinearLayout>
+    </ScrollView>
 </LinearLayout>

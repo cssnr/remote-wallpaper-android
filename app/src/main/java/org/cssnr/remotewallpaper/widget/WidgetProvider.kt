@@ -124,6 +124,11 @@ class WidgetProvider : AppWidgetProvider() {
             views.setTextColor(R.id.update_interval, selectedTextColor)
             views.setTextColor(R.id.update_time, selectedTextColor)
 
+            // Show Icons
+            val showIcons = preferences.getBoolean("widget_show_icons", true)
+            Log.d("Widget[onUpdate]", "showIcons: $showIcons")
+            views.setViewVisibility(R.id.screen_icons, if (showIcons) View.VISIBLE else View.GONE)
+
             // Refresh
             val intent1 = Intent(context, WidgetProvider::class.java).apply {
                 action = "org.cssnr.remotewallpaper.REFRESH_WIDGET"
@@ -159,20 +164,22 @@ class WidgetProvider : AppWidgetProvider() {
                 // Screens
                 val setScreens = preferences.getString("set_screens", "both") ?: "both"
                 Log.d("Widget[onUpdate]", "setScreens: $setScreens")
-                when (setScreens) {
-                    "lock" -> {
-                        views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
-                        views.setViewVisibility(R.id.home_screen_icon, View.GONE)
-                    }
+                if (showIcons) {
+                    when (setScreens) {
+                        "lock" -> {
+                            views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
+                            views.setViewVisibility(R.id.home_screen_icon, View.GONE)
+                        }
 
-                    "home" -> {
-                        views.setViewVisibility(R.id.lock_screen_icon, View.GONE)
-                        views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
-                    }
+                        "home" -> {
+                            views.setViewVisibility(R.id.lock_screen_icon, View.GONE)
+                            views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
+                        }
 
-                    else -> {
-                        views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
-                        views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
+                        else -> {
+                            views.setViewVisibility(R.id.lock_screen_icon, View.VISIBLE)
+                            views.setViewVisibility(R.id.home_screen_icon, View.VISIBLE)
+                        }
                     }
                 }
 

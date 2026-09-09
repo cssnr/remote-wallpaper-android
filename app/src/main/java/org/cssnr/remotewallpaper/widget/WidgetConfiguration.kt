@@ -11,6 +11,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.google.android.material.switchmaterial.SwitchMaterial
 import org.cssnr.remotewallpaper.R
 
 class WidgetConfiguration : Activity() {
@@ -40,6 +41,8 @@ class WidgetConfiguration : Activity() {
         Log.i("WidgetConfiguration", "textColor: $textColor")
         val bgOpacity = preferences.getInt("widget_bg_opacity", 35)
         Log.i("WidgetConfiguration", "bgOpacity: $bgOpacity")
+        val showIcons = preferences.getBoolean("widget_show_icons", true)
+        Log.i("WidgetConfiguration", "showIcons: $showIcons")
 
         val bgOpacityText = findViewById<TextView>(R.id.bg_opacity_percent)
         bgOpacityText.text = getString(R.string.background_opacity, bgOpacity)
@@ -65,6 +68,8 @@ class WidgetConfiguration : Activity() {
         val seekBar = findViewById<SeekBar>(R.id.opacity_percent)
         seekBar.progress = bgOpacity
         //seekBar.progress = ((bgOpacity + 2) / 5) * 5
+        val showIconsSwitch = findViewById<SwitchMaterial>(R.id.show_screen_icons)
+        showIconsSwitch.isChecked = showIcons
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser && seekBar != null) {
@@ -103,11 +108,13 @@ class WidgetConfiguration : Activity() {
             Log.i("WidgetConfiguration", "selectedTextColor: $selectedTextColor")
 
             Log.i("WidgetConfiguration", "seekBar.progress: ${seekBar.progress}")
+            Log.i("WidgetConfiguration", "showIconsSwitch.isChecked: ${showIconsSwitch.isChecked}")
 
             preferences.edit {
                 putString("widget_bg_color", selectedBgColor)
                 putString("widget_text_color", selectedTextColor)
                 putInt("widget_bg_opacity", seekBar.progress)
+                putBoolean("widget_show_icons", showIconsSwitch.isChecked)
             }
 
             val updateIntent = Intent(
