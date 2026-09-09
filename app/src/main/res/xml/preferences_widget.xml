@@ -33,6 +33,12 @@
             app:min="0"
             app:showSeekBarValue="true" />
 
+        <androidx.preference.SwitchPreferenceCompat
+            android:key="widget_show_icons"
+            android:title="@string/show_screen_icons"
+            android:defaultValue="true"
+            android:icon="@drawable/md_wallpaper_slideshow_24px" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -43,10 +43,11 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginBottom="2dp"
         android:layout_gravity="bottom">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center_vertical|start"
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables">
             <ImageView
@@ -54,7 +55,7 @@
                 android:layout_width="14dp"
                 android:layout_height="14dp"
                 android:layout_marginTop="1dp"
-                android:contentDescription="STFU"
+                android:contentDescription="Update interval"
                 android:src="@drawable/md_avg_time_24px" />
             <TextView
                 android:id="@+id/update_interval"
@@ -65,24 +66,27 @@
                 android:textSize="11sp"
                 android:text="Off"
                 tools:text="Off" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/screen_icons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
             <ImageView
                 android:id="@+id/lock_screen_icon"
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:layout_marginStart="4dp"
                 android:layout_marginTop="1dp"
-                android:visibility="gone"
                 android:contentDescription="Lock screen"
                 android:src="@drawable/md_lock_24px" />
-
             <ImageView
                 android:id="@+id/home_screen_icon"
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:layout_marginStart="4dp"
                 android:layout_marginTop="1dp"
-                android:visibility="gone"
                 android:contentDescription="Home screen"
                 android:src="@drawable/md_home_24px" />
         </LinearLayout>

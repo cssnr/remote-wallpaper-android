@@ -65,7 +65,7 @@
         <Preference
             android:key="android_settings"
             android:title="Open Android Settings"
-            android:summary="Syetem App Information"
+            android:summary="System App Information"
             android:icon="@drawable/md_mobile_gear_24px" />
 
         <Preference
