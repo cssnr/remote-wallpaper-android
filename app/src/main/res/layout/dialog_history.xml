@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No Errors"
-        tools:text="You Fucked Up Chuck!" />
+        tools:text="Example Error Message" />
 
 </LinearLayout>
 </ScrollView>
