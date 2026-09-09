@@ -1,6 +1,5 @@
 package org.cssnr.remotewallpaper.ui.history
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +21,6 @@ class HistoryAdapter(
     private val onItemClick: (View, HistoryItem) -> Unit,
     private val onItemLongClick: (HistoryItem) -> Unit,
 ) : ListAdapter<HistoryItem, HistoryAdapter.ViewHolder>(DiffCallback) {
-
-    private lateinit var context: Context
 
     val hasSelection: Boolean
         get() = selectedIds.isNotEmpty()
@@ -66,7 +63,6 @@ class HistoryAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        context = parent.context
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_history, parent, false)
         return ViewHolder(view)

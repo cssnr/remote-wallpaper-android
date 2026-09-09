@@ -143,10 +143,10 @@
                     android:id="@+id/btn_download"
                     android:layout_width="260dp"
                     android:layout_height="wrap_content"
-                    android:text="Set Wallpaper and Start"
-                    android:backgroundTint="@android:color/holo_green_dark"/>
+                    android:text="Set Wallpaper and Start" />
                 <Button
                     android:id="@+id/btn_start"
+                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="260dp"
                     android:layout_height="wrap_content"
                     android:text="Just Start the App" />
