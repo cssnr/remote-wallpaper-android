@@ -35,7 +35,7 @@
 
         <androidx.preference.SwitchPreferenceCompat
             android:key="widget_show_icons"
-            android:title="Show Screen Icons"
+            android:title="@string/show_screen_icons"
             android:defaultValue="true"
             android:icon="@drawable/md_wallpaper_slideshow_24px" />
 

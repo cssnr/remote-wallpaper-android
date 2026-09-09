@@ -15,6 +15,7 @@
     <string name="github_link"><![CDATA[<a href="https://github.com/cssnr/remote-wallpaper-android">%s</a>]]></string>
 
     <string name="background_opacity">Background Opacity %d</string>
+    <string name="show_screen_icons">Show Screen Icons</string>
 
     <string-array name="work_interval_entries">
         <item>Never Update</item>
