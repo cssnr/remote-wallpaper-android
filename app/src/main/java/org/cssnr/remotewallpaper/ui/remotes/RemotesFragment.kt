@@ -263,7 +263,7 @@ class RemotesFragment : Fragment() {
                             val remotes = withContext(Dispatchers.IO) {
                                 val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
                                 // TODO: Make a @Transaction to handle this...
-                                dao.addOrUpdate(Remote(url = normalizedUrl))
+                                dao.addOrUpdate(Remote(normalizedUrl))
                                 val active = dao.getActive()
                                 if (active == null) {
                                     val remote = dao.getByUrl(normalizedUrl)

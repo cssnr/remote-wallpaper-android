@@ -241,8 +241,9 @@ fun Context.showAddDialog(
                 loadingLayout?.visibility = View.VISIBLE
                 scope.launch {
                     try {
-                        val result =
-                            withContext(Dispatchers.IO) { downloadImage(Remote(url = normalizedUrl)) }
+                        val result = withContext(Dispatchers.IO) {
+                            downloadImage(Remote(normalizedUrl))
+                        }
                         addHistory(normalizedUrl, result)
                         val timestamp =
                             ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -328,7 +329,7 @@ suspend fun Context.updateWallpaper(): String? {
             preferences.edit { putString("last_update", timestamp) }
             Log.d("updateWallpaper", "history: $history")
             withContext(Dispatchers.IO) { historyDao.add(history) }
-            return null
+            return if (result is DownloadResult.NotModified) "Image Not Modified." else null
         }
         AppLogs.w(this, "updateWallpaper: No Active Remote")
         return "No Remotes."
