@@ -380,8 +380,14 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
         .build()
 
     val requestBuilder = Request.Builder().url(remote.url)
-    remote.etag?.let { requestBuilder.header("If-None-Match", it) }
-    remote.lastModified?.let { requestBuilder.header("If-Modified-Since", it) }
+    val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+    val wallpaperSource = preferences.getString("wallpaper_source", null)
+    if (remote.url == wallpaperSource) {
+        remote.etag?.let { requestBuilder.header("If-None-Match", it) }
+        remote.lastModified?.let { requestBuilder.header("If-Modified-Since", it) }
+    } else {
+        Log.d("downloadImage", "wallpaperSource mismatch, fetching ${remote.url} without cache validators")
+    }
 
     val response = client.newCall(requestBuilder.build()).execute()
 
@@ -405,6 +411,8 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
         }
 
         setAutoCroppedWallpaper(imageFile)
+
+        preferences.edit { putString("wallpaper_source", remote.url) }
 
         // FIX AI: Save cache validators AFTER the wallpaper is applied. Persisting them earlier
         // would let a failed file write, bad image decode (silent return in
