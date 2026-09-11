@@ -180,10 +180,39 @@ class HomeFragment : Fragment() {
 
         val imageFile = File(filesDir, "wallpaper.img")
         if (imageFile.exists()) {
-            val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+            val bitmap = withContext(Dispatchers.IO) {
+                decodeBoundedBitmap(imageFile)
+            }
             _binding?.imageView?.setImageBitmap(bitmap)
         }
     }
+}
+
+// Decode an image downsampled so the largest dimension does not exceed maxDimension
+// (defaults to the display size), keeping the in-memory bitmap (and its byte count)
+// well below the canvas MAX_BITMAP_SIZE limit that throws "Canvas: trying to draw too
+// large(bytes)". See RecordingCanvas.throwIfCannotDraw (100MB/150MB default). The
+// original file is untouched.
+fun Context.decodeBoundedBitmap(imageFile: File, maxDimension: Int? = null): Bitmap? {
+    val displayMetrics = resources.displayMetrics
+    val maxDimension = maxDimension ?: maxOf(displayMetrics.widthPixels, displayMetrics.heightPixels)
+
+    val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    BitmapFactory.decodeFile(imageFile.absolutePath, boundsOptions)
+    if (boundsOptions.outWidth <= 0 || boundsOptions.outHeight <= 0) return null
+    Log.d("HomeFragment", "decodeBoundedBitmap: W=${boundsOptions.outWidth} H=${boundsOptions.outHeight}")
+
+    var inSampleSize = 1
+    while ((maxOf(boundsOptions.outWidth, boundsOptions.outHeight) / inSampleSize) > maxDimension) {
+        inSampleSize = inSampleSize shl 1
+    }
+
+    val decodeOptions = BitmapFactory.Options().apply {
+        this.inSampleSize = inSampleSize
+    }
+    val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath, decodeOptions)
+    Log.d("HomeFragment", "decodeBoundedBitmap: W=${bitmap?.width} H=${bitmap?.height} sample=$inSampleSize")
+    return bitmap
 }
 
 private fun openAddRemote(activity: Activity, url: String? = null) {
@@ -265,7 +294,7 @@ fun Context.showAddDialog(
         }
     }
 
-    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Set Image") { _, _ -> }
+    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Set") { _, _ -> }
 
     dialog.showKeyboard()
     input.requestFocus()
@@ -402,7 +431,10 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     val cropWallpaper = preferences.getBoolean("crop_wallpaper", true)
 
-    val original = BitmapFactory.decodeFile(imageFile.absolutePath) ?: return
+    // Bound the longest side to 2x the largest target dimension, avoiding the
+    // full-resolution decode that can OOM or exceed the canvas bitmap limit.
+    val targetMax = maxOf(targetWidth, targetHeight) * 2
+    val original = decodeBoundedBitmap(imageFile, targetMax.takeIf { it > 0 }) ?: return
     val scaled =
         if (cropWallpaper) scaleAndCropCenter(original, targetWidth, targetHeight) else original
 
