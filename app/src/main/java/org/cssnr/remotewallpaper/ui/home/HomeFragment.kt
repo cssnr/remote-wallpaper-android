@@ -188,14 +188,14 @@ class HomeFragment : Fragment() {
     }
 }
 
-// Decode an image downsampled so the largest dimension matches the display size,
-// keeping the in-memory bitmap (and its byte count) well below the canvas
-// MAX_BITMAP_SIZE limit that throws "Canvas: trying to draw too large(bytes)". See
-// RecordingCanvas.throwIfCannotDraw (100MB/150MB default). The original file is
-// untouched; full resolution is still used when the wallpaper is actually set.
-fun Context.decodeBoundedBitmap(imageFile: File): Bitmap? {
+// Decode an image downsampled so the largest dimension does not exceed maxDimension
+// (defaults to the display size), keeping the in-memory bitmap (and its byte count)
+// well below the canvas MAX_BITMAP_SIZE limit that throws "Canvas: trying to draw too
+// large(bytes)". See RecordingCanvas.throwIfCannotDraw (100MB/150MB default). The
+// original file is untouched.
+fun Context.decodeBoundedBitmap(imageFile: File, maxDimension: Int? = null): Bitmap? {
     val displayMetrics = resources.displayMetrics
-    val maxDimension = maxOf(displayMetrics.widthPixels, displayMetrics.heightPixels)
+    val maxDimension = maxDimension ?: maxOf(displayMetrics.widthPixels, displayMetrics.heightPixels)
 
     val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeFile(imageFile.absolutePath, boundsOptions)
@@ -431,7 +431,11 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     val cropWallpaper = preferences.getBoolean("crop_wallpaper", true)
 
-    val original = BitmapFactory.decodeFile(imageFile.absolutePath) ?: return
+    // Decode bounded to 2x the wallpaper target so scaleAndCropCenter only ever
+    // downscales; this avoids loading a full-resolution source (which can OOM and,
+    // before the preview fix, exceed the canvas size limit).
+    val targetMax = maxOf(targetWidth, targetHeight) * 2
+    val original = decodeBoundedBitmap(imageFile, targetMax.takeIf { it > 0 }) ?: return
     val scaled =
         if (cropWallpaper) scaleAndCropCenter(original, targetWidth, targetHeight) else original
 
