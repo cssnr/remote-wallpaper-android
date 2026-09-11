@@ -180,10 +180,39 @@ class HomeFragment : Fragment() {
 
         val imageFile = File(filesDir, "wallpaper.img")
         if (imageFile.exists()) {
-            val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+            val bitmap = withContext(Dispatchers.IO) {
+                decodeBoundedBitmap(imageFile)
+            }
             _binding?.imageView?.setImageBitmap(bitmap)
         }
     }
+}
+
+// Decode an image downsampled so the largest dimension matches the display size,
+// keeping the in-memory bitmap (and its byte count) well below the canvas
+// MAX_BITMAP_SIZE limit that throws "Canvas: trying to draw too large(bytes)". See
+// RecordingCanvas.throwIfCannotDraw (100MB/150MB default). The original file is
+// untouched; full resolution is still used when the wallpaper is actually set.
+fun Context.decodeBoundedBitmap(imageFile: File): Bitmap? {
+    val displayMetrics = resources.displayMetrics
+    val maxDimension = maxOf(displayMetrics.widthPixels, displayMetrics.heightPixels)
+
+    val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    BitmapFactory.decodeFile(imageFile.absolutePath, boundsOptions)
+    if (boundsOptions.outWidth <= 0 || boundsOptions.outHeight <= 0) return null
+    Log.d("HomeFragment", "decodeBoundedBitmap: W=${boundsOptions.outWidth} H=${boundsOptions.outHeight}")
+
+    var inSampleSize = 1
+    while ((maxOf(boundsOptions.outWidth, boundsOptions.outHeight) / inSampleSize) > maxDimension) {
+        inSampleSize = inSampleSize shl 1
+    }
+
+    val decodeOptions = BitmapFactory.Options().apply {
+        this.inSampleSize = inSampleSize
+    }
+    val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath, decodeOptions)
+    Log.d("HomeFragment", "decodeBoundedBitmap: W=${bitmap?.width} H=${bitmap?.height} sample=$inSampleSize")
+    return bitmap
 }
 
 private fun openAddRemote(activity: Activity, url: String? = null) {
