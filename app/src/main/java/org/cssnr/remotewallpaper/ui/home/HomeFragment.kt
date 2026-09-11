@@ -431,9 +431,8 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     val cropWallpaper = preferences.getBoolean("crop_wallpaper", true)
 
-    // Decode bounded to 2x the wallpaper target so scaleAndCropCenter only ever
-    // downscales; this avoids loading a full-resolution source (which can OOM and,
-    // before the preview fix, exceed the canvas size limit).
+    // Bound the longest side to 2x the largest target dimension, avoiding the
+    // full-resolution decode that can OOM or exceed the canvas bitmap limit.
     val targetMax = maxOf(targetWidth, targetHeight) * 2
     val original = decodeBoundedBitmap(imageFile, targetMax.takeIf { it > 0 }) ?: return
     val scaled =
