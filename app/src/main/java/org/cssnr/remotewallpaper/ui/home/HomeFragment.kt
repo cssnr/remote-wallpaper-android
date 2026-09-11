@@ -294,7 +294,7 @@ fun Context.showAddDialog(
         }
     }
 
-    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Set Image") { _, _ -> }
+    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Set") { _, _ -> }
 
     dialog.showKeyboard()
     input.requestFocus()
