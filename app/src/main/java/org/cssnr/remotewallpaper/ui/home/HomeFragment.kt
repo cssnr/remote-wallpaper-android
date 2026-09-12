@@ -410,31 +410,34 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
             }
         }
 
-        setAutoCroppedWallpaper(imageFile)
+        if (setAutoCroppedWallpaper(imageFile)) {
+            preferences.edit { putString("wallpaper_source", remote.url) }
 
-        preferences.edit { putString("wallpaper_source", remote.url) }
-
-        // FIX AI: Save cache validators AFTER the wallpaper is applied. Persisting them earlier
-        // would let a failed file write, bad image decode (silent return in
-        // setAutoCroppedWallpaper), or setBitmap error still store the ETag - then every
-        // future update would 304-skip with a stale or missing wallpaper.
-        // Uses updateCacheHeaders (NOT addOrUpdate) so the active flag is preserved;
-        // urls not yet in the database (preview downloads from showAddDialog) are skipped.
-        if (newEtag != null || newLastModified != null) {
-            val dao = RemoteDatabase.getInstance(this).remoteDao()
-            withContext(Dispatchers.IO) {
-                dao.updateCacheHeaders(remote.url, newEtag, newLastModified)
+            // FIX AI: Save cache validators AFTER the wallpaper is applied. Persisting them earlier
+            // would let a failed file write, bad image decode (setAutoCroppedWallpaper
+            // returns false), or setBitmap error still store the ETag - then every future
+            // update would 304-skip with a stale or missing wallpaper.
+            // Uses updateCacheHeaders (NOT addOrUpdate) so the active flag is preserved;
+            // urls not yet in the database (preview downloads from showAddDialog) are skipped.
+            if (newEtag != null || newLastModified != null) {
+                val dao = RemoteDatabase.getInstance(this).remoteDao()
+                withContext(Dispatchers.IO) {
+                    dao.updateCacheHeaders(remote.url, newEtag, newLastModified)
+                }
+                Log.d("downloadImage", "headers: etag=$newEtag, lastModified=$newLastModified")
             }
-            Log.d("downloadImage", "headers: etag=$newEtag, lastModified=$newLastModified")
         }
     }
     return DownloadResult.Downloaded(response)
 }
 
-fun Context.setAutoCroppedWallpaper(imageFile: File) {
+fun Context.setAutoCroppedWallpaper(imageFile: File): Boolean {
     val wallpaperManager = WallpaperManager.getInstance(this)
+    val displayMetrics = resources.displayMetrics
     val targetWidth = wallpaperManager.desiredMinimumWidth
+        .let { if (it > 0) it else displayMetrics.widthPixels }
     val targetHeight = wallpaperManager.desiredMinimumHeight
+        .let { if (it > 0) it else displayMetrics.heightPixels }
 
     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     val cropWallpaper = preferences.getBoolean("crop_wallpaper", true)
@@ -442,7 +445,7 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
     // Bound the longest side to 2x the largest target dimension, avoiding the
     // full-resolution decode that can OOM or exceed the canvas bitmap limit.
     val targetMax = maxOf(targetWidth, targetHeight) * 2
-    val original = decodeBoundedBitmap(imageFile, targetMax.takeIf { it > 0 }) ?: return
+    val original = decodeBoundedBitmap(imageFile, targetMax.takeIf { it > 0 }) ?: return false
     val scaled =
         if (cropWallpaper) scaleAndCropCenter(original, targetWidth, targetHeight) else original
 
@@ -456,6 +459,7 @@ fun Context.setAutoCroppedWallpaper(imageFile: File) {
     // NOTE: These are not required and create a race condition for setting wallpaper
     //original.recycle()
     //scaled.recycle()
+    return true
 }
 
 fun scaleAndCropCenter(src: Bitmap, targetWidth: Int, targetHeight: Int): Bitmap {
