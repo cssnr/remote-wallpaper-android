@@ -180,9 +180,7 @@ class HomeFragment : Fragment() {
 
         val imageFile = File(filesDir, "wallpaper.img")
         if (imageFile.exists()) {
-            val bitmap = withContext(Dispatchers.IO) {
-                decodeBoundedBitmap(imageFile)
-            }
+            val bitmap = withContext(Dispatchers.IO) { decodeBoundedBitmap(imageFile) }
             _binding?.imageView?.setImageBitmap(bitmap)
         }
     }
@@ -195,12 +193,13 @@ class HomeFragment : Fragment() {
 // original file is untouched.
 fun Context.decodeBoundedBitmap(imageFile: File, maxDimension: Int? = null): Bitmap? {
     val displayMetrics = resources.displayMetrics
-    val maxDimension = maxDimension ?: maxOf(displayMetrics.widthPixels, displayMetrics.heightPixels)
+    val maxDimension =
+        maxDimension ?: maxOf(displayMetrics.widthPixels, displayMetrics.heightPixels)
 
     val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeFile(imageFile.absolutePath, boundsOptions)
     if (boundsOptions.outWidth <= 0 || boundsOptions.outHeight <= 0) return null
-    Log.d("HomeFragment", "decodeBoundedBitmap: W=${boundsOptions.outWidth} H=${boundsOptions.outHeight}")
+    Log.d("HomeFragment", "boundsOptions: W=${boundsOptions.outWidth} H=${boundsOptions.outHeight}")
 
     var inSampleSize = 1
     while ((maxOf(boundsOptions.outWidth, boundsOptions.outHeight) / inSampleSize) > maxDimension) {
@@ -211,7 +210,7 @@ fun Context.decodeBoundedBitmap(imageFile: File, maxDimension: Int? = null): Bit
         this.inSampleSize = inSampleSize
     }
     val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath, decodeOptions)
-    Log.d("HomeFragment", "decodeBoundedBitmap: W=${bitmap?.width} H=${bitmap?.height} sample=$inSampleSize")
+    Log.d("HomeFragment", "bitmap: W=${bitmap?.width} H=${bitmap?.height} sample=$inSampleSize")
     return bitmap
 }
 
@@ -386,7 +385,7 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
         remote.etag?.let { requestBuilder.header("If-None-Match", it) }
         remote.lastModified?.let { requestBuilder.header("If-Modified-Since", it) }
     } else {
-        Log.d("downloadImage", "wallpaperSource mismatch, fetching ${remote.url} without cache validators")
+        Log.d("downloadImage", "source mismatch - get ${remote.url} minus cache validators")
     }
 
     val response = client.newCall(requestBuilder.build()).execute()

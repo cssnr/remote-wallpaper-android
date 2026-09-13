@@ -11,10 +11,10 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import org.acra.ACRA
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -105,6 +105,8 @@ object AppLogs {
                     LogEntry(level = level.ordinal, message = message)
                 )
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to write log entry", e)
         }
@@ -123,12 +125,11 @@ object AppLogs {
 
     suspend fun clear(context: Context) {
         try {
-            withContext(Dispatchers.IO) {
-                database(context).logDao().clearAll()
-            }
+            withContext(Dispatchers.IO) { database(context).logDao().clearAll() }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to clear logs", e)
-            ACRA.errorReporter.handleSilentException(e)
         }
     }
 
@@ -150,9 +151,10 @@ object AppLogs {
                     )
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to export logs", e)
-            ACRA.errorReporter.handleSilentException(e)
             LogExportResult.Error
         }
     }
@@ -164,9 +166,10 @@ object AppLogs {
                 val cutoff = System.currentTimeMillis() - PURGE_DAYS * 24 * 60 * 60 * 1000L
                 database(context).logDao().deleteOlderThan(cutoff)
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to purge old logs", e)
-            ACRA.errorReporter.handleSilentException(e)
         }
         purged = true
     }
