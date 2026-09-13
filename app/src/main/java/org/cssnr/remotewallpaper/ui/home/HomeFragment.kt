@@ -269,17 +269,15 @@ fun Context.showAddDialog(
                 loadingLayout?.visibility = View.VISIBLE
                 scope.launch {
                     try {
-                        val result = withContext(Dispatchers.IO) {
-                            downloadImage(Remote(normalizedUrl))
+                        val error = updateWallpaper(normalizedUrl)
+                        if (error == null) {
+                            onSuccess()
+                            dialog.dismiss()
+                            showSnackbar("Done.")
+                        } else {
+                            sendButton.isEnabled = true
+                            input.error = error
                         }
-                        addHistory(normalizedUrl, result)
-                        val timestamp =
-                            ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                        PreferenceManager.getDefaultSharedPreferences(this@showAddDialog)
-                            .edit { putString("last_update", timestamp) }
-                        onSuccess()
-                        dialog.dismiss()
-                        showSnackbar("Done.")
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Exception) {
@@ -322,45 +320,50 @@ sealed class DownloadResult {
     data object NotModified : DownloadResult()
 }
 
+private val updateGate = java.util.concurrent.atomic.AtomicBoolean(false)
+
 // TODO: updateWallpaper is used globally to update the wallpaper and should be a package
 //  The rest of the functions are only used by updateWallpaper and are internal to updateWallpaper
-suspend fun Context.updateWallpaper(): String? {
+suspend fun Context.updateWallpaper(url: String? = null): String? {
     val historyDao = HistoryDatabase.getInstance(this).historyDao()
     val history = HistoryItem()
+    if (!updateGate.compareAndSet(false, true)) {
+        Log.i("updateWallpaper", "update already in progress, skipping")
+        return "Update Already Running."
+    }
     try {
-        val dao = RemoteDatabase.getInstance(this).remoteDao()
-        val remote = withContext(Dispatchers.IO) { dao.getActive() }
-        Log.d("updateWallpaper", "remote: $remote")
-        if (remote != null) {
-            history.remote = remote.url
-            val result = withContext(Dispatchers.IO) { downloadImage(remote) }
-            when (result) {
-                is DownloadResult.Downloaded -> {
-                    history.status = result.response.code
-                    history.url = result.response.request.url.toString()
-                    Log.d("updateWallpaper", "response: ${result.response}")
-                    AppLogs.d(this, "updateWallpaper: ${result.response.code} for ${remote.url}")
-                }
-
-                is DownloadResult.NotModified -> {
-                    history.status = 304
-                    history.url = remote.url
-                    Log.i("updateWallpaper", "Image not modified, skipping wallpaper update")
-                    AppLogs.d(this, "updateWallpaper: 304 for ${remote.url}")
-                }
-            }
-            // TODO: Replace timestamp with history.timestamp
-            val timestamp: String =
-                ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-            Log.d("updateWallpaper", "timestamp: $timestamp")
-            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            preferences.edit { putString("last_update", timestamp) }
-            Log.d("updateWallpaper", "history: $history")
-            withContext(Dispatchers.IO) { historyDao.add(history) }
-            return if (result is DownloadResult.NotModified) "Image Not Modified." else null
+        val normalizedUrl = url?.let { normalizeUrl(it) }
+        if (url != null && normalizedUrl == null) {
+            Log.d("updateWallpaper", "invalid url: $url")
+            return "Invalid URL."
         }
-        AppLogs.w(this, "updateWallpaper: No Active Remote")
-        return "No Remotes."
+        val dao = RemoteDatabase.getInstance(this).remoteDao()
+        val remote = withContext(Dispatchers.IO) {
+            if (normalizedUrl != null) Remote(normalizedUrl) else dao.getActive()
+        }
+        Log.d("updateWallpaper", "remote: $remote")
+        if (remote == null) {
+            AppLogs.w(this, "updateWallpaper: No Active Remote")
+            return "No Remotes."
+        }
+        val result = withContext(Dispatchers.IO) { downloadImage(remote) }
+        addHistory(remote.url, result)
+        when (result) {
+            is DownloadResult.Downloaded ->
+                AppLogs.d(this, "updateWallpaper: ${result.response.code} for ${remote.url}")
+
+            is DownloadResult.NotModified -> {
+                Log.i("updateWallpaper", "Image not modified, skipping wallpaper update")
+                AppLogs.d(this, "updateWallpaper: 304 for ${remote.url}")
+            }
+        }
+        // TODO: Replace timestamp with history.timestamp
+        val timestamp: String =
+            ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+        Log.d("updateWallpaper", "timestamp: $timestamp")
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences.edit { putString("last_update", timestamp) }
+        return if (result is DownloadResult.NotModified) "Image Not Modified." else null
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
@@ -370,6 +373,8 @@ suspend fun Context.updateWallpaper(): String? {
         withContext(Dispatchers.IO) { historyDao.add(history) }
         AppLogs.e(this, "updateWallpaper: Exception: ${e.message}")
         return e.message ?: "Unknown Error"
+    } finally {
+        updateGate.set(false)
     }
 }
 
