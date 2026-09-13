@@ -125,9 +125,7 @@ object AppLogs {
 
     suspend fun clear(context: Context) {
         try {
-            withContext(Dispatchers.IO) {
-                database(context).logDao().clearAll()
-            }
+            withContext(Dispatchers.IO) { database(context).logDao().clearAll() }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
