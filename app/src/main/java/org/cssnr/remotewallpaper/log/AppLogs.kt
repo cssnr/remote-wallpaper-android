@@ -14,7 +14,6 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import org.acra.ACRA
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -128,7 +127,6 @@ object AppLogs {
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to clear logs", e)
-            ACRA.errorReporter.handleSilentException(e)
         }
     }
 
@@ -152,7 +150,6 @@ object AppLogs {
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to export logs", e)
-            ACRA.errorReporter.handleSilentException(e)
             LogExportResult.Error
         }
     }
@@ -166,7 +163,6 @@ object AppLogs {
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to purge old logs", e)
-            ACRA.errorReporter.handleSilentException(e)
         }
         purged = true
     }
