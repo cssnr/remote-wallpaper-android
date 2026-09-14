@@ -18,11 +18,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!-- https://developer.android.com/develop/ui/views/launch/splash-screen -->
     <style name="Theme.RemoteWallpaper.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/ic_launcher_background</item>
         <item name="postSplashScreenTheme">@style/Theme.RemoteWallpaper.NoActionBar</item>
+        <!-- https://developer.android.com/reference/android/R.attr#windowSplashScreenBehavior -->
         <item name="android:windowSplashScreenBehavior" tools:targetApi="33">icon_preferred</item>
     </style>
 
