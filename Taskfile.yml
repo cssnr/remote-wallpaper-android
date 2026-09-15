@@ -7,6 +7,14 @@ vars:
   ACTIVITY: org.cssnr.remotewallpaper.MainActivity
 
 tasks:
+  gradle-status:
+    desc: Gradle daemon status
+    cmd: "{{.GRADLEW}} --status"
+
+  gradle-stop:
+    desc: Stop Gradle daemons
+    cmd: "{{.GRADLEW}} --stop"
+
   docs:
     desc: Zensical Docs
     cmds:
@@ -46,14 +54,6 @@ tasks:
   bundle:
     desc: Build Android App Bundle
     cmd: "{{.GRADLEW}} bundleRelease {{.CLI_ARGS}}"
-
-  gradle-status:
-    desc: Gradle daemon status
-    cmd: "{{.GRADLEW}} --status"
-
-  gradle-stop:
-    desc: Stop Gradle daemons
-    cmd: "{{.GRADLEW}} --stop"
 
   play:
     desc: Assemble, Install and Launch
