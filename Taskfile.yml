@@ -4,8 +4,17 @@ version: "3"
 vars:
   GRADLEW: 'gradlew{{if eq OS "windows"}}.bat{{end}}'
   PACKAGE: org.cssnr.remotewallpaper.dev
+  ACTIVITY: org.cssnr.remotewallpaper.MainActivity
 
 tasks:
+  gradle-status:
+    desc: Gradle daemon status
+    cmd: "{{.GRADLEW}} --status"
+
+  gradle-stop:
+    desc: Stop Gradle daemons
+    cmd: "{{.GRADLEW}} --stop"
+
   docs:
     desc: Zensical Docs
     cmds:
@@ -46,13 +55,11 @@ tasks:
     desc: Build Android App Bundle
     cmd: "{{.GRADLEW}} bundleRelease {{.CLI_ARGS}}"
 
-  gradle-status:
-    desc: Gradle daemon status
-    cmd: "{{.GRADLEW}} --status"
-
-  gradle-stop:
-    desc: Stop Gradle daemons
-    cmd: "{{.GRADLEW}} --stop"
+  play:
+    desc: Assemble, Install and Launch
+    cmds:
+      - "{{.GRADLEW}} :app:installDebug {{.CLI_ARGS}}"
+      - "adb shell am start -n {{.PACKAGE}}/{{.ACTIVITY}}"
 
   clear:
     desc: Clear Data

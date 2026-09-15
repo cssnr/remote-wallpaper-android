@@ -246,7 +246,7 @@ jobs:
 
       - name: "Update Release Notes Action"
         if: ${{ github.event_name == 'release' }}
-        uses: smashedr/update-release-notes-action@android
+        uses: smashedr/update-release-notes-action@master
         continue-on-error: true
         with:
           android: |

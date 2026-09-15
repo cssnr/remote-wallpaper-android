@@ -24,7 +24,7 @@
             android:exported="true"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.RemoteWallpaper.NoActionBar"
+            android:theme="@style/Theme.RemoteWallpaper.Starting"
             android:launchMode="singleTask">
 
             <intent-filter>
