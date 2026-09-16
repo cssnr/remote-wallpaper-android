@@ -12,8 +12,6 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,11 +29,11 @@ enum class LogLevel { DEBUG, INFO, WARNING, ERROR }
 @Entity
 data class LogEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val level: String,
+    val level: Int,
     val message: String,
     val timestamp: Long = System.currentTimeMillis(),
 ) {
-    val levelEnum: LogLevel get() = LogLevel.valueOf(level)
+    val levelEnum: LogLevel get() = LogLevel.entries[level]
 }
 
 @Dao
@@ -56,7 +54,7 @@ interface LogDao {
     suspend fun deleteOlderThan(before: Long)
 }
 
-@Database(entities = [LogEntry::class], version = 2, exportSchema = false)
+@Database(entities = [LogEntry::class], version = 1, exportSchema = false)
 abstract class LogDatabase : RoomDatabase() {
     abstract fun logDao(): LogDao
 
@@ -64,27 +62,13 @@ abstract class LogDatabase : RoomDatabase() {
         @Volatile
         private var instance: LogDatabase? = null
 
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                LogLevel.entries.forEach { level ->
-                    db.execSQL(
-                        "UPDATE logentry SET level = ? WHERE level = ?",
-                        arrayOf<Any?>(level.name, level.ordinal)
-                    )
-                }
-            }
-        }
-
         fun getInstance(context: Context): LogDatabase =
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
                     LogDatabase::class.java,
                     "log-database"
-                )
-                    .addMigrations(MIGRATION_1_2)
-                    .fallbackToDestructiveMigration(true)
-                    .build().also { instance = it }
+                ).build().also { instance = it }
             }
     }
 }
@@ -141,7 +125,7 @@ object AppLogs {
             try {
                 purgeIfNeeded(appContext)
                 database(appContext).logDao().insert(
-                    LogEntry(level = level.name, message = message)
+                    LogEntry(level = level.ordinal, message = message)
                 )
             } catch (e: Exception) {
                 Log.e(LOG_TAG, "Failed to write log entry", e)

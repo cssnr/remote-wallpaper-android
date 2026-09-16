@@ -2,6 +2,20 @@
 
 - Replace Toast with Snackbar
 
+## Requires Migration
+
+### Store LogLevel as String
+
+Log levels are stored as `LogLevel.ordinal` (Int) in the Room `LogDatabase`.
+If the enum is reordered or a new level is inserted, previously stored entries
+will silently map to the wrong level.
+
+FIX: Store `LogLevel.name` (String) instead. Requires a `LogDatabase` v1→v2
+migration to convert existing ordinal values to names on installed devices.
+See [AppLogs.kt](app/src/main/java/org/cssnr/remotewallpaper/log/AppLogs.kt).
+
+Note: This "should" be a destructive migration.
+
 ## Required Fixes
 
 ### Intent.ACTION_VIEW
