@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -160,29 +162,39 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun Context.toggleAcra(switchPreference: SwitchPreferenceCompat, newValue: Any) {
         Log.d("SettingsFragment", "toggleAcra: $newValue")
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         if (newValue as Boolean) {
-            Log.d("SettingsFragment", "ENABLE ACRA")
+            Log.d("SettingsFragment", "toggleAcra - ENABLE ACRA")
             switchPreference.isChecked = true
-        } else {
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Please Reconsider")
-                .setMessage(getString(R.string.acra_disable_message))
-                //.setMessage(Html.fromHtml(getString(R.string.acra_disable_message), Html.FROM_HTML_MODE_LEGACY))
-                .setNeutralButton("More Info") { _, _ ->
-                    val uri = getString(R.string.acra_info_link).toUri()
-                    startActivity(Intent(Intent.ACTION_VIEW, uri))
-                }
-                .setPositiveButton("Disable") { _, _ ->
-                    Log.d("SettingsFragment", "DISABLE ACRA")
-                    switchPreference.isChecked = false
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-            //.apply {
-            //    findViewById<TextView>(android.R.id.message)?.movementMethod =
-            //        LinkMovementMethod.getInstance()
-            //}
+            return
         }
+        val disableCount = preferences.getInt("ui_acra_disable_count", 0)
+        Log.d("SettingsFragment", "toggleAcra - disableCount: $disableCount")
+        if (disableCount >= 2) {
+            Log.d("SettingsFragment", "toggleAcra - DISABLE ACRA")
+            switchPreference.isChecked = false
+            return
+        }
+        Log.d("SettingsFragment", "toggleAcra - SHOW ACRA Dialog")
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Please Reconsider")
+            .setMessage(getString(R.string.acra_disable_message))
+            //.setMessage(Html.fromHtml(getString(R.string.acra_disable_message), Html.FROM_HTML_MODE_LEGACY))
+            .setNeutralButton("More Info") { _, _ ->
+                val uri = getString(R.string.acra_info_link).toUri()
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
+            }
+            .setPositiveButton("Disable") { _, _ ->
+                Log.d("SettingsFragment", "toggleAcra - Dialog DISABLE ACRA")
+                preferences.edit { putInt("ui_acra_disable_count", disableCount + 1) }
+                switchPreference.isChecked = false
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+        //.apply {
+        //    findViewById<TextView>(android.R.id.message)?.movementMethod =
+        //        LinkMovementMethod.getInstance()
+        //}
     }
 
     private fun Context.updateWorkManager(newValue: String?, curValue: String? = null): Boolean {
