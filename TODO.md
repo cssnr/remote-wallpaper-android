@@ -10,11 +10,20 @@ Log levels are stored as `LogLevel.ordinal` (Int) in the Room `LogDatabase`.
 If the enum is reordered or a new level is inserted, previously stored entries
 will silently map to the wrong level.
 
-FIX: Store `LogLevel.name` (String) instead. Requires a `LogDatabase` v1→v2
-migration to convert existing ordinal values to names on installed devices.
+FIX: Store `LogLevel.name` (String) instead. The column changes type (INTEGER →
+TEXT), so pick one:
+
+- Destructive: bump `LogDatabase` to v2, do NOT add a `MIGRATION_1_2`, and set
+  `.fallbackToDestructiveMigration(true)`. Room drops and recreates the table, so
+  existing logs are lost - acceptable since logs purge after 7 days.
+
+- Preserve logs: requires a "very manual" table-rebuild migration. A plain
+  `UPDATE` leaves the column with INTEGER affinity and fails Room's post-migration
+  schema validation, so the table must be recreated:
+
 See [AppLogs.kt](app/src/main/java/org/cssnr/remotewallpaper/log/AppLogs.kt).
 
-Note: This "should" be a destructive migration.
+**Note: This "should" be a destructive migration.**
 
 ## Required Fixes
 
