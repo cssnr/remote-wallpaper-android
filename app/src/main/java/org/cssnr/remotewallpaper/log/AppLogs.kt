@@ -95,17 +95,18 @@ object AppLogs {
 
     private lateinit var preferences: SharedPreferences
 
+    private val preferenceListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+            if (key == ENABLED_KEY) enabled = prefs.getBoolean(ENABLED_KEY, true)
+        }
+
     private fun isEnabled(context: Context): Boolean {
         if (!prefsInitialized) {
             synchronized(this) {
                 if (!prefsInitialized) {
                     preferences = PreferenceManager.getDefaultSharedPreferences(context)
                     enabled = preferences.getBoolean(ENABLED_KEY, true)
-                    preferences.registerOnSharedPreferenceChangeListener { prefs, key ->
-                        if (key == ENABLED_KEY) {
-                            enabled = prefs.getBoolean(ENABLED_KEY, true)
-                        }
-                    }
+                    preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
                     prefsInitialized = true
                 }
             }
