@@ -181,7 +181,7 @@ class HomeFragment : Fragment() {
         val dao = HistoryDatabase.getInstance(this).historyDao()
         latest = withContext(Dispatchers.IO) { dao.getLastSuccess() }
         Log.d(LOG_TAG, "latest ${latest?.url}")
-        _binding?.textView?.text = latest?.url ?: "Current Image Link Not Found!"
+        _binding?.textView?.text = latest?.url ?: "Image Link Not Found!"
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
