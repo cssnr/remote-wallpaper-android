@@ -6,9 +6,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.format.DateFormat
+import android.util.TypedValue
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +22,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.core.content.edit
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -52,6 +56,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 class HomeFragment : Fragment() {
 
@@ -176,7 +181,41 @@ class HomeFragment : Fragment() {
         val dao = HistoryDatabase.getInstance(this).historyDao()
         latest = withContext(Dispatchers.IO) { dao.getLastSuccess() }
         Log.d(LOG_TAG, "latest ${latest?.url}")
-        _binding?.textView?.text = latest?.url ?: "Current Image Link Not Found!"
+        _binding?.textView?.text = latest?.url ?: "Image Link Not Found!"
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val colorOnSurface = with(TypedValue()) {
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, this, true)
+            data
+        }
+        val mutedColor = ColorUtils.setAlphaComponent(colorOnSurface, 76)
+
+        // Screens
+        val setScreens = preferences.getString("set_screens", null) ?: "both"
+        Log.d(LOG_TAG, "setScreens: $setScreens")
+        _binding?.homeScreenIcon?.imageTintList = ColorStateList.valueOf(
+            if (setScreens == "both" || setScreens == "home") colorOnSurface else mutedColor
+        )
+        _binding?.lockScreenIcon?.imageTintList = ColorStateList.valueOf(
+            if (setScreens == "both" || setScreens == "lock") colorOnSurface else mutedColor
+        )
+
+        // Last Updated
+        val lastUpdate = preferences.getString("last_update", null)
+        var timeText = "--:--"
+        lastUpdate?.let {
+            try {
+                val zonedDateTime =
+                    ZonedDateTime.parse(it, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                timeText = DateFormat.getTimeFormat(this)
+                    .format(Date.from(zonedDateTime.toInstant()))
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "Failed to parse last_update: $it", e)
+            }
+        }
+        Log.d(LOG_TAG, "lastUpdate: $lastUpdate time: $timeText")
+        _binding?.updateTime?.text = timeText
 
         val imageFile = File(filesDir, "wallpaper.img")
         if (imageFile.exists()) {
