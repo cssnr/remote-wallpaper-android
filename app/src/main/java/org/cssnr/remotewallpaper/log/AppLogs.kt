@@ -13,11 +13,8 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.ZoneId
@@ -116,30 +113,29 @@ object AppLogs {
         return enabled
     }
 
-    private val fireForgetScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    fun log(context: Context, level: LogLevel, message: String) {
+    suspend fun log(context: Context, level: LogLevel, message: String) {
         if (!isEnabled(context)) return
-        val appContext = context.applicationContext
-        fireForgetScope.launch {
-            try {
-                purgeIfNeeded(appContext)
-                database(appContext).logDao().insert(
+        try {
+            purgeIfNeeded(context)
+            withContext(Dispatchers.IO) {
+                database(context).logDao().insert(
                     LogEntry(level = level.ordinal, message = message)
                 )
-            } catch (e: Exception) {
-                Log.e(LOG_TAG, "Failed to write log entry", e)
             }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Failed to write log entry", e)
         }
     }
 
-    fun d(context: Context, message: String) = log(context, LogLevel.DEBUG, message)
+    suspend fun d(context: Context, message: String) = log(context, LogLevel.DEBUG, message)
 
-    fun i(context: Context, message: String) = log(context, LogLevel.INFO, message)
+    suspend fun i(context: Context, message: String) = log(context, LogLevel.INFO, message)
 
-    fun w(context: Context, message: String) = log(context, LogLevel.WARNING, message)
+    suspend fun w(context: Context, message: String) = log(context, LogLevel.WARNING, message)
 
-    fun e(context: Context, message: String) = log(context, LogLevel.ERROR, message)
+    suspend fun e(context: Context, message: String) = log(context, LogLevel.ERROR, message)
 
     fun getLogs(context: Context): Flow<List<LogEntry>> =
         database(context).logDao().getAll()
