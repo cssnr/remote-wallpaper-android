@@ -1,6 +1,7 @@
 package org.cssnr.remotewallpaper.log
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.room.Dao
@@ -34,10 +35,10 @@ data class LogEntry(
 
 @Dao
 interface LogDao {
-    @Query("SELECT * FROM logentry ORDER BY timestamp DESC")
+    @Query("SELECT * FROM logentry ORDER BY id DESC")
     fun getAll(): Flow<List<LogEntry>>
 
-    @Query("SELECT * FROM logentry ORDER BY timestamp DESC")
+    @Query("SELECT * FROM logentry ORDER BY id DESC")
     suspend fun getAllNow(): List<LogEntry>
 
     @Insert
@@ -84,17 +85,32 @@ object AppLogs {
     @Volatile
     private var purged = false
 
-    @Volatile
-    private var instance: LogDatabase? = null
+    private fun database(context: Context): LogDatabase = LogDatabase.getInstance(context)
 
-    private fun database(context: Context): LogDatabase =
-        instance ?: synchronized(this) {
-            instance ?: LogDatabase.getInstance(context).also { instance = it }
+    @Volatile
+    private var enabled = true
+
+    @Volatile
+    private var prefsInitialized = false
+
+    private val preferenceListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+            if (key == ENABLED_KEY) enabled = prefs.getBoolean(ENABLED_KEY, true)
         }
 
-    private fun isEnabled(context: Context): Boolean =
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(ENABLED_KEY, true)
+    private fun isEnabled(context: Context): Boolean {
+        if (!prefsInitialized) {
+            synchronized(this) {
+                if (!prefsInitialized) {
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    enabled = preferences.getBoolean(ENABLED_KEY, true)
+                    preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
+                    prefsInitialized = true
+                }
+            }
+        }
+        return enabled
+    }
 
     suspend fun log(context: Context, level: LogLevel, message: String) {
         if (!isEnabled(context)) return
