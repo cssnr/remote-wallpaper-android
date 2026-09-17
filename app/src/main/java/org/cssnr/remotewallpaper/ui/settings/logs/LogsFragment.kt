@@ -104,7 +104,7 @@ class LogsFragment : Fragment() {
                 .show()
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             AppLogs.getLogs(ctx).collectLatest { logs ->
                 Log.d("LogsFragment", "collectLatest: ${logs.size}")
                 adapter.updateData(logs)

@@ -19,7 +19,7 @@ TEXT), so pick one:
 
 - Preserve logs: requires a "very manual" table-rebuild migration. A plain
   `UPDATE` leaves the column with INTEGER affinity and fails Room's post-migration
-  schema validation, so the table must be recreated:
+  schema validation, so the table must be recreated.
 
 See [AppLogs.kt](app/src/main/java/org/cssnr/remotewallpaper/log/AppLogs.kt).
 
