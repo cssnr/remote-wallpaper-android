@@ -61,14 +61,15 @@
             android:maxLines="1"
             android:ellipsize="middle"
             android:gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:text="Loading..." />
 
         <TextView
             android:id="@+id/update_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
             android:text="--:--"
             tools:text="23:59" />
     </LinearLayout>
