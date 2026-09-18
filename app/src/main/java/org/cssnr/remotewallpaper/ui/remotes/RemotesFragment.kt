@@ -167,7 +167,17 @@ class RemotesFragment : Fragment() {
             val dao = RemoteDatabase.getInstance(ctx).remoteDao()
             val remotes = withContext(Dispatchers.IO) { dao.getAll() }
             Log.d(LOG_TAG, "remotes.size ${remotes.size}")
-            adapter.updateData(remotes) { updateToolbarState() }
+            adapter.updateData(remotes) {
+                updateToolbarState()
+                if (!viewModel.scrolledToActive) {
+                    val index = remotes.indexOfFirst { it.active }
+                    if (index >= 0) {
+                        viewModel.scrolledToActive = true
+                        (binding.remotesList.layoutManager as LinearLayoutManager)
+                            .scrollToPositionWithOffset(index, binding.remotesList.height / 2)
+                    }
+                }
+            }
             //remotesViewModel.stationData.value = remotes
         }
 

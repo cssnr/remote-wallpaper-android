@@ -5,5 +5,6 @@ import androidx.lifecycle.ViewModel
 class RemotesViewModel : ViewModel() {
 
     val selectedUrls = mutableSetOf<String>()
+    var scrolledToActive = false
 
 }
