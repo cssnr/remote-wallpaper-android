@@ -47,7 +47,7 @@
             android:id="@+id/lock_screen_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:contentDescription="Lock screen"
             android:src="@drawable/md_lock_24px"
             app:tint="?attr/colorOnSurface" />
