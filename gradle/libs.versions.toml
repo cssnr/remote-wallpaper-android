@@ -31,10 +31,6 @@ konfettiXml = "2.0.5"
 acra = "5.13.1"
 # taptargetview = "1.15.0"
 
-# googleServices = "4.4.2"
-# firebaseBom = "33.14.0"
-# crashlyticsPlugin = "3.0.3"
-
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 # androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
@@ -68,16 +64,8 @@ acra-http = { group = "ch.acra", name = "acra-http", version.ref = "acra" }
 acra-toast = { group = "ch.acra", name = "acra-toast", version.ref = "acra" }
 # taptargetview = { group = "com.getkeepsafe.taptargetview", name = "taptargetview", version.ref = "taptargetview" }
 
-# firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-# firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
-# firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
-# firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 # kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationSafeargs" }
-
-# google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-# firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }
