@@ -12,8 +12,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
-    //alias(libs.plugins.google.services)
-    //alias(libs.plugins.firebase.crashlytics)
 }
 
 configure<ApplicationExtension> {
@@ -33,9 +31,6 @@ configure<ApplicationExtension> {
         buildConfigField("String", "ACRA_URI", "\"${secretProperties.getProperty("acra.uri") ?: ""}\"")
         buildConfigField("String", "ACRA_USER", "\"${secretProperties.getProperty("acra.user") ?: ""}\"")
         buildConfigField("String", "ACRA_PASS", "\"${secretProperties.getProperty("acra.pass") ?: ""}\"")
-
-        manifestPlaceholders["firebaseAnalyticsDeactivated"] = false // enabled
-        manifestPlaceholders["firebaseCrashlyticsEnabled"] = true // enabled
     }
 
     buildTypes {
@@ -51,8 +46,6 @@ configure<ApplicationExtension> {
         debug {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            manifestPlaceholders["firebaseAnalyticsDeactivated"] = true // disabled
-            manifestPlaceholders["firebaseCrashlyticsEnabled"] = false // disabled
         }
     }
 
@@ -86,10 +79,6 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.swiperefreshlayout)
     //implementation(libs.androidx.viewpager2)
-    //implementation(platform(libs.firebase.bom))
-    //implementation(libs.firebase.analytics)
-    //implementation(libs.firebase.crashlytics)
-    //implementation(libs.firebase.messaging)
     implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
