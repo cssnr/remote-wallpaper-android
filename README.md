@@ -300,6 +300,7 @@ You can also star this project on GitHub and support other related projects:
 - [Zipline Android](https://github.com/cssnr/zipline-android?tab=readme-ov-file#readme)
 - [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android?tab=readme-ov-file#readme)
 - [Remote Wallpaper Android](https://github.com/cssnr/remote-wallpaper-android?tab=readme-ov-file#readme)
+- [Todo List Android](https://github.com/cssnr/todolist-android?tab=readme-ov-file#readme)
 - [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)
