@@ -13,6 +13,7 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RemoteDao {
@@ -21,6 +22,9 @@ interface RemoteDao {
 
     @Query("SELECT * FROM remote WHERE active = 1 LIMIT 1")
     fun getActive(): Remote?
+
+    @Query("SELECT * FROM remote WHERE active = 1 LIMIT 1")
+    fun observeActive(): Flow<Remote?>
 
     @Query("SELECT * FROM remote WHERE url = :url LIMIT 1")
     fun getByUrl(url: String): Remote?

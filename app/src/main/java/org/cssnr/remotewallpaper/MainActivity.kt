@@ -1,13 +1,13 @@
 package org.cssnr.remotewallpaper
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -40,6 +40,7 @@ import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.cssnr.remotewallpaper.databinding.ActivityMainBinding
 import org.cssnr.remotewallpaper.widget.WidgetProvider
+import org.cssnr.remotewallpaper.widget.refreshWidgets
 import org.cssnr.remotewallpaper.work.enqueueWorkRequest
 
 class MainActivity : AppCompatActivity() {
@@ -51,20 +52,14 @@ class MainActivity : AppCompatActivity() {
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var widgetRefreshPending = false
+
     private val widgetPrefListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            val widgetKeys = setOf(
-                "widget_text_color",
-                "widget_bg_color",
-                "widget_bg_opacity",
-                "widget_show_icons",
-                "set_screens",
-                "work_interval",
-                "last_update",
-            )
-            Log.d(LOG_TAG, "widgetPrefListener: $key")
-            if (key in widgetKeys) {
-                refreshWidgets()
+            if (key in WidgetProvider.WIDGET_PREF_KEYS) {
+                Log.d(LOG_TAG, "widgetPrefListener: $key")
+                queueWidgetRefresh()
             }
         }
 
@@ -386,17 +381,15 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onStop() {
-        Log.d(LOG_TAG, "onStop - MainActivity")
-        refreshWidgets()
-        super.onStop()
-    }
-
-    private fun refreshWidgets() {
-        val appWidgetManager = AppWidgetManager.getInstance(this)
-        val componentName = ComponentName(this, WidgetProvider::class.java)
-        val ids = appWidgetManager.getAppWidgetIds(componentName)
-        WidgetProvider().onUpdate(this, appWidgetManager, ids)
+    // Coalesces bursts of preference changes (e.g. an edit{} writing several keys at once)
+    // into one refresh by deferring to the main queue.
+    private fun queueWidgetRefresh() {
+        if (widgetRefreshPending) return
+        widgetRefreshPending = true
+        mainHandler.post {
+            widgetRefreshPending = false
+            refreshWidgets()
+        }
     }
 
     fun setDrawerLockMode(enabled: Boolean) {
