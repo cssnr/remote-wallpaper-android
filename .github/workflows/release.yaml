@@ -298,10 +298,12 @@ jobs:
         run: |
           echo "VirusTotal Action Step Failed"
 
-      - name: "Send Failure Notification"
+      - name: "VirusTotal Failure Notify"
         if: ${{ steps.virustotal.outcome == 'failure' }}
         uses: sarisia/actions-status-discord@v1
         continue-on-error: true
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: failure
+          title: VirusTotal Failed
           description: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
