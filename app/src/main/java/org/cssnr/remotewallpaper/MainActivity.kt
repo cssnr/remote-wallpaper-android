@@ -3,6 +3,7 @@ package org.cssnr.remotewallpaper
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -49,6 +50,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+
+    private val widgetPrefListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            val widgetKeys = setOf(
+                "widget_text_color",
+                "widget_bg_color",
+                "widget_bg_opacity",
+                "widget_show_icons",
+                "set_screens",
+                "work_interval",
+                "last_update",
+            )
+            Log.d(LOG_TAG, "widgetPrefListener: $key")
+            if (key in widgetKeys) {
+                refreshWidgets()
+            }
+        }
 
     companion object {
         const val LOG_TAG = "RemoteWallpaper"
@@ -276,6 +294,9 @@ class MainActivity : AppCompatActivity() {
             Log.i(LOG_TAG, "Ensuring Work is Disabled")
             WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
+
+        // React to preference changes to keep the widget up-to-date
+        preferences.registerOnSharedPreferenceChangeListener(widgetPrefListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -359,14 +380,23 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    override fun onDestroy() {
+        Log.d(LOG_TAG, "onDestroy - MainActivity")
+        preferences.unregisterOnSharedPreferenceChangeListener(widgetPrefListener)
+        super.onDestroy()
+    }
+
     override fun onStop() {
         Log.d(LOG_TAG, "onStop - MainActivity")
-        // Update Widget
+        refreshWidgets()
+        super.onStop()
+    }
+
+    private fun refreshWidgets() {
         val appWidgetManager = AppWidgetManager.getInstance(this)
         val componentName = ComponentName(this, WidgetProvider::class.java)
         val ids = appWidgetManager.getAppWidgetIds(componentName)
         WidgetProvider().onUpdate(this, appWidgetManager, ids)
-        super.onStop()
     }
 
     fun setDrawerLockMode(enabled: Boolean) {
