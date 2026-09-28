@@ -248,11 +248,13 @@ class WidgetProvider : AppWidgetProvider() {
             }
 
             // Refresh
-            val intent1 = Intent(context, WidgetProvider::class.java).apply {
+            val intent1 = Intent(context, WidgetRefreshActivity::class.java).apply {
                 action = "org.cssnr.remotewallpaper.REFRESH_WIDGET"
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
             }
-            val pendingIntent1 = PendingIntent.getBroadcast(
+            val pendingIntent1 = PendingIntent.getActivity(
                 context,
                 appWidgetId,
                 intent1,

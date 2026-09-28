@@ -43,6 +43,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".widget.WidgetRefreshActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:theme="@style/Theme.WidgetConfig.Transparent"/>
+
         <receiver android:name=".widget.WidgetProvider"
             android:exported="false">
             <intent-filter>
