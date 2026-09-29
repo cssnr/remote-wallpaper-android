@@ -21,8 +21,6 @@ import kotlinx.coroutines.launch
 import org.cssnr.remotewallpaper.MainActivity
 import org.cssnr.remotewallpaper.R
 import org.cssnr.remotewallpaper.db.RemoteDatabase
-import org.cssnr.remotewallpaper.log.AppLogs
-import org.cssnr.remotewallpaper.ui.home.updateWallpaper
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -66,32 +64,6 @@ class WidgetProvider : AppWidgetProvider() {
         Log.d("Widget[onReceive]", "intent: $intent")
 
         when (intent.action) {
-            "org.cssnr.remotewallpaper.REFRESH_WIDGET" -> {
-                val appWidgetId = intent.getIntExtra(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID
-                )
-                if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    return
-                }
-                Log.d("Widget[onReceive]", "REFRESH_WIDGET: START")
-                val pendingResult = goAsync()
-                CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
-                    try {
-                        val updateResult = context.updateWallpaper()
-                        Log.d("Widget[onReceive]", "context.updateWallpaper: $updateResult")
-                        AppLogs.i(context, "Widget: updateWallpaper: $updateResult")
-                        val appWidgetManager = AppWidgetManager.getInstance(context)
-                        updateWidgets(context, appWidgetManager, intArrayOf(appWidgetId))
-                        Log.d("Widget[onReceive]", "REFRESH_WIDGET: DONE")
-                    } catch (e: Exception) {
-                        Log.e("Widget[onReceive]", "REFRESH_WIDGET: Exception: $e")
-                    } finally {
-                        pendingResult.finish()
-                    }
-                }
-            }
-
             AppWidgetManager.ACTION_APPWIDGET_UPDATE -> {
                 Log.d("Widget[onReceive]", "ACTION_APPWIDGET_UPDATE: START")
                 val pendingResult = goAsync()
@@ -249,7 +221,6 @@ class WidgetProvider : AppWidgetProvider() {
 
             // Refresh
             val intent1 = Intent(context, WidgetRefreshActivity::class.java).apply {
-                action = "org.cssnr.remotewallpaper.REFRESH_WIDGET"
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
