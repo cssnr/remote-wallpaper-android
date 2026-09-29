@@ -57,6 +57,7 @@ import java.io.FileOutputStream
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
@@ -420,6 +421,7 @@ suspend fun Context.updateWallpaper(url: String? = null): String? {
 suspend fun Context.downloadImage(remote: Remote): DownloadResult {
     val client = OkHttpClient.Builder()
         .followRedirects(true)
+        .callTimeout(2, TimeUnit.MINUTES)
         .build()
 
     val requestBuilder = Request.Builder().url(remote.url)
