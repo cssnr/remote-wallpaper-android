@@ -54,6 +54,7 @@ import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InterruptedIOException
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -434,7 +435,15 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
         Log.d("downloadImage", "source mismatch - get ${remote.url} minus cache validators")
     }
 
-    val response = client.newCall(requestBuilder.build()).execute()
+    // OkHttp raises the callTimeout above as a bare InterruptedIOException("timeout"), and
+    // updateWallpaper() returns e.message straight to showSnackbar() and stores it on the history
+    // row, so re-wrap it with something worth reading. The original stays as the cause.
+    val response = try {
+        client.newCall(requestBuilder.build()).execute()
+    } catch (e: InterruptedIOException) {
+        Log.e("downloadImage", "call timed out for ${remote.url}", e)
+        throw Exception("Download timed out after 2 minutes.", e)
+    }
 
     response.use {
         if (it.code == 304) {
