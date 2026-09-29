@@ -51,7 +51,7 @@ class WidgetRefreshActivity : Activity() {
 
         // The wallpaper change restarts this activity and a second widget can tap refresh while
         // the first update is still running. Attach to the in-flight update instead of starting a
-        // second download; it drains PENDING_WIDGET_IDS when it finishes.
+        // second download.
         val running = REFRESH
         if (running != null && running.isActive) {
             Log.i(LOG_TAG, "update already in flight, attaching")
@@ -59,6 +59,10 @@ class WidgetRefreshActivity : Activity() {
                 try {
                     running.join()
                 } finally {
+                    // The running job drains PENDING_WIDGET_IDS just before it completes, so a tap
+                    // that landed after that drain would otherwise never be redrawn. Flush again
+                    // now that the job is done.
+                    flushWidgets()
                     finish()
                 }
             }
@@ -77,27 +81,36 @@ class WidgetRefreshActivity : Activity() {
                 }
                 Log.d(LOG_TAG, "updateWallpaper: $updateResult")
                 AppLogs.i(this@WidgetRefreshActivity, "Widget: updateWallpaper: $updateResult")
-                val appWidgetIds = PENDING_WIDGET_IDS.toIntArray()
-                PENDING_WIDGET_IDS.clear()
-                if (appWidgetIds.isNotEmpty()) {
-                    withContext(Dispatchers.IO) {
-                        WidgetProvider().updateWidgets(
-                            this@WidgetRefreshActivity,
-                            AppWidgetManager.getInstance(this@WidgetRefreshActivity),
-                            appWidgetIds
-                        )
-                    }
-                }
                 Log.i(LOG_TAG, "DONE onCreate")
             } finally {
+                flushWidgets()
                 REFRESH = null
                 finish()
             }
         }
     }
 
+    // Redraws every widget that asked since the last flush. Both callers run on the main
+    // dispatcher and there is no suspension between the read and the clear, so they cannot
+    // interleave and the set is only ever drained once per call.
+    private suspend fun flushWidgets() {
+        val appWidgetIds = PENDING_WIDGET_IDS.toIntArray()
+        PENDING_WIDGET_IDS.clear()
+        if (appWidgetIds.isEmpty()) {
+            return
+        }
+        Log.i(LOG_TAG, "flushWidgets: ${appWidgetIds.contentToString()}")
+        withContext(Dispatchers.IO) {
+            WidgetProvider().updateWidgets(
+                this@WidgetRefreshActivity,
+                AppWidgetManager.getInstance(this@WidgetRefreshActivity),
+                appWidgetIds
+            )
+        }
+    }
+
     private companion object {
-        val PENDING_WIDGET_IDS = ConcurrentHashMap.newKeySet<Int>()
+        val PENDING_WIDGET_IDS: MutableSet<Int> = ConcurrentHashMap.newKeySet()
 
         @Volatile
         var REFRESH: Job? = null
