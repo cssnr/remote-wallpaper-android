@@ -220,10 +220,11 @@ class WidgetProvider : AppWidgetProvider() {
             }
 
             // Refresh
+            // excludeFromRecents comes from the manifest attribute on WidgetRefreshActivity, so it
+            // is not repeated on the intent here.
             val intent1 = Intent(context, WidgetRefreshActivity::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
             }
             val pendingIntent1 = PendingIntent.getActivity(
                 context,

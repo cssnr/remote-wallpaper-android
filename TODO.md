@@ -81,14 +81,33 @@ See [WidgetRefreshActivity.kt](app/src/main/java/org/cssnr/remotewallpaper/widge
 
 ### WidgetRefreshActivity.kt - activity retained for the length of the download
 
-The coroutine `scope` is deliberately never cancelled and captures `this@WidgetRefreshActivity`
-for `AppLogs.i` and `flushWidgets()`, and the static `REFRESH` holds that reference from launch
-until the job's finally. `finishIfIdle()` can also finish the activity while an attached tap is
-still inside `flushWidgets()`. Worst case is a destroyed Activity held for the length of one
-download (up to the 2-minute callTimeout).
+The explicit `this@WidgetRefreshActivity` references are gone - the work reads through
+`applicationContext` - but the coroutine still reaches the instance implicitly through
+`flushWidgets()` and `finishIfIdle()`, and the static `REFRESH` holds the job from launch until
+its finally. `finishIfIdle()` can also finish the activity while an attached tap is still inside
+`flushWidgets()`. Bounded by the 2-minute callTimeout, so this is a short-lived retention of a
+lightweight object rather than an unbounded leak.
 
-FIX: pass `applicationContext` to `AppLogs.i` and `updateWidgets`, and keep the coroutine off the
-Activity instance.
+FIX: move `scope`, `REFRESH` and `PENDING_WIDGET_IDS` to an application-scoped holder and have
+the job take the ids it needs as locals, so nothing captures the Activity. Only worth doing if
+the bounded window is not acceptable.
+
+### WidgetRefreshActivity.kt - foreground rationale not confirmed on a device
+
+`isFromForegroundApp()` in AOSP master `WallpaperManagerService` is
+`mActivityManager.getPackageImportance(callingPackage) == IMPORTANCE_FOREGROUND`, but the result
+only lands on the wallpaper and the wallpaper-changed broadcast
+(`EXTRA_FROM_FOREGROUND_APP`) - `setWallpaper()` does not branch on it or throw. So on AOSP
+master nothing enforces foreground at all, and the reason this activity exists is not a verified
+system gate.
+
+CONFIRM: log `ActivityManager.getMyMemoryState(info)` or `RunningAppProcessInfo.importance` from
+inside the download and check the process reaches IMPORTANCE_FOREGROUND (100) while the download
+runs, and that the wallpaper actually applies when tapping refresh from the launcher.
+
+Also unverified: `taskAffinity=""` + `singleTask` + `excludeFromRecents` puts the download in a
+task with no identity. Confirm it is not reaped early on your target devices and that the Android
+12+ starting window does not flash.
 
 ### WidgetRefreshActivity.kt - updateWidgets called on a hand-made receiver
 

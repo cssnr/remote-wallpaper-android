@@ -28,6 +28,9 @@ class WidgetRefreshActivity : Activity() {
     // The exception handler is required, not optional: these are root coroutines on a
     // SupervisorJob scope, so an escaping exception goes to Thread.uncaughtExceptionHandler and
     // takes the process down with it.
+    // Because the scope outlives the activity, the work below reads through applicationContext.
+    // The coroutine still reaches this instance implicitly through flushWidgets() and
+    // finishIfIdle(), and the static REFRESH holds the job until it completes - see TODO.md.
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main + CoroutineExceptionHandler { _, e ->
             Log.e(LOG_TAG, "unhandled: $e", e)
@@ -36,15 +39,17 @@ class WidgetRefreshActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Fully transparent to input: the launcher (or whatever is in front) keeps both touch and
+// Fully transparent to input: the launcher (or whatever is in front) keeps both touch and
         // keyboard focus, so nothing the user does while the download runs is intercepted and the
         // activity below is not paused.
-        // Neither flag affects the process importance that this activity exists to obtain.
-        // ActivityTaskManagerService.updateTopApp() picks the top app from the top *resumed
-        // activity* (window focus is only a fallback for when nothing is resumed), so a resumed
-        // non-focusable window still lands the process in PROCESS_STATE_TOP, which
-        // RunningAppProcessInfo.procStateToImportance() maps to IMPORTANCE_FOREGROUND - the exact
-        // value WallpaperManagerService.isFromForegroundApp() demands.
+        // Neither flag affects why this activity exists at all, which is to get the process up to
+        // IMPORTANCE_FOREGROUND - WallpaperManagerService.isFromForegroundApp() tests exactly that
+        // (mActivityManager.getPackageImportance() == IMPORTANCE_FOREGROUND), and an activity that
+        // reaches RESUMED with its task on top is what puts the process there. Resumed is a
+        // lifecycle state, so FLAG_NOT_FOCUSABLE does not stand in the way.
+        // NOTE: on AOSP master isFromForegroundApp() does NOT gate setWallpaper() - the result is
+        // only recorded on the wallpaper and re-broadcast as EXTRA_FROM_FOREGROUND_APP - so no
+        // system enforcement is being leaned on here beyond that test existing. See TODO.md.
         window.addFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -123,7 +128,7 @@ class WidgetRefreshActivity : Activity() {
                     e.message ?: "Unknown Error"
                 }
                 Log.d(LOG_TAG, "updateWallpaper: $updateResult")
-                AppLogs.i(this@WidgetRefreshActivity, "Widget: updateWallpaper: $updateResult")
+                AppLogs.i(applicationContext, "Widget: updateWallpaper: $updateResult")
                 Log.i(LOG_TAG, "DONE")
             } finally {
                 // Release the slot and mark the refresh complete BEFORE the redraw, which
@@ -172,8 +177,8 @@ class WidgetRefreshActivity : Activity() {
         try {
             withContext(Dispatchers.IO) {
                 WidgetProvider().updateWidgets(
-                    this@WidgetRefreshActivity,
-                    AppWidgetManager.getInstance(this@WidgetRefreshActivity),
+                    applicationContext,
+                    AppWidgetManager.getInstance(applicationContext),
                     appWidgetIds
                 )
             }
