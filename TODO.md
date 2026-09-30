@@ -92,22 +92,32 @@ FIX: move `scope`, `REFRESH` and `PENDING_WIDGET_IDS` to an application-scoped h
 the job take the ids it needs as locals, so nothing captures the Activity. Only worth doing if
 the bounded window is not acceptable.
 
-### WidgetRefreshActivity.kt - foreground rationale not confirmed on a device
+### WidgetRefreshActivity.kt - which constraint the Activity satisfies is not isolated
 
-`isFromForegroundApp()` in AOSP master `WallpaperManagerService` is
+The Activity is load-bearing - the broadcast + `goAsync()` approach on master does not reliably
+update the wallpaper from a widget tap. What has not been pinned down is which constraint that
+was, because two candidates are both fixed by this design:
+
+- the `goAsync()` receiver limit (Android docs: the system expects `PendingResult.finish()`
+  "very quickly (under 10 seconds)"), which a 30 second download blows through
+- `IMPORTANCE_FOREGROUND`, which the code comment claims `setWallpaper()` requires
+
+AOSP master `WallpaperManagerService.isFromForegroundApp()` is
 `mActivityManager.getPackageImportance(callingPackage) == IMPORTANCE_FOREGROUND`, but the result
 only lands on the wallpaper and the wallpaper-changed broadcast
-(`EXTRA_FROM_FOREGROUND_APP`) - `setWallpaper()` does not branch on it or throw. So on AOSP
-master nothing enforces foreground at all, and the reason this activity exists is not a verified
-system gate.
+(`EXTRA_FROM_FOREGROUND_APP`) - `setWallpaper()` never branches on it or throws. The concept is
+absent entirely on API 26 and API 29, so it cannot be a long-standing gate. It may still be
+enforced by an OEM build, which is the likely reason the broadcast approach failed in practice.
 
-CONFIRM: log `ActivityManager.getMyMemoryState(info)` or `RunningAppProcessInfo.importance` from
-inside the download and check the process reaches IMPORTANCE_FOREGROUND (100) while the download
-runs, and that the wallpaper actually applies when tapping refresh from the launcher.
+This is only worth resolving if it changes the design. If the receiver limit was the real
+constraint, `FLAG_NOT_TOUCHABLE | FLAG_NOT_FOCUSABLE` and the transparent theme are not needed
+for the wallpaper to apply and a plain foreground service would be simpler. If foreground
+importance was the real constraint, the current design is right and should not be simplified.
+Either way the Activity stays.
 
-Also unverified: `taskAffinity=""` + `singleTask` + `excludeFromRecents` puts the download in a
-task with no identity. Confirm it is not reaped early on your target devices and that the Android
-12+ starting window does not flash.
+Also unverified on device: `taskAffinity=""` + `singleTask` + `excludeFromRecents` puts the
+download in a task with no identity. Confirm it is not reaped early on your target devices and
+that the Android 12+ starting window does not flash.
 
 ### WidgetRefreshActivity.kt - updateWidgets called on a hand-made receiver
 
