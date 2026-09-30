@@ -54,9 +54,15 @@ class WidgetRefreshActivity : Activity() {
         // wallpaper this activity just set recreates every activity in this process, and if that
         // lands after the update finished, onCreate would download and set the wallpaper all over
         // again. Only a relaunch can be told apart from a tap, and only by the non-null state the
-        // restart path passes through. A genuine tap always launches with a null bundle, so it can
-        // never be suppressed by this.
-        // NOTE: This guard is unverified - see TODO.md
+        // restart path passes through: ActivityThread saves a (possibly empty) Bundle before every
+        // relaunch - handleRelaunchActivityInner() -> callActivityOnStop(saveState = true) ->
+        // callActivityOnSaveInstanceState() -> r.state = new Bundle() - while a genuine tap always
+        // launches with a null bundle, so a tap can never be suppressed by this.
+        // NOTE: this is a "was recreated" flag, not a "the wallpaper changed" flag. Rotation, night
+        // mode, font scale and locale all take the same branch and simply finish early, which is
+        // the right outcome anyway once the refresh is done.
+        // NOTE: the wallpaper-change restart is best effort and does not fire every time - see
+        // TODO.md
         startRefresh(intent, relaunched = savedInstanceState != null)
     }
 
@@ -98,7 +104,7 @@ class WidgetRefreshActivity : Activity() {
                     try {
                         flushWidgets()
                     } finally {
-                        finish()
+                        finishIfIdle()
                     }
                 }
             }
@@ -120,16 +126,33 @@ class WidgetRefreshActivity : Activity() {
                 AppLogs.i(this@WidgetRefreshActivity, "Widget: updateWallpaper: $updateResult")
                 Log.i(LOG_TAG, "DONE")
             } finally {
-                // Nested so the invisible activity is always finished and the job slot is always
-                // released, even if the redraw blows up.
+                // Release the slot and mark the refresh complete BEFORE the redraw, which
+                // suspends on Dispatchers.IO. Releasing afterwards leaves a window where this job
+                // is no longer isActive but REFRESH still points at it: a tap landing there starts
+                // a second download, and this block then sets REFRESH_COMPLETED = true and
+                // REFRESH = null over the top of that second job - orphaning it, so a third tap
+                // cannot attach either and starts a third download, and leaving REFRESH_COMPLETED
+                // set with nothing running.
+                REFRESH_COMPLETED = true
+                REFRESH = null
+                // Nested so the invisible activity is always finished, even if the redraw blows up.
                 try {
                     flushWidgets()
                 } finally {
-                    REFRESH_COMPLETED = true
-                    REFRESH = null
-                    finish()
+                    finishIfIdle()
                 }
             }
+        }
+    }
+
+    // Only tear the activity down while no newer refresh has taken over this (singleTask)
+    // instance. Once a job releases REFRESH, a tap that arrived during that job's final flush has
+    // already started its own job and is using this window; finishing here would pull it out from
+    // under that job. Both callers run on the main dispatcher with no suspension between the check
+    // and finish(), and startRefresh() also runs there, so a tap cannot slip in between them.
+    private fun finishIfIdle() {
+        if (REFRESH == null) {
+            finish()
         }
     }
 
@@ -164,6 +187,10 @@ class WidgetRefreshActivity : Activity() {
     private companion object {
         val PENDING_WIDGET_IDS: MutableSet<Int> = ConcurrentHashMap.newKeySet()
 
+        // The job that currently owns this activity, or null when idle. Written in exactly two
+        // places: startRefresh() when it launches a job, and that job's own finally before it
+        // starts its final flush. Nothing else may clear it - a job that has already released the
+        // slot must not touch it again, or it overwrites whatever took over.
         @Volatile
         var REFRESH: Job? = null
 

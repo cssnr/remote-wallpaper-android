@@ -54,7 +54,6 @@ import org.cssnr.remotewallpaper.showSnackbar
 import org.cssnr.remotewallpaper.ui.dialogs.showKeyboard
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InterruptedIOException
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -435,15 +434,14 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
         Log.d("downloadImage", "source mismatch - get ${remote.url} minus cache validators")
     }
 
-    // OkHttp raises the callTimeout above as a bare InterruptedIOException("timeout"), and
-    // updateWallpaper() returns e.message straight to showSnackbar() and stores it on the history
-    // row, so re-wrap it with something worth reading. The original stays as the cause.
-    val response = try {
-        client.newCall(requestBuilder.build()).execute()
-    } catch (e: InterruptedIOException) {
-        Log.e("downloadImage", "call timed out for ${remote.url}", e)
-        throw Exception("Download timed out after 2 minutes.", e)
-    }
+    // OkHttp's per-action timeouts (connect, read, write) only bound the gap between events, so a
+    // response trickling data slower than that gap never trips any of them - without a call
+    // timeout the download runs forever. 2 minutes bounds the whole call for every caller of
+    // updateWallpaper(): the widget, AppWorker and the UI.
+    // The InterruptedIOException it raises on expiry is left alone. updateWallpaper() returns
+    // e.message to showSnackbar() and stores it as history.error, so rewording it here would only
+    // hide what OkHttp actually reported, and updateWallpaper() already logs the exception.
+    val response = client.newCall(requestBuilder.build()).execute()
 
     response.use {
         if (it.code == 304) {
