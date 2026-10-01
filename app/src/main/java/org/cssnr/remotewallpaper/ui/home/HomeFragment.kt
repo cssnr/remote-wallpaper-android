@@ -437,10 +437,19 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
     // OkHttp's per-action timeouts (connect, read, write) only bound the gap between events, so a
     // response trickling data slower than that gap never trips any of them - without a call
     // timeout the download runs forever. 2 minutes bounds the whole call for every caller of
-    // updateWallpaper(): the widget, AppWorker and the UI.
-    // The InterruptedIOException it raises on expiry is left alone. updateWallpaper() returns
-    // e.message to showSnackbar() and stores it as history.error, so rewording it here would only
-    // hide what OkHttp actually reported, and updateWallpaper() already logs the exception.
+    // updateWallpaper(): the widget, AppWorker and the UI. That widening is deliberate but it is
+    // a behavior change beyond the widget - the UI and AppWorker paths now fail at 2 minutes
+    // where they previously hung.
+    // The exception is left alone, and what it says is not always "timeout": if the call expires
+    // before execute() returns, RealCall.timeoutExit() raises InterruptedIOException("timeout"),
+    // but if it expires while the body is being copied below, RealCall's AsyncTimeout fires
+    // timedOut() -> cancel() and the failing read reports "Canceled" instead. updateWallpaper()
+    // returns e.message to showSnackbar() and stores it as history.error, so either text can
+    // reach the user verbatim - rewording it here would hide which one actually happened, and
+    // updateWallpaper() already logs the exception.
+    // A call that times out mid-copy leaves a truncated filesDir/wallpaper.img behind. Nothing
+    // reads it (setAutoCroppedWallpaper() only runs after a complete copy) and FileOutputStream
+    // truncates on the next attempt, so it is left for the next successful download to overwrite.
     val response = client.newCall(requestBuilder.build()).execute()
 
     response.use {

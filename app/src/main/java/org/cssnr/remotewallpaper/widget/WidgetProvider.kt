@@ -84,6 +84,32 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             }
 
+            // TODO: remove once no launcher is still holding the pre-activity PendingIntent.
+            // A widget that was last drawn by an older build sends this action, and that
+            // PendingIntent stays live in the launcher until updateWidgets() pushes the new
+            // activity one. Nothing redraws a widget on a schedule (widget.xml has
+            // updatePeriodMillis="0"), so without this branch a refresh tap on an already
+            // installed widget is a silent no-op for however long the launcher takes to rebind
+            // the provider. The activity is started instead of doing the work here for the same
+            // reason it is started from the new PendingIntent: the wallpaper only applies from a
+            // foreground app.
+            "org.cssnr.remotewallpaper.REFRESH_WIDGET" -> {
+                Log.i("Widget[onReceive]", "REFRESH_WIDGET: legacy forward")
+                val appWidgetId = intent.getIntExtra(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID
+                )
+                if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    return
+                }
+                context.startActivity(
+                    Intent(context, WidgetRefreshActivity::class.java).apply {
+                        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                )
+            }
+
             else -> super.onReceive(context, intent)
         }
     }

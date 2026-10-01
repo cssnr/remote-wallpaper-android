@@ -39,9 +39,13 @@ class WidgetRefreshActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-// Fully transparent to input: the launcher (or whatever is in front) keeps both touch and
-        // keyboard focus, so nothing the user does while the download runs is intercepted and the
-        // activity below is not paused.
+// Invisible to input: these are window flags, not lifecycle ones. FLAG_NOT_FOCUSABLE
+        // documents that it enables FLAG_NOT_TOUCH_MODAL whether or not it is set explicitly
+        // (WindowManager.LayoutParams), which is what sends pointer events that land outside this
+        // window to the window behind it, and it keeps key events going to the window below - so
+        // nothing the user does while the download runs is swallowed by an empty window. What it
+        // does NOT do is change the lifecycle: the activity below still goes to PAUSED while this
+        // one is on top, and that is a visible cost of this approach (see TODO.md).
         // Neither flag affects why this activity exists at all, which is to get the process up to
         // IMPORTANCE_FOREGROUND - WallpaperManagerService.isFromForegroundApp() tests exactly that
         // (mActivityManager.getPackageImportance() == IMPORTANCE_FOREGROUND), and an activity that
