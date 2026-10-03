@@ -8,6 +8,8 @@ icon: lucide/tablet-smartphone
 
 - [Remotes](#remotes)
 - [Widget](#widget)
+  - [Appearance](#appearance)
+  - [Foreground Refresh](#foreground-refresh)
 - [Settings](#settings)
 
 ## :lucide-router: Remotes
@@ -15,12 +17,22 @@ icon: lucide/tablet-smartphone
 Remotes are the heart of the application. A remote is a link to an image.  
 This can be a static image but you most likely have a link to a dynamic image or a redirect.
 
-Therefore, this application will refresh the image at the remote (image) url on a custom interval.
+This application will refresh the image at the remote (image) url on a custom interval.
 
 Example Remotes:
 
 - <https://picsum.photos/4800/2400>
 - <https://images.cssnr.com/aviation>
+
+Remotes are managed from the **Remotes** page:
+
+- **Add** with the `+` button, then paste a url
+- **Activate** by tapping a remote — only one remote is active at a time
+- **Delete** by long pressing a remote to select it, or by tapping the select all button, then
+  deleting the selection
+
+The first remote you add is activated automatically. Deleting the active remote activates the next
+one in the list.
 
 ## :lucide-layout-panel-top: Widget
 
@@ -33,30 +45,75 @@ The widget displays the following information:
 - Current Remote
 - Update Interval
 - Last Updated Time
+- Screen Icons (Home/Lock) — only when **Show Screen Icons** is enabled
 
 The widget has the following functions:
 
-- Refresh Wallpaper
-- Launch Application
+- Refresh Wallpaper (refresh button)
+- Launch Application (tap anywhere else on the widget)
+
+### :lucide-palette: Appearance
+
+The widget is styled from **Settings** -> **Widget Settings**:
+
+| Setting            | Values              | Default | Description                      |
+| ------------------ | ------------------- | ------- | -------------------------------- |
+| Text Color         | White/Black/Liberty | White   | Color of the text and icons      |
+| Background Color   | White/Black/Liberty | Black   | Color of the widget background   |
+| Background Opacity | 0-100               | 35      | Opacity of the widget background |
+| Show Screen Icons  | On/Off              | On      | Shows the Home/Lock Screen Icons |
+
+Screen Icons follow the **Screens to Update** setting — the Home icon is shown when the home screen
+is updated, the Lock icon when the lock screen is, and both when both are. With Show Screen Icons
+off, both icons are hidden and only the text remains.
+
+### :lucide-rotate-cw: Foreground Refresh
+
+When disabled (default) the dynamic system theme (based on wallpaper) will not update until the
+screen is turned on/off or another event that triggers a theme update happens.
+
+When enabled, the widget refresh button runs the update through an invisible foreground activity
+instead of a background broadcast. This causes the dynamic system theme to update immediately.
+
+**The drawback of the foreground activity is the desktop becomes non-interactive while the update is
+running. This time depends on device, network, and wallpaper size, but is usually only about 1-2
+seconds.**
 
 ## :lucide-settings: Settings
 
-Application Settings:
+App Settings:
 
 - Update Interval
 - Screens to Update (Home/Lock)
+- Crop Wallpaper for Device
+- Updates on Metered Connection
+- Remove Background Restriction
 
 Widget Settings:
 
 - Text Color
 - Background Color
 - Background Opacity
+- Show Screen Icons
+- Foreground Widget Refresh
+
+App Information:
+
+- Application Information
+- Open Android Settings
+- Send Feedback
+
+Debugging:
+
+- Enable Crash Reporting
+- Enable Application Logs
+- View Logs
 
 Application Logs:
 
-- Wallpaper Updates
-- Work Manager Runs
-- Widget Refreshes
+- Wallpaper updates, scheduled work, and widget refreshes
+- Entries older than 7 days are purged automatically
+- Copy, Share, or Delete the logs from the logs page
 
 ### :lucide-bug: Crash Reporting
 
@@ -93,6 +150,6 @@ logs. Each report is **anonymized** and sent directly to my server, so only I re
 
 !!! example "Support"
 
-    These docs are still a work in progress are may not be complete.
+    These docs are still a work in progress and may not be complete.
 
     If you need **help** getting started or run into any issues, [support](support.md) is available!

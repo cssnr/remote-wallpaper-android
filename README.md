@@ -40,8 +40,8 @@
 
 Remote Wallpaper Android Application.
 
-Set wallpaper from remote URL's at a defined interval.
-Supports any image link or links that redirects to an image.
+Set wallpaper from remote URLs at a defined interval.
+Supports any image link or links that redirect to an image.
 
 Example Remotes:
 
@@ -104,9 +104,9 @@ _The GitHub APK has been registered with Google's [Android developer verificatio
 ## Setup
 
 1. [Install](#Install) and open the app on your device.
-2. Select your update interval and initial remote.
-3. Click Set wallpaper and Start to get the ball rolling.
-4. Or Just Start the App and add a remote from the Remotes.
+2. Select your update interval, screens to update, and initial remote.
+3. Click Set Wallpaper and Start to get the ball rolling.
+4. Or click Just Start the App and add a remote from the Remotes.
 5. Optionally, add the Widget to refresh from the home screen.
 
 [![View Documentation](https://img.shields.io/badge/view_documentation-blue?style=for-the-badge&logo=quicklook)](https://cssnr.github.io/remote-wallpaper-android/)
@@ -279,7 +279,7 @@ The [docs](docs) are built using [Zensical](https://github.com/cssnr/zensical-ac
 task docs
 ```
 
-A [Taskfile.yml](Taskfile.yml) is used run development commands.
+A [Taskfile.yml](Taskfile.yml) is used to run development commands.
 
 - <https://taskfile.dev/docs/installation>
 

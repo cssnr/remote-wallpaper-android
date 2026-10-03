@@ -10,8 +10,9 @@ icon: lucide/rocket
 
 [![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/remote-wallpaper-android/total?logo=android)](https://github.com/cssnr/remote-wallpaper-android/releases)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/remote-wallpaper-android?logo=github)](https://github.com/cssnr/remote-wallpaper-android/releases/latest)
-[![APK Size](https://badges.cssnr.com/gh/release/cssnr/zipline-android/latest/asset/app-release.apk/size?label=apk&color=darkgreen)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
-[![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=gradle&label=gradle)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
+[![APK Size](https://badges.cssnr.com/gh/release/cssnr/remote-wallpaper-android/latest/asset/app-release.apk/size?label=apk&color=darkgreen)](https://github.com/cssnr/remote-wallpaper-android/releases/latest/download/app-release.apk)
+[![AGP Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Frefs%2Fheads%2Fmaster%2Fgradle%2Flibs.versions.toml&query=%24.versions.agp&logo=androidstudio&logoColor=white&label=agp)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/libs.versions.toml#L2)
+[![Gradle Version](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fremote-wallpaper-android%2Fmaster%2Fgradle%2Fwrapper%2Fgradle-wrapper.properties&search=gradle-%28.%2B%3F%29-%28%3F%3Abin%7Call%29%5C.zip&replace=%241&logo=gradle&label=gradle)](https://github.com/cssnr/remote-wallpaper-android/blob/master/gradle/wrapper/gradle-wrapper.properties#L4)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/lint.yaml)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/remote-wallpaper-android/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/remote-wallpaper-android/actions/workflows/release.yaml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/remote-wallpaper-android?logo=listenhub&label=updated)](https://github.com/cssnr/remote-wallpaper-android/pulse)
@@ -30,8 +31,8 @@ icon: lucide/rocket
 
 Remote Wallpaper Android Application.
 
-Set wallpaper from remote URL's at a defined interval.
-Supports any image link or links that redirects to an image.
+Set wallpaper from remote URLs at a defined interval.
+Supports any image link or links that redirect to an image.
 
 To get started, [Install](#install) the app, view the [Screenshots](#screenshots) and review the [Usage](usage.md).
 
@@ -63,9 +64,9 @@ If you run into any issues or have any questions, [support](support.md) is avail
 ### :lucide-tablet-smartphone: Setup
 
 1. [Install](#install) and open the app on your device.
-2. Select your update interval and initial remote.
-3. Click Set wallpaper and Start to get the ball rolling.
-4. Or Just Start the App and add a remote from the Remotes.
+2. Select your update interval, screens to update, and initial remote.
+3. Click Set Wallpaper and Start to get the ball rolling.
+4. Or click Just Start the App and add a remote from the Remotes.
 5. Optionally, add the Widget to refresh from the home screen.
 
 For more details, see the [Usage](usage.md) guide.
