@@ -95,7 +95,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:maxLines="1"
                 android:ellipsize="end"
-                tools:text="org.cssnr.zipline" />
+                tools:text="org.cssnr.remotewallpaper" />
             <TextView
                 android:id="@+id/app_name"
                 android:layout_width="wrap_content"
