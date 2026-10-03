@@ -33,11 +33,38 @@ The widget displays the following information:
 - Current Remote
 - Update Interval
 - Last Updated Time
+- Screen Icons (Home/Lock) — only when **Show Screen Icons** is enabled
 
 The widget has the following functions:
 
-- Refresh Wallpaper
-- Launch Application
+- Refresh Wallpaper (refresh button)
+- Launch Application (tap anywhere else on the widget)
+
+### :lucide-palette: Appearance
+
+The widget is styled from **Settings** -> **Widget Settings**:
+
+| Setting            | Values              | Default | Description                       |
+| ------------------ | ------------------- | ------- | --------------------------------- |
+| Text Color         | White/Black/Liberty | White   | Color of the text and icons       |
+| Background Color   | White/Black/Liberty | Black   | Color of the widget background    |
+| Background Opacity | 0-100               | 35      | Opacity of the widget background  |
+| Show Screen Icons  | On/Off              | On      | Shows the Home/Lock Screens Icons |
+
+Screen Icons follow the **Screens to Update** setting — the Home icon is shown when the home screen
+is updated, the Lock icon when the lock screen is, and both when both are. With Show Screen Icons
+off, both icons are hidden and only the text remains.
+
+### :lucide-rotate-cw: Foreground Refresh
+
+When disabled (default) the dynamic system theme (based on wallpaper) will not update until the
+screen is turned on/off or another event that triggers a theme update happens.
+
+When enabled, the widget refresh button runs the update through an invisible foreground activity
+instead of a background broadcast. This causes the dynamic system theme to update immediately.
+
+**The drawback of the foreground service, is the desktop becomes non-interactive while the update is
+running. This time depends on device, network, and wallpaper size, but is usually only about 1-2 seconds.**
 
 ## :lucide-settings: Settings
 
@@ -51,6 +78,8 @@ Widget Settings:
 - Text Color
 - Background Color
 - Background Opacity
+- Show Screen Icons
+- Foreground Widget Refresh
 
 Application Logs:
 
