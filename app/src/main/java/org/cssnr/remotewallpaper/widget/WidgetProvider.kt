@@ -56,6 +56,7 @@ class WidgetProvider : AppWidgetProvider() {
             "widget_bg_color",
             "widget_bg_opacity",
             "widget_show_icons",
+            "widget_foreground_refresh",
             "set_screens",
             "work_interval",
             "last_update",
@@ -248,16 +249,35 @@ class WidgetProvider : AppWidgetProvider() {
             }
 
             // Refresh
-            val intent1 = Intent(context, WidgetProvider::class.java).apply {
-                action = "org.cssnr.remotewallpaper.REFRESH_WIDGET"
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            // When foreground refresh is enabled, launch the transparent foreground activity
+            // so the wallpaper applies with IMPORTANCE_FOREGROUND (updates system dynamic
+            // theme without lock/unlock). Otherwise use the background broadcast path which
+            // does not freeze the launcher. Both paths stay live so stale PendingIntents
+            // from before a toggle flip still work.
+            val foregroundRefresh = preferences.getBoolean("widget_foreground_refresh", false)
+            val pendingIntent1 = if (foregroundRefresh) {
+                val intent1 = Intent(context, WidgetRefreshActivity::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                PendingIntent.getActivity(
+                    context,
+                    appWidgetId,
+                    intent1,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            } else {
+                val intent1 = Intent(context, WidgetProvider::class.java).apply {
+                    action = "org.cssnr.remotewallpaper.REFRESH_WIDGET"
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                }
+                PendingIntent.getBroadcast(
+                    context,
+                    appWidgetId,
+                    intent1,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
             }
-            val pendingIntent1 = PendingIntent.getBroadcast(
-                context,
-                appWidgetId,
-                intent1,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
             views.setOnClickPendingIntent(R.id.widget_refresh_button, pendingIntent1)
             appWidgetManager.updateAppWidget(appWidgetId, views)
 
