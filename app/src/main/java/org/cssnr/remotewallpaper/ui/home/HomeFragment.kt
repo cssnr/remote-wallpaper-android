@@ -64,6 +64,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var latest: HistoryItem? = null
+    private var cachedBitmap: Bitmap? = null
 
     companion object {
         const val LOG_TAG = "HomeFragment"
@@ -88,6 +89,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "onViewCreated: savedInstanceState: ${savedInstanceState?.size()}")
+
+        // Restore cached image immediately to avoid flash
+        cachedBitmap?.let { _binding?.imageView?.setImageBitmap(it) }
 
         val ctx = requireContext()
 
@@ -218,9 +222,14 @@ class HomeFragment : Fragment() {
         _binding?.updateTime?.text = timeText
 
         val imageFile = File(filesDir, "wallpaper.img")
+        val iv = _binding?.imageView
         if (imageFile.exists()) {
             val bitmap = withContext(Dispatchers.IO) { decodeBoundedBitmap(imageFile) }
-            _binding?.imageView?.setImageBitmap(bitmap)
+            cachedBitmap = bitmap
+            iv?.setImageBitmap(bitmap)
+        } else {
+            cachedBitmap = null
+            iv?.setImageResource(R.drawable.md_imagesmode_24px)
         }
     }
 }
