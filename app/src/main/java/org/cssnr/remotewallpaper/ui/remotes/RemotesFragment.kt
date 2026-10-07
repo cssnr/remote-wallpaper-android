@@ -278,8 +278,8 @@ class RemotesFragment : Fragment() {
                                 val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
                                 // TODO: Make a @Transaction to handle this...
                                 dao.addOrUpdate(Remote(normalizedUrl))
-                                if (activate) {
-                                    val remote = dao.getByUrl(normalizedUrl)
+                                val remote = dao.getByUrl(normalizedUrl)
+                                if (activate || dao.getActive() == null) {
                                     Log.i("showAddDialog", "dao.activate: $remote")
                                     dao.activate(remote!!)
                                 }
@@ -287,9 +287,8 @@ class RemotesFragment : Fragment() {
                             }
                             adapter.updateData(remotes) { updateToolbarState() }
                             dialog.dismiss()
-                            this@showAddDialog.showSnackbar(
-                                if (activate) "URL Added and Activated." else "URL Added."
-                            )
+                            val result = if (activate) "URL Added and Activated." else "URL Added."
+                            this@showAddDialog.showSnackbar(result)
                         } catch (e: CancellationException) {
                             throw e
                         } catch (e: Exception) {
