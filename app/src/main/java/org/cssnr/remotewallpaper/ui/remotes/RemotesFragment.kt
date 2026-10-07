@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -250,22 +251,25 @@ class RemotesFragment : Fragment() {
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(view)
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Add", null)
+            .setNeutralButton("Cancel", null)
+            .setNegativeButton("Add", null)
+            .setPositiveButton("Activate", null)
             .create()
 
         dialog.setOnShowListener {
-            val sendButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            sendButton.setOnClickListener {
-                sendButton.isEnabled = false
+            val addButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            val activateButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+            fun submit(button: Button, activate: Boolean) {
+                button.isEnabled = false
                 val url = input.text.toString().trim()
-                Log.d("showAddDialog", "url: $url")
+                Log.d("showAddDialog", "url: $url, activate: $activate")
                 val normalizedUrl = normalizeUrl(url)
                 if (url.isEmpty()) {
-                    sendButton.isEnabled = true
+                    button.isEnabled = true
                     input.error = "URL is Required"
                 } else if (normalizedUrl == null) {
-                    sendButton.isEnabled = true
+                    button.isEnabled = true
                     input.error = "Invalid URL"
                 } else {
                     scope.launch {
@@ -274,9 +278,8 @@ class RemotesFragment : Fragment() {
                                 val dao = RemoteDatabase.getInstance(this@showAddDialog).remoteDao()
                                 // TODO: Make a @Transaction to handle this...
                                 dao.addOrUpdate(Remote(normalizedUrl))
-                                val active = dao.getActive()
-                                if (active == null) {
-                                    val remote = dao.getByUrl(normalizedUrl)
+                                val remote = dao.getByUrl(normalizedUrl)
+                                if (activate || dao.getActive() == null) {
                                     Log.i("showAddDialog", "dao.activate: $remote")
                                     dao.activate(remote!!)
                                 }
@@ -284,19 +287,21 @@ class RemotesFragment : Fragment() {
                             }
                             adapter.updateData(remotes) { updateToolbarState() }
                             dialog.dismiss()
-                            this@showAddDialog.showSnackbar("URL Added.")
+                            val result = if (activate) "URL Added and Activated." else "URL Added."
+                            this@showAddDialog.showSnackbar(result)
                         } catch (e: CancellationException) {
                             throw e
                         } catch (e: Exception) {
-                            sendButton.isEnabled = true
+                            button.isEnabled = true
                             input.error = e.message ?: "Unknown Error"
                         }
                     }
                 }
             }
-        }
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add") { _, _ -> }
+            addButton.setOnClickListener { submit(addButton, activate = false) }
+            activateButton.setOnClickListener { submit(activateButton, activate = true) }
+        }
 
         dialog.showKeyboard()
         input.requestFocus()
