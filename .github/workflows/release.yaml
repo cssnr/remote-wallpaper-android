@@ -12,6 +12,7 @@ concurrency:
 env:
   key_name: remotepaper-release
   package_name: org.cssnr.remotewallpaper
+  acra_id: 2
 
 jobs:
   release:
@@ -32,6 +33,11 @@ jobs:
       key_file: release.keystore
       gradle_file: app/build.gradle.kts
       signed_apk: app-release.apk
+      # Optional Step Variables
+      secret_properties: secret.properties
+      google_services: # app/google-services.json
+      play_store_channel: # internal
+      run_prepare: # yes
 
     steps:
       - name: "Checkout"
@@ -85,36 +91,41 @@ jobs:
           cat ${{ env.gradle_file }}
           echo "::endgroup::"
 
-      #- name: "Write Google Services File"
-      #  run: |
-      #    echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
-      #    stat app/google-services.json
+      - name: "Write Google Services File"
+        if: ${{ env.google_services }}
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > ${{ env.google_services }}
+          wc -l ${{ env.google_services }}
 
       - name: "Write Secret Properties"
+        if: ${{ env.secret_properties }}
         run: |
-          echo "${{ secrets.SECRET_PROPERTIES }}" | base64 --decode > secret.properties
-          wc -l secret.properties
+          echo "${{ secrets.SECRET_PROPERTIES }}" | base64 --decode > ${{ env.secret_properties }}
+          wc -l ${{ env.secret_properties }}
 
       - name: "Write Keystore File"
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.key_file }}
           echo "${{ secrets.ANDROID_KEYSTORE_PASS }}" | keytool -list -keystore ${{ env.key_file }}
 
-      #- name: "Setup Node 24"
-      #  uses: actions/setup-node@v7
-      #  with:
-      #    node-version: 24
-      #
-      #- name: "Prepare Build"
-      #  working-directory: ".github/scripts"
-      #  run: |
-      #    bash prepare.sh
-      #
-      #- name: "Debug Prepare"
-      #  continue-on-error: true
-      #  run: |
-      #    ls .
-      #    ls -lAh app
+      - name: "Setup Node 24"
+        if: ${{ env.run_prepare }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: "Prepare Build"
+        if: ${{ env.run_prepare }}
+        working-directory: ".github/scripts"
+        run: |
+          bash prepare.sh
+
+      - name: "Debug Prepare"
+        if: ${{ env.run_prepare }}
+        continue-on-error: true
+        run: |
+          ls .
+          ls -lAh app
 
       - name: "Setup Java"
         uses: actions/setup-java@v6
@@ -160,6 +171,16 @@ jobs:
           name: mapping
           path: ${{ env.mapping_file }}
 
+      - name: "Upload Mapping to Acrarium"
+        if: ${{ env.acra_id }}
+        continue-on-error: true
+        run: |
+          curl -m 120 \
+            -H "Content-Type: text/plain" \
+            -u "${{ secrets.ACRARIUM_USER }}:${{ secrets.ACRARIUM_PASS }}" \
+            --data-binary "@${{ env.mapping_file }}" \
+            "${{ secrets.ACRARIUM_HOST }}/api/apps/${{ env.acra_id }}/version/upload/${{ github.run_number }}?name=${{ github.ref_name }}"
+
       - name: "Upload APK to Artifacts"
         uses: actions/upload-artifact@v7
         with:
@@ -173,69 +194,69 @@ jobs:
           files: ${{ env.apk_path }}/${{ env.signed_apk }}
           overwrite: true
 
-      #- name: "Gradle Bundle AAB"
-      #  if: ${{ !github.event.release.prerelease }}
-      #  run: |
-      #    chmod +x ./gradlew
-      #    ./gradlew bundleRelease
-      #
-      #- name: "Debug Bundle"
-      #  if: ${{ !github.event.release.prerelease }}
-      #  continue-on-error: true
-      #  run: |
-      #    echo "env.aab_path: ${{ env.aab_path }}"
-      #    ls -lAh "${{ env.aab_path }}" ||:
-      #    echo "env.debug_symbols: ${{ env.debug_symbols }}"
-      #    ls -lAh "${{ env.debug_symbols }}" ||:
-      #    echo "env.mapping_file: ${{ env.mapping_file }}"
-      #    ls -lAh "$(dirname "${{ env.debug_symbols }}")" ||:
-      #
-      #- name: "Sign Bundle"
-      #  if: ${{ !github.event.release.prerelease }}
-      #  run: |
-      #    apksigner sign --ks ${{ env.key_file }} \
-      #      --min-sdk-version 26 \
-      #      --v1-signing-enabled true \
-      #      --v2-signing-enabled true \
-      #      --ks-pass pass:${{ secrets.ANDROID_KEYSTORE_PASS }} \
-      #      --ks-key-alias ${{ env.key_name }} \
-      #      "${{ env.aab_path }}/${{ env.aab_file }}"
-      #
-      #- name: "Upload Bundle to Artifacts"
-      #  if: ${{ !github.event.release.prerelease }}
-      #  uses: actions/upload-artifact@v7
-      #  with:
-      #    name: bundle
-      #    path: ${{ env.aab_path }}
-      #
-      #- name: "Parse Release Notes"
-      #  if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
-      #  id: notes
-      #  run: |
-      #    body="${{ github.event.release.body }}"
-      #    summary="$(echo "${body%%#*}" | tr -d '\r' | sed ':a;N;$!ba;s/\n*$//')"
-      #    echo "summary<<EOF" >> "$GITHUB_OUTPUT"
-      #    echo "$summary" >> "$GITHUB_OUTPUT"
-      #    echo "EOF" >> "$GITHUB_OUTPUT"
-      #
-      #- name: "Generate Whats New"
-      #  if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
-      #  run: |
-      #    mkdir -p whatsNew
-      #    echo -n "${{ steps.notes.outputs.summary }}" > whatsNew/whatsnew-en-US
-      #
-      #- name: "Upload Google Play"
-      #  if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
-      #  uses: r0adkll/upload-google-play@v1
-      #  with:
-      #    serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-      #    packageName: ${{ env.package_name }}
-      #    releaseFiles: ${{ env.aab_path }}/${{ env.aab_file }}
-      #    debugSymbols: ${{ env.debug_symbols }}
-      #    mappingFile: ${{ env.mapping_file }}
-      #    whatsNewDirectory: whatsNew
-      #    releaseName: "${{ github.run_number }} (${{ github.ref_name }})"
-      #    track: internal
+      - name: "Gradle Bundle AAB"
+        if: ${{ env.play_store_channel && !github.event.release.prerelease }}
+        run: |
+          chmod +x ./gradlew
+          ./gradlew bundleRelease
+
+      - name: "Debug Bundle"
+        if: ${{ env.play_store_channel && !github.event.release.prerelease }}
+        continue-on-error: true
+        run: |
+          echo "env.aab_path: ${{ env.aab_path }}"
+          ls -lAh "${{ env.aab_path }}" ||:
+          echo "env.debug_symbols: ${{ env.debug_symbols }}"
+          ls -lAh "${{ env.debug_symbols }}" ||:
+          echo "env.mapping_file: ${{ env.mapping_file }}"
+          ls -lAh "$(dirname "${{ env.debug_symbols }}")" ||:
+
+      - name: "Sign Bundle"
+        if: ${{ env.play_store_channel && !github.event.release.prerelease }}
+        run: |
+          apksigner sign --ks ${{ env.key_file }} \
+            --min-sdk-version 26 \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --ks-pass pass:${{ secrets.ANDROID_KEYSTORE_PASS }} \
+            --ks-key-alias ${{ env.key_name }} \
+            "${{ env.aab_path }}/${{ env.aab_file }}"
+
+      - name: "Upload Bundle to Artifacts"
+        if: ${{ env.play_store_channel && !github.event.release.prerelease }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: bundle
+          path: ${{ env.aab_path }}
+
+      - name: "Parse Release Notes"
+        if: ${{ env.play_store_channel && github.event_name == 'release' && !github.event.release.prerelease }}
+        id: notes
+        run: |
+          body="${{ github.event.release.body }}"
+          summary="$(echo "${body%%#*}" | tr -d '\r' | sed ':a;N;$!ba;s/\n*$//')"
+          echo "summary<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$summary" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: "Generate Whats New"
+        if: ${{ env.play_store_channel && github.event_name == 'release' && !github.event.release.prerelease }}
+        run: |
+          mkdir -p whatsNew
+          echo -n "${{ steps.notes.outputs.summary }}" > whatsNew/whatsnew-en-US
+
+      - name: "Upload Google Play"
+        if: ${{ env.play_store_channel && github.event_name == 'release' && !github.event.release.prerelease }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.package_name }}
+          releaseFiles: ${{ env.aab_path }}/${{ env.aab_file }}
+          debugSymbols: ${{ env.debug_symbols }}
+          mappingFile: ${{ env.mapping_file }}
+          whatsNewDirectory: whatsNew
+          releaseName: "${{ github.run_number }} (${{ github.ref_name }})"
+          tracks: ${{ env.play_store_channel }}
 
       - name: "Update Release Notes Action"
         if: ${{ github.event_name == 'release' }}
