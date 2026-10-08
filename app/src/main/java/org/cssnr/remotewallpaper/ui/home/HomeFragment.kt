@@ -523,23 +523,46 @@ fun scaleAndCropCenter(src: Bitmap, targetWidth: Int, targetHeight: Int): Bitmap
     val srcHeight = src.height
     Log.d("Cropper", "src W=$srcWidth H=$srcHeight")
 
-    val scale = maxOf(
-        targetWidth.toFloat() / srcWidth,
-        targetHeight.toFloat() / srcHeight
-    )
+    // Guard against invalid dimensions: nothing to crop, return original.
+    if (targetWidth <= 0 || targetHeight <= 0 || srcWidth <= 0 || srcHeight <= 0) {
+        Log.w("Cropper", "invalid dimensions, skipping crop")
+        return src
+    }
+    if (srcWidth == targetWidth && srcHeight == targetHeight) {
+        return src
+    }
+
+    // Height-fill first to keep height at 100% (aspect kept, no distortion),
+    // then expand outwards from center to cover width. If the image is still
+    // narrower than target after height-match, upscale to cover width.
+    // This is equivalent to max-fill (cover both axes) then center-crop.
+    val heightScale = targetHeight.toDouble() / srcHeight
+    val widthScale = targetWidth.toDouble() / srcWidth
+    val scale = maxOf(heightScale, widthScale)
     Log.d("Cropper", "scale: $scale")
 
-    val scaledWidth = (srcWidth * scale).toInt()
-    val scaledHeight = (srcHeight * scale).toInt()
+    // Use ceil (not toInt truncation) so float error can't leave us 1px short,
+    // e.g. 1279 * (1520f/1279) = 1519.999 -> 1519 -> createBitmap crash.
+    // coerceAtLeast guarantees coverage even if rounding still slips.
+    val scaledWidth =
+        kotlin.math.ceil(srcWidth * scale).toInt().coerceAtLeast(targetWidth)
+    val scaledHeight =
+        kotlin.math.ceil(srcHeight * scale).toInt().coerceAtLeast(targetHeight)
     Log.d("Cropper", "scaled W=$scaledWidth  H=$scaledHeight")
 
     val scaledBitmap = src.scale(scaledWidth, scaledHeight)
 
-    val x = (scaledWidth - targetWidth) / 2
-    val y = (scaledHeight - targetHeight) / 2
+    // Use actual scaled size (not computed) in case the scaler clamps/rounds.
+    val actualWidth = scaledBitmap.width
+    val actualHeight = scaledBitmap.height
+    val cropWidth = minOf(targetWidth, actualWidth)
+    val cropHeight = minOf(targetHeight, actualHeight)
+    // Center-outwards: start in the middle, expand equally in both directions.
+    val x = ((actualWidth - cropWidth) / 2).coerceIn(0, maxOf(actualWidth - cropWidth, 0))
+    val y = ((actualHeight - cropHeight) / 2).coerceIn(0, maxOf(actualHeight - cropHeight, 0))
     Log.d("Cropper", "x=$x  y=$y")
 
-    return Bitmap.createBitmap(scaledBitmap, x, y, targetWidth, targetHeight)
+    return Bitmap.createBitmap(scaledBitmap, x, y, cropWidth, cropHeight)
 }
 
 
