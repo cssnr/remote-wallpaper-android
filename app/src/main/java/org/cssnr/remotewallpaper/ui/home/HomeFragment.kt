@@ -434,7 +434,13 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
     val requestBuilder = Request.Builder().url(remote.url)
     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     val wallpaperSource = preferences.getString("wallpaper_source", null)
-    if (remote.url == wallpaperSource) {
+    // Debug override: skip conditional headers so every update is a full
+    // download (200) and always runs scale/crop + setBitmap. Validators are
+    // still persisted for when the toggle is turned back off.
+    val disableCache = preferences.getBoolean("disable_cache", false)
+    if (disableCache) {
+        Log.d("downloadImage", "cache disabled - get ${remote.url} minus cache validators")
+    } else if (remote.url == wallpaperSource) {
         remote.etag?.let { requestBuilder.header("If-None-Match", it) }
         remote.lastModified?.let { requestBuilder.header("If-Modified-Since", it) }
     } else {
@@ -486,13 +492,41 @@ suspend fun Context.downloadImage(remote: Remote): DownloadResult {
 fun Context.setAutoCroppedWallpaper(imageFile: File): Boolean {
     val wallpaperManager = WallpaperManager.getInstance(this)
     val displayMetrics = resources.displayMetrics
-    val targetWidth = wallpaperManager.desiredMinimumWidth
+    var targetWidth = wallpaperManager.desiredMinimumWidth
         .let { if (it > 0) it else displayMetrics.widthPixels }
     val targetHeight = wallpaperManager.desiredMinimumHeight
         .let { if (it > 0) it else displayMetrics.heightPixels }
 
     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     val cropWallpaper = preferences.getBoolean("crop_wallpaper", true)
+
+    // Optional cap for extra-wide parallax canvases: canvas no wider than
+    // factor x screen width, so the sliding window shows a larger fraction.
+    // Same cover-fill (no bars, parallax kept), just less hidden image and a
+    // smaller cover-crop on mismatched aspects (emulator at 2x: 2560->1440).
+    // Height is untouched. "0" (Off) keeps system behavior. New installs
+    // default Off; the short-lived boolean switch is migrated (true -> "2").
+    val widthFactor = run {
+        if (!preferences.contains("parallax_width_factor")) {
+            val legacy = try {
+                preferences.getBoolean("limit_parallax_width", false)
+            } catch (_: ClassCastException) {
+                false
+            }
+            preferences.edit {
+                putString("parallax_width_factor", if (legacy) "2" else "0")
+                remove("limit_parallax_width")
+            }
+        }
+        preferences.getString("parallax_width_factor", "0")?.toFloatOrNull() ?: 0f
+    }
+    if (widthFactor > 0f) {
+        val maxWidth = (displayMetrics.widthPixels * widthFactor).toInt()
+        if (maxWidth in 1..<targetWidth) {
+            Log.d("setAutoCroppedWallpaper", "capping targetWidth: $targetWidth -> $maxWidth (x$widthFactor)")
+            targetWidth = maxWidth
+        }
+    }
 
     // Bound the longest side to 2x the largest target dimension, avoiding the
     // full-resolution decode that can OOM or exceed the canvas bitmap limit.
