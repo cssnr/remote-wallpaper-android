@@ -8,13 +8,13 @@ icon: lucide/tablet-smartphone
 
 - [Remotes](#remotes)
 - [Widget](#widget)
-  - [Appearance](#appearance)
-  - [Foreground Refresh](#foreground-refresh)
+    - [Appearance](#appearance)
+    - [Foreground Refresh](#foreground-refresh)
 - [Settings](#settings)
-  - [App Settings](#app-settings)
-  - [Widget Settings Screen](#widget-settings-screen)
-  - [App Information](#app-information)
-  - [Debugging](#debugging)
+    - [App Settings](#app-settings)
+    - [Widget Settings Screen](#widget-settings-screen)
+    - [App Information](#app-information)
+    - [Debugging](#debugging)
 - [Crash Reporting](#crash-reporting)
 
 ## :lucide-router: Remotes

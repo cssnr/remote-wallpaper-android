@@ -174,12 +174,15 @@ jobs:
       - name: "Create Version in Acrarium"
         if: ${{ env.acra_id }}
         continue-on-error: true
+        env:
+          summary_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          acrarium_url: ${{ secrets.ACRARIUM_HOST }}/api/apps/${{ env.acra_id }}/version/upload/${{ github.run_number }}?name=${{ github.ref_name }}
         run: |
-          echo -n "See: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" | curl -m 120 \
+          echo -n "See: ${{ env.summary_url }}" | curl -m 120 \
             -H "Content-Type: text/plain" \
             -u "${{ secrets.ACRARIUM_USER }}:${{ secrets.ACRARIUM_PASS }}" \
             --data-binary @- \
-            "${{ secrets.ACRARIUM_HOST }}/api/apps/${{ env.acra_id }}/version/upload/${{ github.run_number }}?name=${{ github.ref_name }}"
+            "${{ env.acrarium_url }}"
 
       - name: "Upload APK to Artifacts"
         uses: actions/upload-artifact@v7
