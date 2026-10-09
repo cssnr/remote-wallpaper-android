@@ -17,7 +17,7 @@ or just have a [question](https://github.com/cssnr/remote-wallpaper-android/disc
 please let us know.
 :material-information-outline:{ title="All issues will be responded too!" }
 
-## GitHub Discussions
+## :lucide-messages-circle: GitHub Discussions
 
 If you have a question or need help with anything,
 start a discussion in [General](https://github.com/cssnr/remote-wallpaper-android/discussions/categories/general)
@@ -28,7 +28,7 @@ the [Feature Requests](https://github.com/cssnr/remote-wallpaper-android/issues/
 
 [:simple-theconversation: &nbsp; Start A Discussion](https://github.com/cssnr/remote-wallpaper-android/discussions){ .md-button .md-button--primary }
 
-## GitHub Issues
+## :lucide-circle-alert: GitHub Issues
 
 If you run into any problems or find a bug, please [open an issue](https://github.com/cssnr/remote-wallpaper-android/issues).
 
@@ -36,7 +36,7 @@ If you run into any problems or find a bug, please [open an issue](https://githu
 
 [:simple-southwestairlines: &nbsp; Report an Issue](https://github.com/cssnr/remote-wallpaper-android/issues){ .md-button .md-button--primary }
 
-## Discord Chat
+## :fontawesome-brands-discord: Discord Chat
 
 You can chat with us about anything [on discord](https://discord.gg/wXy6m2X8wY).
 
