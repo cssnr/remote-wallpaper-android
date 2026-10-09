@@ -17,7 +17,7 @@
             android:title="Crop Wallpaper for Device"
             android:icon="@drawable/md_crop_24px"
             android:defaultValue="true"
-            android:summary="Ensure Parallax Works"/>
+            android:summary="Ensure Parallax Works" />
 
         <ListPreference
             android:key="parallax_width_factor"
@@ -50,8 +50,9 @@
         <SwitchPreferenceCompat
             android:key="work_metered"
             android:title="Updates on Metered Connection"
+            android:summary="May Increase Data Usage"
             android:icon="@drawable/md_signal_cellular_alt_24"
-            android:defaultValue="true"/>
+            android:defaultValue="false" />
 
         <SwitchPreferenceCompat
             android:key="disable_cache"

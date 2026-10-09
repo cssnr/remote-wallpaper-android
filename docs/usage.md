@@ -11,6 +11,11 @@ icon: lucide/tablet-smartphone
   - [Appearance](#appearance)
   - [Foreground Refresh](#foreground-refresh)
 - [Settings](#settings)
+  - [App Settings](#app-settings)
+  - [Widget Settings Screen](#widget-settings-screen)
+  - [App Information](#app-information)
+  - [Debugging](#debugging)
+- [Crash Reporting](#crash-reporting)
 
 ## :lucide-router: Remotes
 
@@ -86,8 +91,8 @@ to app information and debugging tools.
 
 ### :lucide-cog: App Settings
 
-**Widget Settings** - Opens a separate screen to customize the home screen widget. See
-[Appearance](#appearance) and [Foreground Refresh](#foreground-refresh) below.
+**Widget Settings** - Opens the [Widget Settings](#-widget-settings-screen) screen to customize the
+home screen widget.
 
 **Crop Wallpaper for Device** - When enabled (default), the image is scaled and center-cropped to
 match your device's screen size. This is required for the system's parallax effect (the wallpaper
@@ -106,8 +111,8 @@ or both (default).
 weekly. The default is 1 hour. Selecting **Never Update** disables scheduled updates entirely, which
 also disables **Updates on Metered Connection**.
 
-**Updates on Metered Connection** - When enabled (default), background updates are allowed on
-metered networks like mobile data. When disabled, updates only run on unmetered networks such as
+**Updates on Metered Connection** - When enabled, background updates are allowed on metered
+networks like mobile data. When disabled (default), updates only run on unmetered networks such as
 Wi-Fi. Ignored while **Update Interval** is set to **Never Update**.
 
 **Disable HTTP Cache** - A debugging option. When enabled, the app skips its normal conditional
@@ -119,16 +124,15 @@ which delays wallpaper and widget updates. Tapping this requests an exemption fr
 optimizations. Once the permission is granted, the item shows _Permission Already Granted_ and can
 no longer be tapped.
 
-### :lucide-app-window: Widget Settings
+### :lucide-app-window: Widget Settings Screen
 
-These options style the home screen widget described in
-[Appearance](#appearance) and [Foreground Refresh](#foreground-refresh).
+These options are available on the Widget Settings screen (opened from App Settings).
 
-**Text Color** - Sets the color of the widget's text and icons to white, black, or liberty.
-White by default.
+**Text Color** - Sets the color of the widget's text and icons to white, black, or liberty. White
+by default.
 
-**Background Color** - Sets the color of the widget's background to white, black, or liberty.
-Black by default.
+**Background Color** - Sets the color of the widget's background to white, black, or liberty. Black
+by default.
 
 **Background Opacity** - Controls how transparent the widget background is, from 0 (fully
 transparent) to 100 (fully opaque). 35 by default.
@@ -165,7 +169,7 @@ entries older than 7 days are purged automatically.
 **View Logs** - Opens the logs page where the recorded entries can be viewed, copied, shared, or
 deleted.
 
-### :lucide-bug: Crash Reporting
+## :lucide-bug: Crash Reporting
 
 Without crash reporting, fixing a bug requires you to:
 
