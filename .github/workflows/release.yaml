@@ -175,7 +175,7 @@ jobs:
         if: ${{ env.acra_id }}
         continue-on-error: true
         run: |
-          echo -n "See GitHub Actions" | curl -m 120 \
+          echo -n "See: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" | curl -m 120 \
             -H "Content-Type: text/plain" \
             -u "${{ secrets.ACRARIUM_USER }}:${{ secrets.ACRARIUM_PASS }}" \
             --data-binary @- \

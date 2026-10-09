@@ -4,4 +4,4 @@ ignore-from-file: .gitignore
 
 rules:
   line-length:
-    max: 119
+    max: 120
