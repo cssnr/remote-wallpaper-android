@@ -81,39 +81,89 @@ seconds.**
 
 ## :lucide-settings: Settings
 
-App Settings:
+Settings control how and when wallpapers update, how the home screen widget looks, and give access
+to app information and debugging tools.
 
-- Update Interval
-- Screens to Update (Home/Lock)
-- Crop Wallpaper for Device
-- Updates on Metered Connection
-- Remove Background Restriction
+### :lucide-cog: App Settings
 
-Widget Settings:
+**Widget Settings** - Opens a separate screen to customize the home screen widget. See
+[Appearance](#appearance) and [Foreground Refresh](#foreground-refresh) below.
 
-- Text Color
-- Background Color
-- Background Opacity
-- Show Screen Icons
-- Foreground Widget Refresh
+**Crop Wallpaper for Device** - When enabled (default), the image is scaled and center-cropped to
+match your device's screen size. This is required for the system's parallax effect (the wallpaper
+that shifts as you swipe between home screens) to work correctly. When disabled, the raw image is
+handed to Android as-is.
 
-App Information:
+**Limit Parallax Width** - Caps how much wider than the screen the wallpaper canvas can be (up to
+2.5x). A smaller canvas leaves less of the image hidden off-screen, so more of it is visible during
+parallax scrolling, at the cost of a larger center-crop. Only shown when **Crop Wallpaper for
+Device** is enabled. Off by default.
 
-- Application Information
-- Open Android Settings
-- Send Feedback
+**Screens to Update** - Controls where the wallpaper is applied: the home screen, the lock screen,
+or both (default).
 
-Debugging:
+**Update Interval** - How often the wallpaper is refreshed in the background, from 15 minutes up to
+weekly. The default is 1 hour. Selecting **Never Update** disables scheduled updates entirely, which
+also disables **Updates on Metered Connection**.
 
-- Enable Crash Reporting
-- Enable Application Logs
-- View Logs
+**Updates on Metered Connection** - When enabled (default), background updates are allowed on
+metered networks like mobile data. When disabled, updates only run on unmetered networks such as
+Wi-Fi. Ignored while **Update Interval** is set to **Never Update**.
 
-Application Logs:
+**Disable HTTP Cache** - A debugging option. When enabled, the app skips its normal conditional
+request headers (ETag / Last-Modified) and re-downloads the full image on every update instead of
+accepting a `304 Not Modified` response. Off by default.
 
-- Wallpaper updates, scheduled work, and widget refreshes
-- Entries older than 7 days are purged automatically
-- Copy, Share, or Delete the logs from the logs page
+**Remove Background Restriction** - Android may block the app's background work to save battery,
+which delays wallpaper and widget updates. Tapping this requests an exemption from battery
+optimizations. Once the permission is granted, the item shows _Permission Already Granted_ and can
+no longer be tapped.
+
+### :lucide-app-window: Widget Settings
+
+These options style the home screen widget described in
+[Appearance](#appearance) and [Foreground Refresh](#foreground-refresh).
+
+**Text Color** - Sets the color of the widget's text and icons to white, black, or liberty.
+White by default.
+
+**Background Color** - Sets the color of the widget's background to white, black, or liberty.
+Black by default.
+
+**Background Opacity** - Controls how transparent the widget background is, from 0 (fully
+transparent) to 100 (fully opaque). 35 by default.
+
+**Show Screen Icons** - Toggles the Home/Lock screen icons on the widget, which indicate which
+screen(s) were updated. On by default.
+
+**Foreground Widget Refresh** - When enabled, the widget's refresh button runs the update through
+an invisible foreground activity instead of a background broadcast. This makes the dynamic system
+theme update immediately, but the home screen is non-interactive for the roughly 1-2 seconds the
+update takes.
+
+### :lucide-badge-info: App Information
+
+**Application Information** - Shows a dialog with the package name, version name, and version code,
+plus links to the project website and GitHub repository.
+
+**Open Android Settings** - Opens the system's App Info page for Remote Wallpaper, where you can
+manage permissions, storage, notifications, and other system-level settings.
+
+**Send Feedback** - Opens a dialog with a text field for sending suggestions or bug reports directly
+to the developer. The item is disabled after feedback has been sent.
+
+### :lucide-activity: Debugging
+
+**Enable Crash Reporting** - When enabled (default), an anonymized crash report is sent automatically
+after an unhandled crash. See [Crash Reporting](#crash-reporting) below for details on what is
+collected.
+
+**Enable Application Logs** - When enabled (default), the app keeps a local log of wallpaper updates,
+scheduled work, and widget refreshes for debugging purposes. Logs are stored on-device only and
+entries older than 7 days are purged automatically.
+
+**View Logs** - Opens the logs page where the recorded entries can be viewed, copied, shared, or
+deleted.
 
 ### :lucide-bug: Crash Reporting
 

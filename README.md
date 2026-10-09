@@ -304,10 +304,11 @@ You can also star this project on GitHub and support other related projects:
 
 - [Django Files Android](https://github.com/django-files/android-client?tab=readme-ov-file#readme)
 - [Zipline Android](https://github.com/cssnr/zipline-android?tab=readme-ov-file#readme)
-- [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android?tab=readme-ov-file#readme)
 - [Remote Wallpaper Android](https://github.com/cssnr/remote-wallpaper-android?tab=readme-ov-file#readme)
+- [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android?tab=readme-ov-file#readme)
 - [ParKing Android](https://github.com/cssnr/parking-android?tab=readme-ov-file#readme)
 - [Todo List Android](https://github.com/cssnr/todolist-android?tab=readme-ov-file#readme)
+- [Device Info Android](https://github.com/cssnr/device-info-android?tab=readme-ov-file#readme)
 - [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)

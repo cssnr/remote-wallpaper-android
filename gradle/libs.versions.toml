@@ -1,6 +1,7 @@
 [versions]
 agp = "9.4.1"
 # kotlin = "2.4.10"
+kotlin = "2.4.20"
 ksp = "2.3.12"
 coreKtx = "1.19.1"
 # coreSplashscreen = "1.2.0"
@@ -28,7 +29,7 @@ retrofit = "3.0.0"
 moshiKotlinCodegen = "1.15.2"
 photoview = "1.0.3"
 konfettiXml = "2.0.5"
-acra = "5.13.1"
+acra = "5.14.2"
 # taptargetview = "1.15.0"
 
 [libraries]
@@ -62,6 +63,7 @@ photoview = { group = "io.getstream", name = "photoview", version.ref = "photovi
 konfetti-xml = { group = "nl.dionsegijn", name = "konfetti-xml", version.ref = "konfettiXml" }
 acra-http = { group = "ch.acra", name = "acra-http", version.ref = "acra" }
 acra-toast = { group = "ch.acra", name = "acra-toast", version.ref = "acra" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 # taptargetview = { group = "com.getkeepsafe.taptargetview", name = "taptargetview", version.ref = "taptargetview" }
 
 [plugins]

@@ -60,7 +60,7 @@
     </string-array>
 
     <string-array name="parallax_width_entries">
-        <item>Not Limited</item>
+        <item>Not Limited (Default)</item>
         <item>1.25x Screen Width</item>
         <item>1.5x Screen Width</item>
         <item>2.0x Screen Width</item>
