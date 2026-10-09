@@ -20,6 +20,16 @@
             android:summary="Ensure Parallax Works"/>
 
         <ListPreference
+            android:key="parallax_width_factor"
+            android:title="Limit Parallax Width"
+            android:icon="@drawable/md_view_timeline_24px"
+            android:defaultValue="0"
+            android:entries="@array/parallax_width_entries"
+            android:entryValues="@array/parallax_width_values"
+            android:dependency="crop_wallpaper"
+            tools:summary="Off" />
+
+        <ListPreference
             android:key="set_screens"
             android:title="Screens to Update"
             android:defaultValue="both"
@@ -42,6 +52,13 @@
             android:title="Updates on Metered Connection"
             android:icon="@drawable/md_signal_cellular_alt_24"
             android:defaultValue="true"/>
+
+        <SwitchPreferenceCompat
+            android:key="disable_cache"
+            android:title="Disable HTTP Cache"
+            android:summary="Always Download Image"
+            android:icon="@drawable/md_cached_24px"
+            android:defaultValue="false" />
 
         <Preference
             android:key="battery_unrestricted"

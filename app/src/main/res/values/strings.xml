@@ -59,6 +59,21 @@
         <item>lock</item>
     </string-array>
 
+    <string-array name="parallax_width_entries">
+        <item>Not Limited</item>
+        <item>1.25x Screen Width</item>
+        <item>1.5x Screen Width</item>
+        <item>2.0x Screen Width</item>
+        <item>2.5x Screen Width</item>
+    </string-array>
+    <string-array name="parallax_width_values">
+        <item>0</item>
+        <item>1.25</item>
+        <item>1.5</item>
+        <item>2</item>
+        <item>2.5</item>
+    </string-array>
+
     <string-array name="widget_color_entries">
         <item>White</item>
         <item>Black</item>

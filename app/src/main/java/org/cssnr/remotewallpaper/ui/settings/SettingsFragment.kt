@@ -60,6 +60,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val updateType = findPreference<ListPreference>("set_screens")
         updateType?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 
+        // Parallax Width Factor
+        findPreference<ListPreference>("parallax_width_factor")?.summaryProvider =
+            ListPreference.SimpleSummaryProvider.getInstance()
+
         // Update Interval
         val workInterval = findPreference<ListPreference>("work_interval")
         updateWorkIntervalSettings(workInterval?.value)
