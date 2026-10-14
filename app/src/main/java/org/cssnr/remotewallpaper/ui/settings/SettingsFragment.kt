@@ -21,6 +21,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -63,6 +64,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Parallax Width Factor
         findPreference<ListPreference>("parallax_width_factor")?.summaryProvider =
             ListPreference.SimpleSummaryProvider.getInstance()
+
+        // Blur Wallpaper
+        val blurValue = preferenceManager.sharedPreferences?.getInt("blur_wallpaper", 0)
+        Log.d("SettingsFragment", "blurValue: $blurValue")
+        val blurSeekBar = findPreference<SeekBarPreference>("blur_wallpaper")
+        blurSeekBar?.summary = if (blurValue == 0) "Disabled" else "Blur Level: $blurValue"
+        blurSeekBar?.setOnPreferenceChangeListener { pref, newValue ->
+            val intValue = (newValue as Int)
+            Log.d("SettingsFragment", "blur_wallpaper: $intValue")
+            pref.summary = if (intValue == 0) "Disabled" else "Blur Level: $intValue"
+            true
+        }
 
         // Update Interval
         val workInterval = findPreference<ListPreference>("work_interval")

@@ -9,6 +9,10 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Paint
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
@@ -535,12 +539,26 @@ fun Context.setAutoCroppedWallpaper(imageFile: File): Boolean {
     val scaled =
         if (cropWallpaper) scaleAndCropCenter(original, targetWidth, targetHeight) else original
 
+    val grayscale = preferences.getBoolean("grayscale_wallpaper", false)
+    val blurValue = preferences.getInt("blur_wallpaper", 0)
+    Log.d("setAutoCroppedWallpaper", "grayscale: $grayscale - blur: $blurValue")
+    var wallpaper = scaled
+    if (grayscale) wallpaper = wallpaper.toGrayscale()
+    if (blurValue > 0) {
+        val level = blurValue.coerceIn(1, 10)
+        val factor = (level / 10f) * (level / 10f)
+        val radius = (minOf(wallpaper.width, wallpaper.height) * 0.05f * factor)
+            .toInt().coerceAtLeast(1)
+        Log.d("setAutoCroppedWallpaper", "blurLevel: $level - blurRadius: $radius")
+        wallpaper = wallpaper.blurred(radius)
+    }
+
     val setScreens = preferences.getString("set_screens", null) ?: "both"
     Log.d("setAutoCroppedWallpaper", "setScreens: $setScreens")
     when (setScreens) {
-        "both" -> wallpaperManager.setBitmap(scaled)
-        "home" -> wallpaperManager.setBitmap(scaled, null, true, WallpaperManager.FLAG_SYSTEM)
-        "lock" -> wallpaperManager.setBitmap(scaled, null, true, WallpaperManager.FLAG_LOCK)
+        "both" -> wallpaperManager.setBitmap(wallpaper)
+        "home" -> wallpaperManager.setBitmap(wallpaper, null, true, WallpaperManager.FLAG_SYSTEM)
+        "lock" -> wallpaperManager.setBitmap(wallpaper, null, true, WallpaperManager.FLAG_LOCK)
     }
     // NOTE: These are not required and create a race condition for setting wallpaper
     //original.recycle()
@@ -597,6 +615,78 @@ fun scaleAndCropCenter(src: Bitmap, targetWidth: Int, targetHeight: Int): Bitmap
     Log.d("Cropper", "x=$x  y=$y")
 
     return Bitmap.createBitmap(scaledBitmap, x, y, cropWidth, cropHeight)
+}
+
+fun Bitmap.toGrayscale(): Bitmap {
+    val out = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val paint = Paint().apply {
+        colorFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
+    }
+    Canvas(out).drawBitmap(this, 0f, 0f, paint)
+    return out
+}
+
+fun Bitmap.blurred(radius: Int): Bitmap {
+    if (radius < 1) return this
+    val w = width
+    val h = height
+    val pixels = IntArray(w * h)
+    getPixels(pixels, 0, w, 0, 0, w, h)
+    val scratch = IntArray(w * h)
+    boxBlur(pixels, scratch, w, h, radius)
+    boxBlur(pixels, scratch, w, h, radius)
+    return Bitmap.createBitmap(pixels, w, h, Bitmap.Config.ARGB_8888)
+}
+
+private fun boxBlur(src: IntArray, dst: IntArray, width: Int, height: Int, radius: Int) {
+    val div = radius * 2 + 1
+    for (y in 0 until height) {
+        val row = y * width
+        var a = 0
+        var r = 0
+        var g = 0
+        var b = 0
+        for (i in -radius..radius) {
+            val p = src[row + i.coerceIn(0, width - 1)]
+            a += (p ushr 24) and 0xFF
+            r += (p ushr 16) and 0xFF
+            g += (p ushr 8) and 0xFF
+            b += p and 0xFF
+        }
+        for (x in 0 until width) {
+            dst[row + x] =
+                ((a / div) shl 24) or ((r / div) shl 16) or ((g / div) shl 8) or (b / div)
+            val add = src[row + (x + radius + 1).coerceAtMost(width - 1)]
+            val sub = src[row + (x - radius).coerceAtLeast(0)]
+            a += ((add ushr 24) and 0xFF) - ((sub ushr 24) and 0xFF)
+            r += ((add ushr 16) and 0xFF) - ((sub ushr 16) and 0xFF)
+            g += ((add ushr 8) and 0xFF) - ((sub ushr 8) and 0xFF)
+            b += (add and 0xFF) - (sub and 0xFF)
+        }
+    }
+    for (x in 0 until width) {
+        var a = 0
+        var r = 0
+        var g = 0
+        var b = 0
+        for (i in -radius..radius) {
+            val p = dst[i.coerceIn(0, height - 1) * width + x]
+            a += (p ushr 24) and 0xFF
+            r += (p ushr 16) and 0xFF
+            g += (p ushr 8) and 0xFF
+            b += p and 0xFF
+        }
+        for (y in 0 until height) {
+            src[y * width + x] =
+                ((a / div) shl 24) or ((r / div) shl 16) or ((g / div) shl 8) or (b / div)
+            val add = dst[(y + radius + 1).coerceAtMost(height - 1) * width + x]
+            val sub = dst[(y - radius).coerceAtLeast(0) * width + x]
+            a += ((add ushr 24) and 0xFF) - ((sub ushr 24) and 0xFF)
+            r += ((add ushr 16) and 0xFF) - ((sub ushr 16) and 0xFF)
+            g += ((add ushr 8) and 0xFF) - ((sub ushr 8) and 0xFF)
+            b += (add and 0xFF) - (sub and 0xFF)
+        }
+    }
 }
 
 
