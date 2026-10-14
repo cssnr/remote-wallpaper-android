@@ -52,8 +52,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Log.d("open_widget_settings", "setOnPreferenceClickListener")
             //findNavController().navigate(R.id.nav_action_widget_settings)
             // TODO: This is the only place SafeArgs is used...
-            val action = SettingsFragmentDirections.navActionWidgetSettings()
-            findNavController().navigate(action)
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.nav_settings) {
+                val action = SettingsFragmentDirections.navActionWidgetSettings()
+                navController.navigate(action)
+            }
             false
         }
 
@@ -162,8 +165,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // View Logs
         findPreference<Preference>("view_logs")?.setOnPreferenceClickListener {
             Log.d("view_logs", "setOnPreferenceClickListener")
-            val action = SettingsFragmentDirections.navActionViewLogs()
-            findNavController().navigate(action)
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.nav_settings) {
+                val action = SettingsFragmentDirections.navActionViewLogs()
+                navController.navigate(action)
+            }
             false
         }
     }
