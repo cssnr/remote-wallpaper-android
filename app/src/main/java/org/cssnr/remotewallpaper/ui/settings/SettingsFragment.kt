@@ -69,11 +69,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val blurValue = preferenceManager.sharedPreferences?.getInt("blur_wallpaper", 0)
         Log.d("SettingsFragment", "blurValue: $blurValue")
         val blurSeekBar = findPreference<SeekBarPreference>("blur_wallpaper")
-        blurSeekBar?.summary = "Current Value: $blurValue"
+        blurSeekBar?.summary = if (blurValue == 0) "Disabled" else "Blur Level: $blurValue"
         blurSeekBar?.setOnPreferenceChangeListener { pref, newValue ->
             val intValue = (newValue as Int)
             Log.d("SettingsFragment", "blur_wallpaper: $intValue")
-            pref.summary = "Current Value: $intValue"
+            pref.summary = if (intValue == 0) "Disabled" else "Blur Level: $intValue"
             true
         }
 

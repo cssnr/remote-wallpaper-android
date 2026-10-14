@@ -33,14 +33,14 @@
         <SwitchPreferenceCompat
             android:key="grayscale_wallpaper"
             android:title="Grayscale Wallpaper"
-            android:icon="@drawable/md_gradient_24px"
+            android:icon="@drawable/md_format_paint_off_24px"
             android:defaultValue="false"
             android:summary="Remove All Color" />
 
         <SeekBarPreference
             android:key="blur_wallpaper"
             android:title="Blur Wallpaper"
-            android:icon="@drawable/md_texture_24px"
+            android:icon="@drawable/md_blur_linear_24px"
             android:defaultValue="0"
             android:max="10"
             app:min="0"
